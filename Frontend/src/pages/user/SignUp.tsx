@@ -1,10 +1,63 @@
-import React from "react";
+import React, { useState } from "react";
 import UserHeader from "../../components/user/UserHeader";
+import { singUpRequest } from "../../service/user/userApi";
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const Signup: React.FC = () => {
+
+  const [formData, setFormData] = useState<any>({});
+
+  const [formError, setFormError] = useState<string | null>(null);
+
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+      setFormData({ ...formData, [e.target.id]: e.target.value });
+
+
+     if (formError && (e.target.id === "password" || e.target.id === "confirmPassword")) {
+
+      setFormError(null);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+
+    e.preventDefault();
+
+  
+    if (formData.password !== formData.confirmPassword) {
+
+      setFormError("Passwords do not match");
+     
+      return;
+
+    }
+
+    try {
+
+      const response = await singUpRequest(formData);
+
+      console.log(response.data, 'signup response data');
+
+      if (response.data.success) {
+
+        toast.success(response.data.message);
+
+      }
+
+    } catch (error: any) {
+
+      console.log('error in the handlesubmit', error);
+
+      toast.error(error.response?.data?.message || "An unexpected error occurred");
+      
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col">
-      
       <header className="w-full bg-[#f8fafc] shadow-md">
         <UserHeader />
       </header>
@@ -14,26 +67,25 @@ const Signup: React.FC = () => {
           <h2 className="text-2xl font-bold text-center text-[#1a202c] mb-6">
             Create Your Account
           </h2>
-          <form className="space-y-4">
-           
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label
-                htmlFor="name"
+                htmlFor="username"
                 className="block text-sm font-medium text-[#1a202c] mb-1"
               >
                 Full Name
               </label>
               <input
                 type="text"
-                id="name"
+                id="username"
                 name="name"
+                onChange={handleChange}
                 placeholder="Enter your full name"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00563f]"
                 required
               />
             </div>
 
-            
             <div>
               <label
                 htmlFor="email"
@@ -45,13 +97,13 @@ const Signup: React.FC = () => {
                 type="email"
                 id="email"
                 name="email"
+                onChange={handleChange}
                 placeholder="Enter your email"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00563f]"
                 required
               />
             </div>
 
-            
             <div>
               <label
                 htmlFor="password"
@@ -63,13 +115,13 @@ const Signup: React.FC = () => {
                 type="password"
                 id="password"
                 name="password"
+                onChange={handleChange}
                 placeholder="Create a password"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00563f]"
                 required
               />
             </div>
 
-            
             <div>
               <label
                 htmlFor="confirmPassword"
@@ -81,13 +133,14 @@ const Signup: React.FC = () => {
                 type="password"
                 id="confirmPassword"
                 name="confirmPassword"
+                onChange={handleChange}
                 placeholder="Re-enter your password"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00563f]"
                 required
               />
+              {formError && <p className="text-red-500 text-sm mt-2">{formError}</p>}
             </div>
 
-            
             <div>
               <button
                 type="submit"
@@ -98,7 +151,6 @@ const Signup: React.FC = () => {
             </div>
           </form>
 
-         
           <p className="text-sm text-center text-[#4a5568] mt-4">
             Already have an account?{" "}
             <a href="/login" className="text-[#00563f] hover:underline">

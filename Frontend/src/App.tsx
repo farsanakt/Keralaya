@@ -2,6 +2,7 @@ import React from 'react';
 import { Route,Routes } from 'react-router-dom';
 import UserRoutes from './routes/UserRoutes';
 import AdminRoutes from './routes/AdminRoutes';
+import { ToastContainer } from 'react-toastify';
 
 
 
@@ -14,6 +15,7 @@ const App: React.FC = () => {
         <Route path='/admin/*' element={<AdminRoutes/>} />
         
       </Routes>
+      <ToastContainer/>
     </div>
   );
 };
