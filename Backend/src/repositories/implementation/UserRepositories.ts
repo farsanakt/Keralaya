@@ -12,4 +12,10 @@ export class UserRepositories {
           return await User.findOne({email})
     }
 
+    async verifyUser(email: string, isVerified: boolean): Promise<IUser | null> {
+       
+        await User.updateOne({ email }, { isVerified });
+        return await User.findOne({ email });
+    }
+
 }

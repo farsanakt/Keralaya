@@ -2,6 +2,9 @@ import React from "react";
 import UserHeader from "../../components/user/UserHeader";
 
 const Profile: React.FC = () => {
+
+
+
   return (
     <div className="min-h-screen flex flex-col bg-[#f8fafc]">
     

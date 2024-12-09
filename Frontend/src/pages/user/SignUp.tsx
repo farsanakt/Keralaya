@@ -1,14 +1,21 @@
 import React, { useState } from "react";
 import UserHeader from "../../components/user/UserHeader";
-import { singUpRequest } from "../../service/user/userApi";
+import { singUpRequest,verifyOtp } from "../../service/user/userApi";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from "react-router-dom";
 
 const Signup: React.FC = () => {
 
   const [formData, setFormData] = useState<any>({});
 
+  const [otpData,setOtpData]=useState<string>('')
+
   const [formError, setFormError] = useState<string | null>(null);
+
+  const [showOtpModal,setshowOtpModal]=useState<boolean>(false)
+
+  const navigate=useNavigate()
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,6 +28,52 @@ const Signup: React.FC = () => {
       setFormError(null);
     }
   };
+
+  const closeOtpModal=()=>{
+    
+    setshowOtpModal(false)
+
+  }
+
+  const handleOtp=(e: React.ChangeEvent<HTMLInputElement>)=>{
+
+    setOtpData(e.target.value)
+
+  }
+
+  console.log(otpData,'otp')
+  
+  const handleOtpSumbmit=async()=>{
+
+    try {
+
+      const email=formData.email
+
+      const response = await verifyOtp(otpData,email)
+
+      console.log(response,'repppppppp');
+      
+      if(response.data.message.message){
+
+        console.log(response.data.success,'kkkk')
+
+        toast.success(response.data.message.message)
+
+        navigate('/')
+
+      }
+      
+    } catch (error:any) {
+
+      console.log(error.response.data.message);
+
+      toast.error(error.response.data.message)
+      
+      
+    }
+
+
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
 
@@ -44,6 +97,8 @@ const Signup: React.FC = () => {
       if (response.data.success) {
 
         toast.success(response.data.message);
+
+        setshowOtpModal(true)
 
       }
 
@@ -159,6 +214,44 @@ const Signup: React.FC = () => {
           </p>
         </div>
       </main>
+        {/* OTP Modal */}
+        {showOtpModal && (
+       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+       <div className="bg-white rounded-lg p-6 w-96">
+           <h2 className="text-xl font-bold text-center mb-4">Enter OTP</h2>
+           <p className="text-sm text-gray-600 text-center mb-6">
+               Please enter the OTP sent to your registered email.
+           </p>
+           <form className="space-y-4" onSubmit={handleSubmit}>
+               <input
+                   type="text"
+                   placeholder="Enter OTP"
+                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00563f]"
+                   value={otpData}
+                   onChange={handleOtp}
+               />
+               <div className="flex justify-end space-x-4">
+                   <button
+                       type="button"
+                       onClick={closeOtpModal}
+                       className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+                   >
+                       Cancel
+                   </button>
+                   <button
+                      type="button"
+                       onClick={handleOtpSumbmit}
+                       className="px-4 py-2 bg-[#00563f] text-white rounded-md hover:bg-[#00482f]"
+                   >
+                       Verify
+                   </button>
+               </div>
+           </form>
+       </div>
+   </div>
+   
+      )}
+    
     </div>
   );
 };

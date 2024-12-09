@@ -32,7 +32,7 @@ const Sidebar: React.FC = () => {
           <li>
             <div className="bg-[#2d3748] p-3 rounded-md hover:bg-[#4CAF50] transition duration-200 ease-in-out">
               <Link
-                to="/admin/guides"
+                to="/admin/guidelist"
                 className="text-white hover:text-white text-lg font-medium"
               >
                 Guides

@@ -21,3 +21,31 @@ export const singUpRequest=async(formData:any)=>{
     
     return response
 }
+
+export const verifyOtp=async(otpData:string,email:string)=>{
+
+
+    console.log(otpData,'nyyeyeyey')
+
+    const response=await api.post('/verifyOtp',{ otpData,email})
+
+    console.log(response,'ansal')
+
+    return response
+
+}
+
+export const loginRequest=async(email:string,password:string)=>{
+
+    console.log('jjjjj')
+
+    const response =await api.post('/login',{email,password})
+
+    console.log('loop')
+
+    console.log(response,'kkkk')
+
+    return response
+
+}
+
