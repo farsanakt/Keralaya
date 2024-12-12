@@ -7,4 +7,6 @@ const authController=new AuthController()
 
 guide_authRoute.post('/registration',authController.registration)
 
+guide_authRoute.post('/guidelogin',authController.login)
+
 export default guide_authRoute

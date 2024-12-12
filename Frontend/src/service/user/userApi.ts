@@ -35,6 +35,22 @@ export const verifyOtp=async(otpData:string,email:string)=>{
 
 }
 
+export const resendOtp=async(email:string)=>{
+
+    const response=await api.post('/resendotp',{email})
+
+    return response
+
+}
+
+export const forgetPass=async(email:string)=>{
+
+    const response=await api.post('/forgetpass',{email})
+
+    return response
+
+}
+
 export const loginRequest=async(email:string,password:string)=>{
 
     console.log('jjjjj')
@@ -49,3 +65,12 @@ export const loginRequest=async(email:string,password:string)=>{
 
 }
 
+export const profileRequest=async(email:string)=>{
+
+    console.log('jj')
+
+    const response=await api.get(`/userProfile/${email}`)
+
+    return response
+
+}

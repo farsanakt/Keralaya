@@ -1,120 +1,119 @@
 import React, { useState } from "react";
-import UserHeader from "../../components/user/UserHeader";
-import { singUpRequest,verifyOtp } from "../../service/user/userApi";
+import { resendOtp, singUpRequest,verifyOtp } from "../../service/user/userApi";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
 
 const Signup: React.FC = () => {
-
   const [formData, setFormData] = useState<any>({});
-
-  const [otpData,setOtpData]=useState<string>('')
-
+  const [otpData, setOtpData] = useState<string>("");
   const [formError, setFormError] = useState<string | null>(null);
+  const [showOtpModal, setShowOtpModal] = useState<boolean>(false);
+  const [resendDisabled, setResendDisabled] = useState<boolean>(true);
+  const [timer, setTimer] = useState<number>(60);
 
-  const [showOtpModal,setshowOtpModal]=useState<boolean>(false)
-
-  const navigate=useNavigate()
-
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    
+    setFormData({ ...formData, [e.target.id]: e.target.value });
 
-      setFormData({ ...formData, [e.target.id]: e.target.value });
-
-
-     if (formError && (e.target.id === "password" || e.target.id === "confirmPassword")) {
+    if (formError && (e.target.id === "password" || e.target.id === "confirmPassword")) {
 
       setFormError(null);
     }
   };
 
-  const closeOtpModal=()=>{
-    
-    setshowOtpModal(false)
+  const closeOtpModal = () => {
+    setShowOtpModal(false);
+  };
 
-  }
+  const handleOtp = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setOtpData(e.target.value);
+  };
 
-  const handleOtp=(e: React.ChangeEvent<HTMLInputElement>)=>{
+  const startResendTimer = () => {
+    setResendDisabled(true);
+    setTimer(60);
 
-    setOtpData(e.target.value)
+    const interval = setInterval(() => {
+      setTimer((prev) => {
+        if (prev === 1) {
+          clearInterval(interval);
+          setResendDisabled(false);
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
 
-  }
-
-  console.log(otpData,'otp')
-  
-  const handleOtpSumbmit=async()=>{
+  const handleResendOtp = async () => {
 
     try {
-
+      
       const email=formData.email
+      console.log(email)
 
-      const response = await verifyOtp(otpData,email)
+      const response = await resendOtp(email)
 
-      console.log(response,'repppppppp');
-      
-      if(response.data.message.message){
+      if (response.data.success) {
 
-        console.log(response.data.success,'kkkk')
-
-        toast.success(response.data.message.message)
-
-        navigate('/')
-
+        toast.success(response.data.message.message);
+        startResendTimer();
       }
-      
-    } catch (error:any) {
-
-      console.log(error.response.data.message);
-
-      toast.error(error.response.data.message)
-      
-      
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to resend OTP.");
     }
+  };
 
+  const handleOtpSubmit = async () => {
+    console.log('handle')
+    try {
+      const email = formData.email;
+      const response = await verifyOtp(otpData, email);
 
-  }
+      if (response.data.message.message) {
+        toast.success(response.data.message.message);
+        navigate("/login");
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Invalid OTP.");
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
 
     e.preventDefault();
 
-  
     if (formData.password !== formData.confirmPassword) {
 
       setFormError("Passwords do not match");
-     
-      return;
 
+      return;
     }
 
     try {
-
       const response = await singUpRequest(formData);
 
-      console.log(response.data, 'signup response data');
-
       if (response.data.success) {
-
-        toast.success(response.data.message);
-
-        setshowOtpModal(true)
-
+        
+        setShowOtpModal(true);
+        startResendTimer();
       }
-
     } catch (error: any) {
 
-      console.log('error in the handlesubmit', error);
-
       toast.error(error.response?.data?.message || "An unexpected error occurred");
-      
+
+      setShowOtpModal(true)
+
     }
   };
+
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col">
       <header className="w-full bg-[#f8fafc] shadow-md">
-        <UserHeader />
+        {/* <UserHeader /> */}
       </header>
 
       <main className="flex-grow flex items-center justify-center bg-[#f8fafc] mt-6">
@@ -214,43 +213,59 @@ const Signup: React.FC = () => {
           </p>
         </div>
       </main>
-        {/* OTP Modal */}
-        {showOtpModal && (
-       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-       <div className="bg-white rounded-lg p-6 w-96">
-           <h2 className="text-xl font-bold text-center mb-4">Enter OTP</h2>
-           <p className="text-sm text-gray-600 text-center mb-6">
-               Please enter the OTP sent to your registered email.
-           </p>
-           <form className="space-y-4" onSubmit={handleSubmit}>
-               <input
-                   type="text"
-                   placeholder="Enter OTP"
-                   className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00563f]"
-                   value={otpData}
-                   onChange={handleOtp}
-               />
-               <div className="flex justify-end space-x-4">
-                   <button
-                       type="button"
-                       onClick={closeOtpModal}
-                       className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
-                   >
-                       Cancel
-                   </button>
-                   <button
-                      type="button"
-                       onClick={handleOtpSumbmit}
-                       className="px-4 py-2 bg-[#00563f] text-white rounded-md hover:bg-[#00482f]"
-                   >
-                       Verify
-                   </button>
-               </div>
-           </form>
-       </div>
-   </div>
-   
+      
+      {/* OTP Modal */}
+      {showOtpModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 w-96">
+            <h2 className="text-xl font-bold text-center mb-4">Enter OTP</h2>
+            <p className="text-sm text-gray-600 text-center mb-6">
+              Please enter the OTP sent to your registered email.
+            </p>
+            <form className="space-y-4">
+              <input
+                type="text"
+                placeholder="Enter OTP"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00563f]"
+                value={otpData}
+                onChange={handleOtp}
+              />
+              <div className="flex justify-between items-center mt-4">
+                <button
+                  type="button"
+                  onClick={closeOtpModal}
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleOtpSubmit}
+                  className="px-4 py-2 bg-[#00563f] text-white rounded-md hover:bg-[#00482f]"
+                >
+                  Verify
+                </button>
+              </div>
+              <div className="mt-4 text-center">
+                {resendDisabled ? (
+                  <p className="text-sm text-gray-500">
+                    Resend OTP in {timer} seconds
+                  </p>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleResendOtp}
+                    className="text-sm text-[#00563f] hover:underline"
+                  >
+                    Resend OTP
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
+        </div>
       )}
+    
     
     </div>
   );

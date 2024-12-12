@@ -1,12 +1,13 @@
 import mongoose ,{Document}from "mongoose";
 
 export interface IGuide extends  Document{
+    password(password: string, password1: any): unknown;
 
-    name:'string',
-    email:'string',
-    phone:'string',
-    experience:'string',
-    expertise: 'string',
+    name:string
+    email:string,
+    phone:string,
+    experience:string,
+    expertise: string,
     languages: string[],
     isBlocked:Boolean,
 

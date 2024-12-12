@@ -41,6 +41,21 @@ class AuthController {
 
     }
 
+    async login(req:Request,res:Response){
+
+        const guideData=req.body
+
+        try {
+            
+         const response=await authService.guideLogin(guideData)
+           
+        } catch (error) {
+            
+            
+        }
+
+    }
+
 
 }
 

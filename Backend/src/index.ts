@@ -33,6 +33,7 @@ app.use('/', userAuth_route);
 app.use('/',adminAuth_route)
 app.use('/',guide_authRoute)
 app.use('/',admin_Routes)
+app.use('/',user_route)
 
 
 

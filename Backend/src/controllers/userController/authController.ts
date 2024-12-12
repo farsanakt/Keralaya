@@ -50,6 +50,8 @@ class AuthController {
 
   }
 
+
+
   async verifyOtp(req: Request, res: Response) {
 
     try {
@@ -91,17 +93,46 @@ class AuthController {
 
   }
 
+
+
+  async resendOtp(req:Request,res:Response){
+
+    const data=req.body
+
+    console.log(data,'l')
+
+  try {
+    
+    const response =await authService.resendOtp(data)
+
+    if (typeof response === 'string') {
+
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: response });
+
+      return
+   }
+
+   if (response?.success) {
+
+      res.status(HttpStatus.CREATED).json({message:response})
+
+      return
+   }
+
+  } catch (error) {
+    
+    console.log('error in otp controller ',error)
+
+  }
+
+  }
+
   async login(req:Request,res:Response){
 
     const userData=req.body
-
-    
     
     try {
       console.log(userData,'kkkkkkkkkkkkkkkkkkkkkkkk')
-      
-      console.log('kkkkkoppppppppppppppp')
-
       
       const response =await authService.userLogin(userData)
 
@@ -123,6 +154,39 @@ class AuthController {
       
   }
   
+
+  async forgetPass(req:Request,res:Response){
+
+    const data=req.body
+
+    try {
+
+      const response=await authService.forgetPass(data)
+
+      console.log(response,'k')
+
+      if (!response.success) {
+
+        res.status(HttpStatus.BAD_REQUEST).json(response);
+
+      } else {
+
+        console.log("hhiiiiiiii")
+
+        res.status(HttpStatus.CREATED) .json({response});
+         
+      }
+
+
+      
+    } catch (error) {
+
+      console.log('error occur in forget pass',error)
+      
+    }
+
+  }
+
 }
 
 export default AuthController;

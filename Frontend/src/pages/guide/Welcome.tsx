@@ -12,7 +12,7 @@ const Welcome: React.FC = () => {
     <div
       className="relative min-h-screen flex items-center justify-center bg-cover bg-center"
       style={{
-        backgroundImage: `url('https://via.placeholder.com/1920x1080')`, // Replace with your background image URL
+        backgroundImage: `url('https://via.placeholder.com/1920x1080')`, 
       }}
     >
       <div className="bg-white/70 backdrop-blur-md rounded-lg shadow-lg p-8 max-w-3xl text-center">

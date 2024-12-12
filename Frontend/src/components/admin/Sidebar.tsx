@@ -56,10 +56,10 @@ const Sidebar: React.FC = () => {
       <div className="mt-auto">
         <div className="bg-[#2d3748] p-3 rounded-md hover:bg-[#4CAF50] transition duration-200 ease-in-out">
           <Link
-            to="/logout"
+            to="/admin"
             className="text-white hover:text-white text-lg font-medium block"
           >
-            Logout
+            Logout 
           </Link>
         </div>
       </div>

@@ -5,12 +5,12 @@ import { IGuideRepository } from "../interface/IGuideRepositories";
 
 export class GuideRepositories implements IGuideRepository {
 
- 
-
-    async createUser(data: any) : Promise<any> {
-        
-        return await Guide.create(data)
-    }
+                
+        async createUser(data:any):Promise <IGuide | null>{
+                        
+            return await Guide.create(data)
+        }     
+       
 
     async findUserById(guideId:string) : Promise<IGuide | null>{
         return await Guide.findById(guideId)

@@ -18,3 +18,11 @@ export const GuideRegisteration=async(formData:any)=>{
     return response
 
 }
+
+export const guideLogin=async(formData:any)=>{
+
+    const response=await api.post('/guidelogin',formData)
+
+    return response
+
+}

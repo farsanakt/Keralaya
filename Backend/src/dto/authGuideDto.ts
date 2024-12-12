@@ -1,7 +1,7 @@
 export interface guideRegisterDto{
 
 
-    username:string,
+    name:string,
     email:string,
     password:string,
     experience:number,

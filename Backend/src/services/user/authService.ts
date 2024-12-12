@@ -3,6 +3,7 @@ import { OtpRepository } from "../../repositories/implementation/OtpRepositories
 import { MailService } from "../../utils/email.utils";
 import bcrypt from "bcryptjs";
 import { IOtp } from "../../models/userModel/otpModel";
+import { ObjectId } from "mongoose";
 
 
 const mailService = new MailService();
@@ -20,6 +21,12 @@ export const generateOtp = () => {
 async function hashPassword(password: string): Promise<string> {
 
   return await bcrypt.hash(password, 10);
+
+}
+
+interface userData {
+
+   username: string,email: string,
 
 }
 
@@ -183,9 +190,45 @@ export class AuthService {
 
   }
 
+  async resendOtp(resendOtpdata:{email:string}){
+
+    const email=resendOtpdata.email
+
+    const otp=generateOtp()
+
+    try {
+
+      const existingEmail=await this.otpRepositories.findOtpByEmail(email)
+
+      if(existingEmail){
+
+       await this.otpRepositories.updateOtpByEmail(email,otp)
+
+      }
+      else{
+
+        await this.otpRepositories.create({email,otp} as IOtp)
+
+        console.log('new otp created',otp)
+
+      }
+
+      await mailService.sendOtpEmail(email,otp)
+
+      return {success:true,message:'new Otp is sended'}
+
+      
+    } catch (error) {
+
+      return {success:false,message:'failed to resend otp'}
+      
+    }
+
+  }
+
   
 
-  async userLogin(userData:{email:string,password:string}):Promise<{success:boolean,message:string}>{
+  async userLogin(userData:{email:string,password:string}):Promise<{success:boolean,message:string,data?:userData}>{
 
     console.log('herre[[[[[[[[')
 
@@ -200,8 +243,6 @@ export class AuthService {
      return {success:false,message:'invalid credinational'}
     
     }
-
-    
 
     const  validPassword=await bcrypt.compare(password,existingUser.password) 
 
@@ -218,8 +259,46 @@ export class AuthService {
       return {success:false,message:'the user is blocked'}
     }
 
-    return {success:true,message:'logged successfully'}
+    const userDataa : userData = {
+      
+      username:existingUser.username,
+      email:existingUser.email
+
+    }
+
+    return {success:true,message:'logged successfully',data:userDataa}
 
   }
+
+  async forgetPass(forgetPass:{email:string}){
+
+    const email=forgetPass.email
+
+    try {
+
+      const existing=await this.userRepositories.findUserByEmail(email)
+
+      if(!existing){
+
+        return {success:false,message:'Please enter a valid email'}
+
+      }
+
+      const otp=generateOtp()
+
+      await this.otpRepositories.create({email,otp} as IOtp)
+
+      await mailService.sendOtpEmail(email,otp)
+
+      return {success:true,message:'Otp sended to registered mail'}
+      
+    } catch (error) {
+
+      return {success:false,message:'failed to send otp '}
+      
+    }
+
+  }
+  
   
 }
