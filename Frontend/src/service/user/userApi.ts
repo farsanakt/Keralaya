@@ -1,4 +1,5 @@
 import axios from "axios";
+import { ObjectId } from "mongoose";
 
 const API_URL = import.meta.env.VITE_USER_API_URL
 
@@ -78,6 +79,14 @@ export const profileRequest=async(email:string)=>{
     console.log('jj')
 
     const response=await api.get(`/userProfile/${email}`)
+
+    return response
+
+}
+
+export const updateProfie=async(updateddata:{username:string,email:string,id:string})=>{
+
+    const response=await api.post('/updateprofile',{updateddata})
 
     return response
 

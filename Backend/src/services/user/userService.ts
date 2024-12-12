@@ -19,4 +19,14 @@ export class UserService{
 
     }
 
+    async updateProfile(updateddata:{username:string,email:string,id:string}){
+
+        const {username,email,id}=updateddata
+
+        return await this.userRepositories.updateProfile(id,updateddata)
+
+        
+
+    }
+
 }
