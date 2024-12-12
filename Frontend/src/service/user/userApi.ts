@@ -51,6 +51,14 @@ export const forgetPass=async(email:string)=>{
 
 }
 
+export const resetPass=async(newPass:string,email:string)=>{
+
+    const response=await api.post('/resetPass',{newPass,email})
+
+    return response
+
+}
+
 export const loginRequest=async(email:string,password:string)=>{
 
     console.log('jjjjj')

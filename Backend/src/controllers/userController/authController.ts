@@ -187,6 +187,32 @@ class AuthController {
 
   }
 
+  async resetPass(req:Request,res:Response){
+
+    try {
+
+      console.log('reached in reset password controller')
+
+      const response=await authService.resetPass(req.body)
+
+      if (!response.success) {
+
+        res.status(HttpStatus.BAD_REQUEST).json(response);
+
+      } else {
+
+        console.log("hhiiiiiiii")
+
+        res.status(HttpStatus.CREATED) .json({response});
+         
+      }
+      
+    } catch (error) {
+      
+    }
+
+  }
+
 }
 
 export default AuthController;

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-// import UserHeader from '../../components/user/UserHeader';
-import { forgetPass, loginRequest } from '../../service/user/userApi';
+import { forgetPass, loginRequest, resetPass, verifyOtp } from '../../service/user/userApi';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
@@ -8,45 +7,65 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginFailure, loginStart, loginSuccess } from '../../redux/slices/userSlice';
 import { RootState, AppDispatch } from '../../redux/store';
 
+
+
 const Login: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [showOtpModal,setShowOtpModal]=useState(false)
     const [resetEmail, setResetEmail] = useState('');
+    const [showResetPasswordModal, setShowResetPasswordModal] = useState(false);
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [otpData, setOtpData] = useState<string>("");
 
     const { loading, error } = useSelector((state: RootState) => state.user)
+
     const dispatch: AppDispatch = useDispatch();
+
     const navigate = useNavigate();
 
+
+//  Login submit
     const handleSubmit = async (e: React.FormEvent) => {
+
         e.preventDefault();
+
         dispatch(loginStart());
 
         try {
+
             const response = await loginRequest(email, password);
+
             toast.success(response.data.message.message);
 
             dispatch(loginSuccess(response.data));
+
             navigate('/');
+
         } catch (error: any) {
+
             const errorMessage = error.response?.data?.message || 'Something went wrong!';
+
             toast.error(errorMessage);
+
             dispatch(loginFailure(errorMessage));
+
         }
     };
 
+    
+//  forget password submit
     const handleForgotPassword = async (e: React.FormEvent) => {
 
         e.preventDefault();
 
         const response=await forgetPass(resetEmail)
 
-        console.log(response,'kkkk')
+        console.log(response,'forget password response')
 
         if(response.data){
-
-            console.log(response.data,'jjjjjjjjjjjjjjjj')
 
             toast.success(response.data.response.message)
 
@@ -57,6 +76,79 @@ const Login: React.FC = () => {
         }
         
     };
+
+
+//  close OtpModal 
+    const closeOtpModal = () => {
+
+        setShowOtpModal(false)
+
+      }
+
+
+//  new password and confirm password verification
+    const handlePasswordReset = async(e: React.FormEvent) => {
+
+        e.preventDefault()
+
+        if (newPassword !== confirmPassword) {
+
+            toast.error('Passwords do not match')
+
+            return;
+        }
+
+        try {
+
+            const response=await resetPass(newPassword,resetEmail)
+
+            console.log(response,'response from reset password')
+
+            
+            
+        } catch (error) {
+            
+        }
+        
+        toast.success('Password reset successfully');
+        setShowResetPasswordModal(false);
+        navigate('/login')
+    };
+
+
+    const handleOtp = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+        setOtpData(e.target.value);
+
+      };
+
+
+// Otp submit 
+      const handleOtpSubmit = async (e: React.FormEvent) => {
+
+        e.preventDefault();
+
+       try {
+
+      const response=await verifyOtp(otpData,resetEmail)
+
+      if(response.data.message){
+
+        toast.success(response.data.message.message)
+
+        setShowOtpModal(false)
+
+        setShowResetPasswordModal(true)
+      }
+        
+       } catch (error:any) {
+
+        toast.error(error.response.data.message)
+        
+       }
+
+      }
+
 
     return (
         <div className="min-h-screen bg-[#f8fafc] flex flex-col">
@@ -175,20 +267,20 @@ const Login: React.FC = () => {
                 type="text"
                 placeholder="Enter OTP"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#00563f]"
-                // value={otpData}
-                // onChange={handleOtp}
+                value={otpData}
+                onChange={handleOtp}
               />
               <div className="flex justify-between items-center mt-4">
                 <button
                   type="button"
-                //   onClick={closeOtpModal}
+                  onClick={closeOtpModal}
                   className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
-                //   onClick={handleOtpSubmit}
+                  onClick={handleOtpSubmit}
                   className="px-4 py-2 bg-[#00563f] text-white rounded-md hover:bg-[#00482f]"
                 >
                   Verify
@@ -199,6 +291,48 @@ const Login: React.FC = () => {
           </div>
         </div>
       )}
+
+
+{showResetPasswordModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white rounded-lg p-6 w-96">
+                        <h2 className="text-xl font-bold text-center mb-4">Reset Password</h2>
+                        <form onSubmit={handlePasswordReset} className="space-y-4">
+                            <input
+                                type="password"
+                                placeholder="New Password"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                                required
+                            />
+                            <input
+                                type="password"
+                                placeholder="Confirm Password"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-md"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                required
+                            />
+                            <div className="flex justify-between items-center mt-4">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowResetPasswordModal(false)}
+                                    className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="px-4 py-2 bg-[#00563f] text-white rounded-md hover:bg-[#00482f]"
+                                >
+                                    Reset Password
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
 
 
         </div>

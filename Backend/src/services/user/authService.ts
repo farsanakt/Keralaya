@@ -299,6 +299,37 @@ export class AuthService {
     }
 
   }
+
+  async resetPass(resetPass:{newPass:string,email:string}):Promise<{success:boolean,message:string}>{
+
+    const newPass=resetPass.newPass
+
+    const email=resetPass.email
+
+    try {
+
+      const existingUser=await this.userRepositories.findUserByEmail(email)
+
+      const hashedPassword=await bcrypt.hash(newPass,10)
+
+      const changedPass=await this.userRepositories.UpdatePassword(email,'password',hashedPassword)
+
+      if (!changedPass) {
+
+        return { success: false, message: "failed to update the password" }
+
+    }
+
+    return { success: true, message: "password successfully changed" }
+
+      
+    } catch (error) {
+
+     return {success:false,message:'Something went wrong'}
+      
+    }
+
+  }
   
   
 }
