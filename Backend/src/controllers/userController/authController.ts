@@ -132,7 +132,6 @@ class AuthController {
     const userData=req.body
     
     try {
-      console.log(userData,'kkkkkkkkkkkkkkkkkkkkkkkk')
       
       const response =await authService.userLogin(userData)
 

@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { guideLogin } from "../../service/guide/guideApi";
 
 const GuideLogin: React.FC = () => {
+
+
   const navigate = useNavigate();
   const [loginData, setLoginData] = useState({
     email: "",
@@ -13,24 +15,40 @@ const GuideLogin: React.FC = () => {
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
     const { name, value } = e.target;
+
     setLoginData({ ...loginData, [name]: value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
 
+    e.preventDefault();
+  
     try {
       const response = await guideLogin(loginData);
 
-      if (response.data.message) {
-        toast.success(response.data.message);
+      const message = response.data.message?.message;
+  
+      if (message) {
+
+        toast.success(message);
+
         navigate("/guide/dashboard");
+
       }
+
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Login failed!");
+
+      
+      const errorMessage = error.response?.data?.message || "Login failed!";
+
+      toast.error(errorMessage);
+
     }
+    
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 py-10 px-4">

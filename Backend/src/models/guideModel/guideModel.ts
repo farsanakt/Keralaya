@@ -1,7 +1,7 @@
 import mongoose ,{Document}from "mongoose";
 
 export interface IGuide extends  Document{
-    password(password: string, password1: any): unknown;
+   
 
     name:string
     email:string,
@@ -10,6 +10,9 @@ export interface IGuide extends  Document{
     expertise: string,
     languages: string[],
     isBlocked:Boolean,
+    password:string,
+    status:string
+
 
 }
 
@@ -28,6 +31,10 @@ const GuideSchema = new mongoose.Schema<IGuide>({
     languages: { type: [String], required: true }, 
 
     isBlocked: {type:Boolean,default:true},
+
+    password:{type:String,required:true},
+
+    status:{type:String,default:'Pending'}
   })
   
   export const Guide = mongoose.model<IGuide>("Guide", GuideSchema);

@@ -11,20 +11,12 @@ class AuthController {
 
     async registration (req:Request,res:Response){
 
-        console.log('i am reached in guide page')
-
-        
-
         try {
             
            const response= await authService.guideRegistration(req.body)
 
-           console.log(response,'tttttt')
-
 
             if(response.success){
-
-                console.log('jjjjj')
 
                 res.status(HttpStatus.CREATED).json({message:response})
                 
@@ -33,9 +25,11 @@ class AuthController {
                 
                 res.status(HttpStatus.BAD_REQUEST).json(response)
                 
-            }        
+            }    
+
         } catch (error) {
-            console.log('jhgddnj',error);
+
+            console.log('error occur in guide registration controller',error);
             
         }
 
@@ -48,9 +42,22 @@ class AuthController {
         try {
             
          const response=await authService.guideLogin(guideData)
+
+         if(response.success){
+
+
+            res.status(HttpStatus.CREATED).json({message:response})
+            
+            
+        }    else{
+            
+            res.status(HttpStatus.BAD_REQUEST).json(response)
+            
+        }  
            
         } catch (error) {
             
+            console.log('error occur in guide login controller',error)
             
         }
 

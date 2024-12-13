@@ -230,8 +230,6 @@ export class AuthService {
 
   async userLogin(userData:{email:string,password:string}):Promise<{success:boolean,message:string,data?:userData}>{
 
-    console.log('herre[[[[[[[[')
-
     const {email,password}=userData
 
     const existingUser=await this.userRepositories.findUserByEmail(email)
