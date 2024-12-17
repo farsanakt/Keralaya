@@ -29,4 +29,8 @@ export class UserService{
 
     }
 
+    async getProfileData(userId:string){
+        return await this.userRepositories.findUserById(userId)
+    }
+
 }

@@ -8,6 +8,7 @@ import {createProxyMiddleware} from 'http-proxy-middleware'
 import adminAuth_route from "./Routes/admin/authRoutes";
 import guide_authRoute from "./Routes/guide/authRoutes";
 import admin_Routes from "./Routes/admin/adminRoutes";
+import cookieparser from 'cookie-parser'
 
 
 dotenv.config(); 
@@ -24,6 +25,7 @@ app.use(cors({
   credentials: true,
 }));
 app.use(express.json()); 
+app.use(cookieparser())
 
 connectMongoDb();
 

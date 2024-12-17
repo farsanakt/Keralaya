@@ -10,7 +10,14 @@ export class UserRepositories {
     }
 
     async findUserByEmail(email:String) :Promise <IUser | null>{
-          return await User.findOne({email})
+
+        const data = await User.findOne({email})
+        const userdata = data?.toObject()
+
+        console.log(userdata);
+        
+     
+          return userdata as IUser
     }
 
     async findUserById(id:string) : Promise <IUser | null >{

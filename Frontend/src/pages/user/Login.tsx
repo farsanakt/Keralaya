@@ -38,11 +38,21 @@ const Login: React.FC = () => {
 
             const response = await loginRequest(email, password);
 
+            console.log(response.data.accessToken ,'kkk')
+
+           if(response.data.accessToken){
+
+            localStorage.setItem('accessToken',response.data.accessToken)
+
             toast.success(response.data.message.message);
 
             dispatch(loginSuccess(response.data));
 
             navigate('/');
+
+           }
+
+            
 
         } catch (error: any) {
 

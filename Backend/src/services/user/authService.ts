@@ -4,6 +4,8 @@ import { MailService } from "../../utils/email.utils";
 import bcrypt from "bcryptjs";
 import { IOtp } from "../../models/userModel/otpModel";
 import { ObjectId } from "mongoose";
+import { generateAcessToken, generateRefreshToken } from "../../utils/token.util";
+import { IUser } from "../../models/userModel/userModel";
 
 
 const mailService = new MailService();
@@ -228,13 +230,13 @@ export class AuthService {
 
   
 
-  async userLogin(userData:{email:string,password:string}):Promise<{success:boolean,message:string,data?:userData}>{
+  async userLogin(userData:{email:string,password:string}):Promise<{success:boolean,message:string,data?:userData,accessToken?:string,refreshToken?:string}>{
 
     const {email,password}=userData
 
     const existingUser=await this.userRepositories.findUserByEmail(email)
     
-    console.log(existingUser,'existing')
+    // console.log(existingUser,'existing')
 
     if(!existingUser ){
 
@@ -244,7 +246,7 @@ export class AuthService {
 
     const  validPassword=await bcrypt.compare(password,existingUser.password) 
 
-    console.log(validPassword,'validPassword')
+    // console.log(validPassword,'validPassword')
 
     if(!validPassword){
 
@@ -264,7 +266,17 @@ export class AuthService {
 
     }
 
-    return {success:true,message:'logged successfully',data:userDataa}
+    const { ...data} = existingUser;
+
+    console.log(data,'user data ')
+
+    const accessToken= await generateAcessToken(data as IUser)
+
+    const refreshToken=await generateRefreshToken(existingUser)
+
+    // console.log(refreshToken,'tokenvfgfgfg')
+
+    return {success:true,message:'logged successfully',data:userDataa,accessToken,refreshToken}
 
   }
 
