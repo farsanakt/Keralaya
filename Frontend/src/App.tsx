@@ -8,7 +8,7 @@ import GuideRoutes from './routes/GuideRoutes';
 
 
 const App: React.FC = () => {
-  console.log('kkkkkk')
+
   return (
     <div>
       <Routes>

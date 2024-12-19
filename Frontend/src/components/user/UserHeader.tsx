@@ -1,14 +1,40 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { RootState } from "../../redux/store";
 import { FaUserCircle } from "react-icons/fa"; // Import a common profile icon
+import { userlogout } from "../../service/user/userApi";
+import { logout } from "../../redux/slices/userSlice";
 
 const UserHeader: React.FC = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
+
+  const dispatch=useDispatch()
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+
+  const handleLogout=async()=>{
+
+    try {
+
+      const response=await userlogout()
+
+      dispatch(logout())
+      localStorage.removeItem('accessToken')
+      setDropdownOpen(false)
+
+      console.log(response)
+
+      
+    } catch (error) {
+
+
+      
+    }
+
+  }
 
   return (
     <header className="bg-white shadow-md">
@@ -47,7 +73,9 @@ const UserHeader: React.FC = () => {
                   <Link
                     to={"/login"}
                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                    onClick={() => setDropdownOpen(false)}
+                    // onClick={() => setDropdownOpen(false)}
+
+                    onClick={handleLogout}
                   >
                     Logout
                   </Link>

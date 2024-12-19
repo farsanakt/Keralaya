@@ -212,6 +212,24 @@ class AuthController {
 
   }
 
+  async logout(req:Request,res:Response){
+
+    try {
+
+   res.clearCookie('refreshToken')
+
+     res.json({message:'logouted successfully'})
+
+     return
+      
+    } catch (error) {
+
+    console.log('error in user logout controller',error)
+      
+    }
+
+  }
+
 }
 
 export default AuthController;

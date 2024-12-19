@@ -34,7 +34,7 @@ const GuideSchema = new mongoose.Schema<IGuide>({
 
     password:{type:String,required:true},
 
-    status:{type:String,default:'Pending'}
+    
   })
   
   export const Guide = mongoose.model<IGuide>("Guide", GuideSchema);

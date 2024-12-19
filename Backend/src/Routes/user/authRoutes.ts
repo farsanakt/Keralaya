@@ -18,4 +18,6 @@ userAuth_route.post('/forgetpass',authController.forgetPass)
 
 userAuth_route.post('/resetPass',authController.resetPass)
 
+userAuth_route.get('/logout',authController.logout)
+
 export default userAuth_route

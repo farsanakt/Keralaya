@@ -268,7 +268,7 @@ export class AuthService {
 
     const { ...data} = existingUser;
 
-    console.log(data,'user data ')
+    // console.log(data,'user data ')
 
     const accessToken= await generateAcessToken(data as IUser)
 

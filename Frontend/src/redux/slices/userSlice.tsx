@@ -1,10 +1,12 @@
 import { createSlice} from "@reduxjs/toolkit";
 
+
 const initialState:UserState={
 
     currentUser: null,
     loading:false,
-    error:false
+    error:false,
+    isAuthenticated:false,
 
 }
 
@@ -22,6 +24,7 @@ interface User {
     currentUser: User | null;
     loading: boolean;
     error: boolean;
+    isAuthenticated:boolean
   }
   
 
@@ -47,6 +50,8 @@ const userReducer=createSlice({
 
             state.error=false
 
+            state.isAuthenticated=true
+
         },
         loginFailure:(state,action)=>{
 
@@ -56,7 +61,14 @@ const userReducer=createSlice({
 
             state.error=action.payload
 
-        }
+        },
+        logout:(state)=>{
+
+            state.currentUser=null
+
+            state.isAuthenticated=false
+
+        },
 
 
 
@@ -64,6 +76,6 @@ const userReducer=createSlice({
 })
 
 
-export const {loginStart,loginFailure,loginSuccess}=userReducer.actions
+export const {loginStart,loginFailure,loginSuccess,logout}=userReducer.actions
 
 export default userReducer.reducer

@@ -86,3 +86,18 @@ export const updateProfie=async(updateddata:{username:string,email:string,id:str
     return response
 
 }
+
+
+export const userlogout=async()=>{
+
+    const response=await api.get('/logout')
+
+    if(!response){
+
+
+
+    }
+
+    return response
+
+}
