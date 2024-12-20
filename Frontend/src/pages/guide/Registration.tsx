@@ -3,7 +3,8 @@ import { GuideRegisteration } from "../../service/guide/guideApi";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
-
+// import swal from 'sweetalert';
+import swalLib from 'sweetalert';
 const Registration: React.FC = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -39,30 +40,41 @@ const Registration: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
-
+  
     setIsSubmitted(true); 
-
+  
     try {
       const response = await GuideRegisteration(formData);
-
-      console.log('respo', response);
-
-      if (response.data.message?.message) {
-        toast.success(response.data.message.message);
+      console.log('Response is:', response);
+  
+      if (response.data.message.success) {
+        toast.success('registration done')
+        swalLib({
+          title: "Registration Successful!",
+          text: "You will be notified with further updates.",
+          icon: "success",
+          buttons: ["Cancel", "Proceed"],
+        }).then(() => {
+          // Navigate to /doctor route after alert confirmation
+          navigate('/guide/login');
+        });
+       
       }
       // navigate('/guide/dashboard');
     } catch (error: any) {
+      console.error("Error details:", error);
       toast.error(error.response?.data?.message || "Registration failed!");
       setIsSubmitted(false); // Reset if registration fails
     }
-
+  
     console.log("Form Submitted: ", formData);
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 py-10 px-4">
@@ -203,7 +215,8 @@ const Registration: React.FC = () => {
               className="w-full py-2 bg-green-600 text-white rounded-md focus:outline-none hover:bg-green-700"
               disabled={isSubmitted}
             >
-              {isSubmitted ? "Requested" : "Register as Guide"}
+              Register
+              {/* {isSubmitted ? "Requested" : "Register as Guide"} */}
             </button>
           </div>
         </form>
@@ -213,3 +226,7 @@ const Registration: React.FC = () => {
 };
 
 export default Registration;
+function swal(arg0: { title: string; text: string; icon: string; buttons: string[]; }) {
+  throw new Error("Function not implemented.");
+}
+

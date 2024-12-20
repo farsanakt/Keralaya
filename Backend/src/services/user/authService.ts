@@ -3,7 +3,6 @@ import { OtpRepository } from "../../repositories/implementation/OtpRepositories
 import { MailService } from "../../utils/email.utils";
 import bcrypt from "bcryptjs";
 import { IOtp } from "../../models/userModel/otpModel";
-import { ObjectId } from "mongoose";
 import { generateAcessToken, generateRefreshToken } from "../../utils/token.util";
 import { IUser } from "../../models/userModel/userModel";
 

@@ -15,7 +15,7 @@ class AuthController {
 
     try {
 
-      console.log(req.body);
+      console.log(req.body,'jjoppopppp');
 
       const { username, email, password, confirmPassword } = req.body;
 

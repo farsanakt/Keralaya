@@ -14,15 +14,73 @@ const Signup: React.FC = () => {
 
   const navigate = useNavigate();
 
+  const [isFormValid, setIsFormValid] = useState<boolean>(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    const { id, value } = e.target;
+  
     
-    setFormData({ ...formData, [e.target.id]: e.target.value });
+    const noOnlySpaces = /^[^\s]+(\s+[^\s]+)*$/
+    const validEmail = /^[^\s@]+@gmail\.com$/
+    const validPassword = /^[0-9]{4,}$/
+  
+    let isValid = true;
+    let errorMessage = "";
+  
+    if (id === "email" && !validEmail.test(value)) {
 
-    if (formError && (e.target.id === "password" || e.target.id === "confirmPassword")) {
+      isValid = false
 
-      setFormError(null);
+      errorMessage = "Please enter a valid Gmail address (e.g., user@gmail.com).";
+
+    } else if (id === "password" && !validPassword.test(value)) {
+
+      isValid = false;
+
+      errorMessage = "Password must be  at least 4 characters long."
+
+    } else if (id === "confirmPassword" && value !== formData.password) {
+
+      isValid = false
+
+      errorMessage = "Passwords do not match."
+
+    } else if (!noOnlySpaces.test(value)) {
+
+      isValid = false;
+
+      errorMessage = "Input cannot contain only spaces.";
     }
+  
+    if (isValid) {
+
+      setFormData({ ...formData, [id]: value })
+
+      if (formError) setFormError(null)
+
+    } else {
+
+      setFormError(errorMessage)
+
+    }
+  
+    
+    const isFormComplete =
+      formData.email &&
+      formData.password &&
+      formData.confirmPassword &&
+      validEmail.test(formData.email) &&
+      validPassword.test(formData.password) &&
+      formData.password === formData.confirmPassword &&
+      noOnlySpaces.test(formData.email) &&
+      noOnlySpaces.test(formData.password) &&
+      noOnlySpaces.test(formData.confirmPassword);
+  
+    setIsFormValid(isFormComplete);
   };
+  
+  
 
   const closeOtpModal = () => {
     setShowOtpModal(false);
@@ -94,6 +152,11 @@ const Signup: React.FC = () => {
 
     try {
       const response = await singUpRequest(formData);
+      console.log(response,'resp')
+
+      console.log('hjo[[  ')
+
+
 
       if (response.data.success) {
         
@@ -102,9 +165,11 @@ const Signup: React.FC = () => {
       }
     } catch (error: any) {
 
+      console.log(error,'jjfk')
+
       toast.error(error.response?.data?.message || "An unexpected error occurred");
 
-      setShowOtpModal(true)
+      
 
     }
   };
@@ -195,14 +260,21 @@ const Signup: React.FC = () => {
               {formError && <p className="text-red-500 text-sm mt-2">{formError}</p>}
             </div>
 
-            <div>
-              <button
-                type="submit"
-                className="w-full py-2 px-4 bg-[#00563f] text-white font-medium rounded-md hover:bg-[#00482f] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00563f]"
-              >
-                Sign Up
-              </button>
-            </div>
+                      <div>
+            <button
+              type="submit"
+              className={`w-full py-2 px-4 ${
+                isFormValid ? "bg-[#00563f]" : "bg-gray-400 cursor-not-allowed"
+              } text-white font-medium rounded-md ${
+                isFormValid ? "hover:bg-[#00482f]" : ""
+              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00563f]`}
+              disabled={!isFormValid}
+            >
+              Sign Up
+            </button>
+          </div>
+
+
           </form>
 
           <p className="text-sm text-center text-[#4a5568] mt-4">

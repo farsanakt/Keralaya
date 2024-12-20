@@ -4,7 +4,6 @@ import cors from "cors";
 import connectMongoDb from "./config/dbConfig";
 import user_route from "./Routes/user/userRoutes";
 import userAuth_route from "./Routes/user/authRoutes";
-import {createProxyMiddleware} from 'http-proxy-middleware'
 import adminAuth_route from "./Routes/admin/authRoutes";
 import guide_authRoute from "./Routes/guide/authRoutes";
 import admin_Routes from "./Routes/admin/adminRoutes";

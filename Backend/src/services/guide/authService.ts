@@ -23,6 +23,7 @@ export class AuthService {
 
       const { name, email, password, experience, expertise, languages } =guideDto;
 
+
       const existingGuide = await this.guideRepository.findUserByEmail(email);
 
       if (existingGuide) {
@@ -30,6 +31,9 @@ export class AuthService {
         return { success: false, message: "Guide already existed" };
 
       }
+
+     
+     
 
       const hashedpassword = await hashpassword(password);
 
@@ -59,6 +63,13 @@ export class AuthService {
     try {
 
       const existingGuide = await this.guideRepository.findUserByEmail(email)
+
+      if(existingGuide?.isBlocked){
+
+        return {success:false,message:'your not authenticated'}
+
+        
+      }
 
       if (!existingGuide) {
 

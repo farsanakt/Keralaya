@@ -102,7 +102,7 @@ const GuideLogin: React.FC = () => {
         <p className="text-sm text-center mt-4">
           Don't have an account?{" "}
           <span
-            onClick={() => navigate("/guide/register")}
+            onClick={() => navigate("/guide/registration")}
             className="text-green-600 cursor-pointer hover:underline"
           >
             Register here
