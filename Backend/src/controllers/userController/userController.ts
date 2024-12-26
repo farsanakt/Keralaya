@@ -1,7 +1,7 @@
 import { Request,Response } from "express";
-import { UserService } from "../../services/user/userService";
-import { HttpStatus } from "../../enums/HttpStatus";
-import logger from "../../utils/logger.utils";
+import { UserService } from "@/services/user/userService";
+import { HttpStatus } from "@/enums/HttpStatus";
+import logger from "@/utils/logger.utils";
 
 const userService=new UserService()
 

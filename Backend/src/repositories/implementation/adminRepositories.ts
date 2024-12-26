@@ -1,4 +1,4 @@
-import Admin from "../../models/adminModel/adminModel";
+import Admin from "@/models/adminModel/adminModel";
 
 export class AdminRepositories{
     

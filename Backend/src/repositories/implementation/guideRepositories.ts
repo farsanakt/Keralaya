@@ -1,5 +1,5 @@
-import { Guide ,IGuide} from "../../models/guideModel/guideModel";
-import { IGuideRepository } from "../interface/IGuideRepositories";
+import { Guide ,IGuide} from "@/models/guideModel/guideModel";
+import { IGuideRepository } from "@/repositories/interface/IGuideRepositories";
 
 
 

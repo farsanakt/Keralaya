@@ -1,7 +1,7 @@
 
-import userModel, { IUser } from "../../models/userModel/userModel";
+import userModel, { IUser } from "@/models/userModel/userModel";
 
-import { IAdminUserRepository } from "../interface/IAdminUserRepositories";
+import { IAdminUserRepository } from "@/repositories/interface/IAdminUserRepositories";
 
 
 export class AdminUserRepository implements IAdminUserRepository{

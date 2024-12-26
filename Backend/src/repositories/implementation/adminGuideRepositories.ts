@@ -1,6 +1,7 @@
-import { Guide, IGuide } from "../../models/guideModel/guideModel";
+import { Guide, IGuide } from "@/models/guideModel/guideModel";
 
-import { IAdminGuideRepository } from "../interface/IAdminGuideRepositories";
+import { IAdminGuideRepository } from "@/repositories/interface/IAdminGuideRepositories";
+
 
 export class AdminGuideRepository implements IAdminGuideRepository{
 

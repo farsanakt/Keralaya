@@ -1,8 +1,8 @@
-import User from "../../models/userModel/userModel";
+
 import { Request, Response } from "express";
-import { AuthService } from "../../services/user/authService";
-import { HttpStatus } from "../../enums/HttpStatus";
-import logger from "../../utils/logger.utils";
+import { AuthService } from "@/services/user/authService";
+import { HttpStatus } from "@/enums/HttpStatus";
+import logger from "@/utils/logger.utils";
 
 
 

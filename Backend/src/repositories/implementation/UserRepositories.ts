@@ -1,5 +1,5 @@
-import User, { IUser } from "../../models/userModel/userModel";
-import { UpdateProfileDto } from "../../dto/userDto";
+import User, { IUser } from "@/models/userModel/userModel";
+import { UpdateProfileDto } from "@/dto/userDto";
 
 
 

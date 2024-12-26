@@ -1,10 +1,8 @@
 import express from "express"
 
-import UserController from "../../controllers/userController/userController"
-
-// import authenticateToken from "../../middleware/isAuthenticated"
-import authenticateToken from "../../middleware/isAuthenticated"
-import { userStatus } from "../../middleware/userStatus"
+import UserController from "@/controllers/userController/userController"
+import authenticateToken from "@/middleware/isAuthenticated"
+import { userStatus } from "@/middleware/userStatus"
 
 
 const userController=new UserController()

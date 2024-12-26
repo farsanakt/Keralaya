@@ -6,7 +6,7 @@ const initialState:UserState={
     currentUser: null,
     loading:false,
     error:false,
-    isAuthenticated:false,
+    isAuthenticated:null,
 
 }
 
@@ -24,7 +24,7 @@ interface User {
     currentUser: User | null;
     loading: boolean;
     error: boolean;
-    isAuthenticated:boolean
+    isAuthenticated:boolean|null
   }
   
 

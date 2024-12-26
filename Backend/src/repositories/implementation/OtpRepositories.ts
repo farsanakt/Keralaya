@@ -1,4 +1,4 @@
-import Otp,{IOtp} from "../../models/userModel/otpModel";
+import Otp,{IOtp} from "@/models/userModel/otpModel";
 
 
 import { BaseRepository } from "./BaseRepository";

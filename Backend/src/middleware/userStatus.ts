@@ -1,8 +1,8 @@
-import { UserService } from "../services/user/userService"
+import { UserService } from "@/services/user/userService"
 import { JwtPayload } from "jsonwebtoken";
 import { Request,Response } from "express";
 import { NextFunction } from "http-proxy-middleware/dist/types";
-import { HttpStatus } from "../enums/HttpStatus";
+import { HttpStatus } from "@/enums/HttpStatus";
 
 const userService=new UserService()
 

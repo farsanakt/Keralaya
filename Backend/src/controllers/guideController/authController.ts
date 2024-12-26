@@ -1,8 +1,8 @@
-import { Guide } from "../../models/guideModel/guideModel";
+
 import { Request,Response } from "express";
-import { AuthService } from "../../services/guide/authService";
-import { HttpStatus } from "../../enums/HttpStatus";
-import logger from "../../utils/logger.utils";
+import { AuthService } from "@/services/guide/authService";
+import { HttpStatus } from "@/enums/HttpStatus";
+import logger from "@/utils/logger.utils";
 
 const authService=new AuthService()
 

@@ -2,3 +2,12 @@
 2024-12-26 10:16:59 [info]: {"email":"admin@gmail.com","password":"Admin@!@#"} 
 2024-12-26 10:17:11 [info]: reached in admin authController 
 2024-12-26 10:17:11 [info]: {"email":"admin@gmail.com","password":"Admin@123"} 
+2024-12-26 11:11:36 [info]: Reached GuideList controller 
+2024-12-26 11:11:36 [info]: Reached GuideList controller 
+2024-12-26 11:11:38 [info]: reached in update guidestatus controller 
+2024-12-26 11:11:41 [info]: Reached GuideList controller 
+2024-12-26 11:11:41 [info]: Reached GuideList controller 
+2024-12-26 11:14:14 [info]: Reached GuideList controller 
+2024-12-26 11:14:14 [info]: Reached GuideList controller 
+2024-12-26 12:11:04 [info]: Reached GuideList controller 
+2024-12-26 12:11:04 [info]: Reached GuideList controller 
