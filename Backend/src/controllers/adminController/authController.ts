@@ -1,7 +1,8 @@
-import Admin from "../../models/adminModel/adminModel";
+
 import { Request,Response } from "express";
 import { AuthService } from "../../services/admin/authService";
 import { HttpStatus } from "../../enums/HttpStatus";
+import logger from "../../utils/logger.utils";
 
 const authService=new AuthService()
 
@@ -10,17 +11,16 @@ class AuthController {
 
      async login(req:Request,res:Response){
 
-        console.log('ivde ethiiii')
+        logger.info('reached in admin authController')
 
         const adminData=req.body
 
-        console.log(adminData)
+        logger.info(adminData)
       
         try {
 
             const response=await authService.adminLogin(adminData)
 
-            console.log(response,'resss')
 
             if(response.success){
 
@@ -34,7 +34,7 @@ class AuthController {
             
         } catch (error) {
 
-            console.log(error)
+            logger.error(error)
             
         }
 

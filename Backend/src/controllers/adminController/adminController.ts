@@ -1,6 +1,7 @@
 import { Request,Response } from "express";
 import { AdminService } from "../../services/admin/adminService";
 import { HttpStatus } from "../../enums/HttpStatus";
+import logger from "../../utils/logger.utils";
 
 const adminService=new AdminService()
 
@@ -10,7 +11,7 @@ class AdminController{
 
     async getUserList(req:Request,res:Response){
 
-        console.log('Reached Userlist controller')
+        logger.info('Reached Userlist controller')
 
         try {
 
@@ -31,7 +32,7 @@ class AdminController{
 
     async getGuideList(req:Request,res:Response){
 
-        console.log('Reached GuideList controller')
+        logger.info('Reached GuideList controller')
 
         try {
 
@@ -51,7 +52,7 @@ class AdminController{
 
     async updateUserStatus(req:Request,Res:Response){
 
-        console.log('entered to updating user status controller')
+        logger.info('entered to updating user status controller')
  
         try {
 
@@ -59,7 +60,7 @@ class AdminController{
             
         } catch (error) {
 
-            console.log(error)
+            logger.info(error)
             
         }
 
@@ -67,7 +68,7 @@ class AdminController{
 
     async updateGuideStatus(req:Request,res:Response){
 
-        console.log('reached in update guidestatus controller')
+        logger.info('reached in update guidestatus controller')
 
         try {
 
@@ -77,7 +78,7 @@ class AdminController{
             
         } catch (error) {
 
-            console.log(error)
+            logger.error(error)
             
         }
 

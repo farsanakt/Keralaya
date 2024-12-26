@@ -21,7 +21,9 @@
     "js": "^0.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.8.2",
-    "nodemailer": "^6.9.16"
+    "nodemailer": "^6.9.16",
+    "tsconfig-paths": "^4.2.0",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

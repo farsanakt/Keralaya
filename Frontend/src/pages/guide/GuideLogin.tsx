@@ -4,9 +4,14 @@ import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
 import { guideLogin } from "../../service/guide/guideApi";
-
+import { loginStart,loginFailed,loginSuccess } from "../../redux/slices/guideSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from '../../redux/store';
 const GuideLogin: React.FC = () => {
-
+  
+  const { loading, error } = useSelector((state: RootState) => state.user)
+ 
+     const dispatch: AppDispatch = useDispatch();
 
   const navigate = useNavigate();
   const [loginData, setLoginData] = useState({
@@ -24,15 +29,23 @@ const GuideLogin: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
 
     e.preventDefault();
+    dispatch(loginStart())
   
     try {
       const response = await guideLogin(loginData);
 
+      console.log(response,'this is')
+
       const message = response.data.message?.message;
   
-      if (message) {
+      if (response.data.message.success) {
+
+
+        localStorage.setItem('accessToken',response.data.accessToken)
 
         toast.success(message);
+
+        dispatch(loginSuccess(response.data))
 
         navigate("/guide/dashboard");
 
@@ -44,6 +57,8 @@ const GuideLogin: React.FC = () => {
       const errorMessage = error.response?.data?.message || "Login failed!";
 
       toast.error(errorMessage);
+
+      dispatch(loginFailed(errorMessage))
 
     }
     
@@ -91,13 +106,19 @@ const GuideLogin: React.FC = () => {
 
           {/* Submit Button */}
           <div className="flex justify-center">
-            <button
-              type="submit"
-              className="bg-green-600 text-white px-6 py-3 rounded-md shadow hover:bg-green-700 transition duration-300"
-            >
-              Login
-            </button>
-          </div>
+  <button
+    type="submit"
+    className={`bg-green-600 text-white px-6 py-3 rounded-md shadow ${
+      loading ? "opacity-50 cursor-not-allowed" : "hover:bg-green-700 transition duration-300"
+    }`}
+    disabled={loading}
+  >
+    {loading ? "Logging in..." : "Login"}
+  </button>
+</div>
+
+
+
         </form>
         <p className="text-sm text-center mt-4">
           Don't have an account?{" "}

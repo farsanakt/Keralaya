@@ -2,7 +2,7 @@ import { Guide } from "../../models/guideModel/guideModel";
 import { Request,Response } from "express";
 import { AuthService } from "../../services/guide/authService";
 import { HttpStatus } from "../../enums/HttpStatus";
-
+import logger from "../../utils/logger.utils";
 
 const authService=new AuthService()
 
@@ -29,7 +29,7 @@ class AuthController {
 
         } catch (error) {
 
-            console.log('error occur in guide registration controller',error);
+            logger.info('error occur in guide registration controller',error);
             
         }
 
@@ -45,8 +45,7 @@ class AuthController {
 
          if(response.success){
 
-
-            res.status(HttpStatus.CREATED).json({message:response})
+            res.status(HttpStatus.CREATED).cookie('refreshToken',response.refreshToken,{httpOnly:true,secure:true,sameSite:'none',maxAge:7*24*60*1000}).json({ message: response,accessToken:response.accessToken });
             
             
         }    else{
@@ -57,7 +56,7 @@ class AuthController {
            
         } catch (error) {
             
-            console.log('error occur in guide login controller',error)
+            logger.info('error occur in guide login controller',error)
             
         }
 

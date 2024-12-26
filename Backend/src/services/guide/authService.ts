@@ -3,6 +3,9 @@ import { guideRegisterDto } from "../../dto/authGuideDto";
 import { hashpassword } from "../../utils/passwordUtils";
 import bcrypt from "bcryptjs";
 
+import { IGuide } from "../../models/guideModel/guideModel";
+import { generateAcessToken, generateRefreshToken } from "../../utils/guideToken.util";
+
 export class AuthService {
 
   private guideRepository: GuideRepositories;
@@ -17,7 +20,7 @@ export class AuthService {
 
     guideDto: guideRegisterDto
 
-  ): Promise<{ success: boolean; message: string }> {
+  ): Promise<{ success: boolean; message: string}> {
 
     try {
 
@@ -56,7 +59,7 @@ export class AuthService {
   async guideLogin(guideData: {
     email: string
     password: string
-  }): Promise<{ success: boolean; message: string }> {
+  }): Promise<{ success: boolean; message: string,accessToken?:string,refreshToken?:string  }> {
 
     const { email, password } = guideData;
 
@@ -97,7 +100,11 @@ export class AuthService {
 
       }
 
-      return { success: true, message: "Logged in successfully" };
+      const accessToken=await generateAcessToken(existingGuide)
+
+      const refreshToken=await generateRefreshToken(existingGuide)
+
+      return { success: true, message: "Logged in successfully" ,accessToken,refreshToken};
 
     } catch (error) {
 

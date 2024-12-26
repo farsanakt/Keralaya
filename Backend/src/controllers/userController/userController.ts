@@ -1,6 +1,7 @@
 import { Request,Response } from "express";
 import { UserService } from "../../services/user/userService";
 import { HttpStatus } from "../../enums/HttpStatus";
+import logger from "../../utils/logger.utils";
 
 const userService=new UserService()
 
@@ -15,8 +16,6 @@ class UserController{
         const response=await userService.userProfile(req.params.email)
 
         res.status(HttpStatus.CREATED).json(response)
-
-        console.log(req.params.email)
         
      } catch (error) {
 
@@ -30,7 +29,7 @@ class UserController{
 
       try {
 
-         console.log('reached updateprofile Controller')
+         logger.info('reached updateprofile Controller')
 
          const {updateddata}=req.body
 

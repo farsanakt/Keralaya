@@ -2,24 +2,19 @@ import User from "../../models/userModel/userModel";
 import { Request, Response } from "express";
 import { AuthService } from "../../services/user/authService";
 import { HttpStatus } from "../../enums/HttpStatus";
+import logger from "../../utils/logger.utils";
 
 
 
-const authService = new AuthService();
+const authService = new AuthService()
 
 class AuthController {
 
   async singUp(req: Request, res: Response) {
 
-    console.log("jjjjjj");
-
     try {
 
-      console.log(req.body,'jjoppopppp');
-
       const { username, email, password, confirmPassword } = req.body;
-
-      console.log("cxssssss");
 
       const response = await authService.userSignup(
         username,
@@ -34,23 +29,19 @@ class AuthController {
 
       } else {
 
-        console.log("hhiiiiiiii")
-
         res.status(HttpStatus.CREATED) .json({ success: true, message: "user Registered successfully" });
          
       }
 
     } catch (error) {
 
-      console.log("error in signup controller of user side", error);
+       logger.error(error);
 
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Internal server error" });
         
     }
 
   }
-
-
 
   async verifyOtp(req: Request, res: Response) {
 
@@ -83,7 +74,7 @@ class AuthController {
 
     } catch (error: any) {
 
-      console.log("error in otpverify of authcontroller");
+      logger.info("error in otpverify of authcontroller");
 
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "otp verification failed" });
 
@@ -93,13 +84,9 @@ class AuthController {
 
   }
 
-
-
   async resendOtp(req:Request,res:Response){
 
     const data=req.body
-
-    console.log(data,'l')
 
   try {
     
@@ -121,7 +108,7 @@ class AuthController {
 
   } catch (error) {
     
-    console.log('error in otp controller ',error)
+    logger.error(error)
 
   }
 
@@ -135,8 +122,6 @@ class AuthController {
       
       const response =await authService.userLogin(userData)
 
-      console.log(response)
-
     if(response.success){
 
       res.status(HttpStatus.CREATED).cookie('refreshToken',response.refreshToken,{httpOnly:true,secure:true,sameSite:'none',maxAge:7*24*60*1000}).json({ message: response,accessToken:response.accessToken });
@@ -148,12 +133,13 @@ class AuthController {
     }
       
     } catch (error) {
+
+     logger.info('errror occur in guied login controller')
   
     }
       
   }
   
-
   async forgetPass(req:Request,res:Response){
 
     const data=req.body
@@ -162,15 +148,11 @@ class AuthController {
 
       const response=await authService.forgetPass(data)
 
-      console.log(response,'k')
-
       if (!response.success) {
 
         res.status(HttpStatus.BAD_REQUEST).json(response);
 
       } else {
-
-        console.log("hhiiiiiiii")
 
         res.status(HttpStatus.CREATED) .json({response});
          
@@ -180,7 +162,7 @@ class AuthController {
       
     } catch (error) {
 
-      console.log('error occur in forget pass',error)
+      logger.error(error)
       
     }
 
@@ -190,7 +172,7 @@ class AuthController {
 
     try {
 
-      console.log('reached in reset password controller')
+      logger.info('reached in reset password controller')
 
       const response=await authService.resetPass(req.body)
 
@@ -200,13 +182,13 @@ class AuthController {
 
       } else {
 
-        console.log("hhiiiiiiii")
-
         res.status(HttpStatus.CREATED) .json({response});
          
       }
       
     } catch (error) {
+
+      logger.error(error)
       
     }
 
@@ -216,7 +198,7 @@ class AuthController {
 
     try {
 
-   res.clearCookie('refreshToken')
+    res.clearCookie('refreshToken')
 
      res.json({message:'logouted successfully'})
 
@@ -224,7 +206,7 @@ class AuthController {
       
     } catch (error) {
 
-    console.log('error in user logout controller',error)
+    logger.error(error)
       
     }
 
