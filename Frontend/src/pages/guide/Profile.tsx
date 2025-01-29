@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Camera, Pencil, Save, User, Mail, Phone, Award, Globe2 } from "lucide-react"
+import { Camera, Pencil, Save, User, Mail, Phone, Award } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -12,7 +12,7 @@ import { type GuideProfile, LANGUAGES, EXPERTISE_AREAS } from '@/types/guideprof
 import { useSelector } from "react-redux"
 import { RootState } from "@/redux/store"
 import { guideDetails } from "@/service/guide/guideApi"
-// import { guideDetails } from "@/service/guide/guideApi"
+
 
 type Guide={
 
@@ -45,19 +45,24 @@ export default function GuideProfileComponent() {
   
   
   const guideData = async () => {
+
     if (!currentGuide?.data) {
-      console.error("currentGuide or data is undefined!");
+
+      console.error("currentGuide is undefined!")
+
       return;
     }
   
-    const email:any = currentGuide.data; // Corrected type assertion
+    const email:any = currentGuide.data
   
     try {
+
       const response = await guideDetails(email)
-      console.log(response.data)
+    
       setGuideeData(response.data)
       
     } catch (error) {
+
       console.error("Error fetching guide details:", error);
     }
   };
@@ -104,7 +109,7 @@ export default function GuideProfileComponent() {
       <Card className="w-full max-w-4xl mx-auto shadow-2xl overflow-hidden transition-all duration-300 ease-in-out hover:shadow-3xl">
         <CardContent className="p-0">
           <div className="flex flex-col md:flex-row">
-            {/* Profile Image and Edit Button */}
+          
             <div className="md:w-1/3 bg-gray-900 p-8 flex flex-col items-center justify-center space-y-6">
               <div
                 className="relative group cursor-pointer w-48 h-48 rounded-full overflow-hidden bg-white flex items-center justify-center border-4 border-white shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
@@ -143,7 +148,7 @@ export default function GuideProfileComponent() {
               </Button>
             </div>
 
-            {/* Profile Information */}
+            
             <div className="md:w-2/3 p-8 space-y-6 bg-white">
               <div className="space-y-4">
                 <div className="flex items-center space-x-4">
@@ -251,8 +256,6 @@ export default function GuideProfileComponent() {
                 ))}
               </div>
             </div>
-
-
             </div>
           </div>
         </CardContent>
