@@ -92,11 +92,23 @@ export const userlogout=async()=>{
 
     const response=await api.get('/logout')
 
-    if(!response){
+    return response
 
+}
 
+export const searchlocation=async(query:string)=>{
 
-    }
+    const response = await api.get('/searchlocation', {
+        params: { query }
+      });
+
+    return response
+
+}
+
+export const searchResult=async(placeid:string)=>{
+
+    const response=await api.get('/singlelocation',{params:{placeid}})
 
     return response
 

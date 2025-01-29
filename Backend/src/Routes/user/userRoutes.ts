@@ -16,6 +16,10 @@ user_route.get('/userProfile/:email',authenticateToken,userStatus,userController
 
 user_route.post('/updateprofile',authenticateToken,userController.updateProfile)
 
+user_route.get('/searchlocation',userController.searchLocation)
+
+user_route.get('/singlelocation',userController.singleLocation)
+
     
 
 export default user_route

@@ -1,7 +1,7 @@
 
 
 export interface IAdminUserRepository {
-    saveUser(data:any): Promise<void>
+    saveUser(data:): Promise<void>
     getAllUsers(): Promise<any[]>;
    
     

@@ -23,6 +23,8 @@ const Profile: React.FC = () => {
 
   const { currentUser } = useSelector((state: RootState) => state.user);
 
+  console.log(currentUser,'userop')
+
 
 
   const fetchUserProfile = async () => {

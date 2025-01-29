@@ -10,10 +10,6 @@ export class AdminGuideRepository implements IAdminGuideRepository{
         throw new Error("Method not implemented.");
     }
    
-    
-
-  
-
     async getAllGuides(): Promise<any> {
         
         const guides=await Guide.find()

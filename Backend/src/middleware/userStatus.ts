@@ -13,9 +13,7 @@ export interface CustomeRequest extends Request{
 
 
 export const userStatus=async(req:CustomeRequest,res:Response,next:NextFunction)=>{
-
-   
-
+    
     try {
 
         console.log('k')

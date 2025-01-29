@@ -45,7 +45,7 @@ class AuthController {
 
          if(response.success){
 
-            res.status(HttpStatus.CREATED).cookie('refreshToken',response.refreshToken,{httpOnly:true,secure:true,sameSite:'none',maxAge:7*24*60*1000}).json({ message: response,accessToken:response.accessToken });
+            res.status(HttpStatus.CREATED).cookie('refreshToken',response.refreshToken,{httpOnly:true,secure:true,sameSite:'none',maxAge:7*24*60*1000}).json({ message: response,accessToken:response.accessToken,data:guideData.email });
             
             
         }    else{

@@ -5,9 +5,11 @@ import Dashboard from "../pages/guide/Dashboard";
 import GuideLogin from "../pages/guide/GuideLogin";
 import ProtectedRoute from "../service/guide/ProtectedRoutes";
 import PublicRoute from "../service/guide/PublicRoute";
+import Places from "@/pages/guide/Places";
+import GuideProfileComponent from "@/pages/guide/Profile";
 
 const GuideRoutes = () => {
-    console.log('kkkkkllllpppp');
+   
     
   return (
 
@@ -20,6 +22,8 @@ const GuideRoutes = () => {
         
 
         <Route path='/dashboard' element={<ProtectedRoute element={<Dashboard/>} />} />
+        <Route path='/places' element={<Places/>} />
+        <Route path='/profile'  element={<GuideProfileComponent/>} />
        
       </Routes>
     </div>

@@ -6,6 +6,7 @@ import logger from "@/utils/logger.utils";
 const adminService=new AdminService()
 
 
+
 class AdminController{
 
 
@@ -83,6 +84,10 @@ class AdminController{
         }
 
     }
+
+
+
+ 
 
 
 }

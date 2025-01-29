@@ -8,6 +8,7 @@ import adminAuth_route from "./Routes/admin/authRoutes";
 import guide_authRoute from "./Routes/guide/authRoutes";
 import admin_Routes from "./Routes/admin/adminRoutes";
 import cookieparser from 'cookie-parser'
+import guide_route from "./Routes/guide/guideRoutes";
 
 
 dotenv.config(); 
@@ -35,6 +36,7 @@ app.use('/',adminAuth_route)
 app.use('/',guide_authRoute)
 app.use('/',admin_Routes)
 app.use('/',user_route)
+app.use('/',guide_route)
 
 
 

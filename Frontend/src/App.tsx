@@ -4,6 +4,7 @@ import UserRoutes from './routes/UserRoutes';
 import AdminRoutes from './routes/AdminRoutes';
 import { ToastContainer } from 'react-toastify';
 import GuideRoutes from './routes/GuideRoutes';
+import { Toaster } from './components/ui/toaster';
 
 
 
@@ -18,6 +19,7 @@ const App: React.FC = () => {
         
       </Routes>
       <ToastContainer/>
+      <Toaster />
     </div>
   );
 };

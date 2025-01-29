@@ -3,7 +3,7 @@ import { guideRegisterDto } from "../../dto/authGuideDto";
 import { hashpassword } from "../../utils/passwordUtils";
 import bcrypt from "bcryptjs";
 
-import { IGuide } from "../../models/guideModel/guideModel";
+
 import { generateAcessToken, generateRefreshToken } from "../../utils/guideToken.util";
 
 export class AuthService {
@@ -54,8 +54,7 @@ export class AuthService {
 
     }
   }
-
-  
+ 
   async guideLogin(guideData: {
     email: string
     password: string
@@ -69,7 +68,7 @@ export class AuthService {
 
       if(existingGuide?.isBlocked){
 
-        return {success:false,message:'your not authenticated'}
+        return {success:false,message:'Your request is not approved'}
 
         
       }

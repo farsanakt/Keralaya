@@ -50,3 +50,20 @@ export const updateGuideStatus=async(guideId:string)=>{
     return response
 
 }
+
+
+export const displayLocations=async()=>{
+
+    const response=await api.get('/displayplaces')
+
+    return response
+
+}
+
+export const editPlace=async(formData:FormData)=>{
+
+    const response =await api.post('/editlocation',formData)
+
+    return response
+
+}

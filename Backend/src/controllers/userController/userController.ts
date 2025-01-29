@@ -46,6 +46,35 @@ class UserController{
 
     }
 
+    async searchLocation(req:Request,res:Response){
+
+      console.log('reached jop')
+
+      const query = req.query.query;  
+
+      console.log(query)
+
+      if (typeof query !== 'string') {
+
+         return res.status(400).json({ error: 'Invalid or missing query parameter' });
+       }
+     
+      const response=await userService.searchLocation(query)
+
+      res.status(HttpStatus.CREATED).json(response)
+
+      return response
+
+    }
+
+    async singleLocation(req:Request,res:Response){
+
+      const placeid=req.query.placeid
+
+      console.log(placeid,'hj')
+
+    }
+
 }
 
 export default UserController

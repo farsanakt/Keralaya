@@ -3,8 +3,10 @@ import { GuideRegisteration } from "../../service/guide/guideApi";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from "react-router-dom";
-// import swal from 'sweetalert';
 import swalLib from 'sweetalert';
+
+
+
 const Registration: React.FC = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
