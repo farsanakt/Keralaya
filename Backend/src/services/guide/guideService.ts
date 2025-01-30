@@ -123,5 +123,21 @@ export class GuideService{
         }
 
       }
+
+      updateProfile=async(guidedata:any)=>{
+
+        try {
+
+          const {id,name,email,phone,experience,expertise,file}=guidedata
+
+          const updateProfileData=await this.guideRepository.updateProfile(id,guidedata)
+
+          
+          
+        } catch (error) {
+          
+        }
+
+      }
       
 }

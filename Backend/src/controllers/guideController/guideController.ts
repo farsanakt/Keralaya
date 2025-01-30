@@ -121,6 +121,8 @@ class GuideController {
 
          }
 
+         
+
          const response=await guideService.editPlaces(locationData)
                 
                 
@@ -190,6 +192,32 @@ class GuideController {
 
       
     }
+
+  }
+
+  async updateProfile(req:Request,res:Response){
+
+    try {
+
+      console.log('reached in updateprofile controller in guide side')
+      
+      const {id,name,email,phone,experience,expertise}=req.body
+
+      const files=req.file
+
+      const guidedata={id,name,email,phone,experience,expertise,files}
+
+      console.log(guidedata,'l')
+
+      const response=await guideService.updateProfile(guidedata)
+     
+
+    } catch (error) {
+
+      logger.info('error in guide profile updating controller',error)
+      
+    }
+
 
   }
         

@@ -81,3 +81,14 @@ export const addLocations = async (formData: FormData) => {
     return response
 
   }
+
+
+  export const updateProfile=async(guidedata:FormData)=>{
+
+    
+
+    const response= await api.post('/updateprofiles',guidedata)
+
+    return response
+
+  }

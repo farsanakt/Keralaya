@@ -8,67 +8,43 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
-import { type GuideProfile, LANGUAGES, EXPERTISE_AREAS } from '@/types/guideprofile'
+import { LANGUAGES, EXPERTISE_AREAS } from "@/types/guideprofile"
 import { useSelector } from "react-redux"
-import { RootState } from "@/redux/store"
-import { guideDetails } from "@/service/guide/guideApi"
+import type { RootState } from "@/redux/store"
+import { guideDetails, updateProfile } from "@/service/guide/guideApi"
 
-
-type Guide={
-
-  name:string,
-  email:string,
-  expertise:string,
-  languages:string[],
-  experience:string
-  phone:string
-  profileImage:''
-
+type Guide = {
+  _id:string
+  name: string
+  email: string
+  expertise: string
+  languages: string[]
+  experience: string
+  phone: string
+  profileImage: File
 }
 
 export default function GuideProfileComponent() {
-  const [profile, setProfile] = useState<GuideProfile>({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+1 (555) 123-4567",
-    experience: "5",
-    expertise: "Historical Sites",
-    languages: ["english", "spanish"],
-    profileImage: "",
-  })
   const [isEditing, setIsEditing] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const [guideeData,setGuideeData]=useState<Guide | null>(null)
-  const { currentGuide } = useSelector((state: RootState) => state.guide);
+  const [guideeData, setGuideeData] = useState<Guide | null>(null)
+  const { currentGuide } = useSelector((state: RootState) => state.guide)
 
-
-  
-  
   const guideData = async () => {
-
     if (!currentGuide?.data) {
-
       console.error("currentGuide is undefined!")
-
-      return;
+      return
     }
-  
+
     const email:any = currentGuide.data
-  
+
     try {
-
       const response = await guideDetails(email)
-    
       setGuideeData(response.data)
-      
     } catch (error) {
-
-      console.error("Error fetching guide details:", error);
+      console.error("Error fetching guide details:", error)
     }
-  };
-  
-
-  
+  }
 
   const handleImageClick = () => {
     fileInputRef.current?.click()
@@ -76,32 +52,64 @@ export default function GuideProfileComponent() {
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
-    if (file) {
+    if (file && guideeData) {
       const imageUrl = URL.createObjectURL(file)
-      setProfile((prev) => ({ ...prev, profileImage: imageUrl }))
+      setGuideeData({ ...guideeData, profileImage: file })
     }
   }
 
   const handleLanguageChange = (languageId: string) => {
-    setProfile((prev) => {
-      const languages = prev.languages.includes(languageId)
-        ? prev.languages.filter((id) => id !== languageId)
-        : [...prev.languages, languageId]
-      return { ...prev, languages }
-    })
+    if (guideeData) {
+      const updatedLanguages = guideeData.languages.includes(languageId)
+        ? guideeData.languages.filter((id) => id !== languageId)
+        : [...guideeData.languages, languageId]
+      setGuideeData({ ...guideeData, languages: updatedLanguages })
+    }
   }
 
-  const handleSave = () => {
+
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    if (guideeData) {
+      setGuideeData({ ...guideeData, [name]: value })
+    }
+  }
+
+  const handleSave = async() => {
     setIsEditing(false)
-    console.log("Saving profile:", profile)
+    console.log("Saving profile:", guideeData)
+
+    const formdata=new FormData()
+    if(guideeData){
+      formdata.append('id',guideeData?._id),
+      formdata.append('name',guideeData?.name)
+      formdata.append('email',guideeData?.email)
+      formdata.append('phone',guideeData?.phone)
+      formdata.append('experience',guideeData?.experience)
+      formdata.append('expertise',guideeData?.expertise)
+    }
+    if(guideeData?.profileImage){
+
+      formdata.append('profileImage',guideeData.profileImage)
+
+    }
+    console.log(formdata,'fpe')
+
+   const response=await updateProfile(formdata)
+
+   
   }
 
-  useEffect(()=>{
-
+  useEffect(() => {
     guideData()
+  }, [currentGuide]) // Added currentGuide as a dependency
 
+  if (!guideeData) {
+    return <div>Loading...</div>
+  }
 
-  },[])
+  console.log(guideeData,'')
 
   return (
     <div className="container mx-auto px-4 py-12 bg-gradient-to-b from-gray-50 to-white min-h-screen">
@@ -109,15 +117,14 @@ export default function GuideProfileComponent() {
       <Card className="w-full max-w-4xl mx-auto shadow-2xl overflow-hidden transition-all duration-300 ease-in-out hover:shadow-3xl">
         <CardContent className="p-0">
           <div className="flex flex-col md:flex-row">
-          
             <div className="md:w-1/3 bg-gray-900 p-8 flex flex-col items-center justify-center space-y-6">
               <div
                 className="relative group cursor-pointer w-48 h-48 rounded-full overflow-hidden bg-white flex items-center justify-center border-4 border-white shadow-lg transition-transform duration-300 ease-in-out transform hover:scale-105"
                 onClick={handleImageClick}
               >
-                {profile.profileImage ? (
+                {guideeData.profileImage ? (
                   <img
-                    src={profile.profileImage || "/placeholder.svg"}
+                    src={URL.createObjectURL(guideeData?.profileImage ) || "/placeholder.svg"}
                     alt="Profile"
                     className="w-full h-full object-cover"
                   />
@@ -128,7 +135,14 @@ export default function GuideProfileComponent() {
                   <Camera className="w-8 h-8 text-white" />
                 </div>
               </div>
-              <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageChange}
+                disabled={!isEditing}
+              />
               <Button
                 variant={isEditing ? "default" : "outline"}
                 className="w-full bg-white text-gray-900 hover:bg-gray-100"
@@ -148,7 +162,6 @@ export default function GuideProfileComponent() {
               </Button>
             </div>
 
-            
             <div className="md:w-2/3 p-8 space-y-6 bg-white">
               <div className="space-y-4">
                 <div className="flex items-center space-x-4">
@@ -159,8 +172,9 @@ export default function GuideProfileComponent() {
                     </Label>
                     <Input
                       id="name"
-                      value={guideeData?.name}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, name: e.target.value }))}
+                      name="name"
+                      value={guideeData.name}
+                      onChange={handleInputChange}
                       disabled={!isEditing}
                       className="mt-1"
                     />
@@ -174,9 +188,10 @@ export default function GuideProfileComponent() {
                     </Label>
                     <Input
                       id="email"
+                      name="email"
                       type="email"
-                      value={guideeData?.email || ''}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, email: e.target.value }))}
+                      value={guideeData.email}
+                      onChange={handleInputChange}
                       disabled={!isEditing}
                       className="mt-1"
                     />
@@ -190,8 +205,9 @@ export default function GuideProfileComponent() {
                     </Label>
                     <Input
                       id="phone"
-                      value={guideeData?.phone}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, phone: e.target.value }))}
+                      name="phone"
+                      value={guideeData.phone}
+                      onChange={handleInputChange}
                       disabled={!isEditing}
                       className="mt-1"
                     />
@@ -205,8 +221,9 @@ export default function GuideProfileComponent() {
                     </Label>
                     <Input
                       id="experience"
-                      value={profile.experience}
-                      onChange={(e) => setProfile((prev) => ({ ...prev, experience: e.target.value }))}
+                      name="experience"
+                      value={guideeData.experience}
+                      onChange={handleInputChange}
                       disabled={!isEditing}
                       className="mt-1"
                     />
@@ -220,8 +237,8 @@ export default function GuideProfileComponent() {
                 </Label>
                 <Select
                   disabled={!isEditing}
-                  value={guideeData?.expertise || ''}
-                  onValueChange={(value) => setProfile((prev) => ({ ...prev, expertise: value }))}
+                  value={guideeData.expertise}
+                  onValueChange={(value) => setGuideeData({ ...guideeData, expertise: value })}
                 >
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Select your expertise" />
@@ -236,26 +253,24 @@ export default function GuideProfileComponent() {
                 </Select>
               </div>
 
-                          <div className="space-y-2">
-              <Label className="text-sm font-medium text-gray-600">Languages Spoken</Label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {LANGUAGES.map((language) => (
-                  
-                  <div key={language.id} className="flex items-center space-x-2">
-                   
-                    <Checkbox
-                      id={language.id}
-                      checked={guideeData?.languages?.includes(language.name) ?? false} 
-                      onCheckedChange={() => handleLanguageChange(language.id)}
-                      disabled={!isEditing}
-                    />
-                    <Label htmlFor={language.id} className="text-sm text-gray-700">
-                      {language.name}
-                    </Label>
-                  </div>
-                ))}
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-gray-600">Languages Spoken</Label>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {LANGUAGES.map((language) => (
+                    <div key={language.id} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={language.id}
+                        checked={guideeData.languages.includes(language.name)}
+                        onCheckedChange={() => handleLanguageChange(language.id)}
+                        disabled={!isEditing}
+                      />
+                      <Label htmlFor={language.id} className="text-sm text-gray-700">
+                        {language.name}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
             </div>
           </div>
         </CardContent>

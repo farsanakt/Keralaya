@@ -12,6 +12,7 @@ export interface IGuide extends  Document{
     isBlocked:Boolean,
     password:string,
     status:string
+    profileImage:string[]
 
 
 }
@@ -33,6 +34,8 @@ const GuideSchema = new mongoose.Schema<IGuide>({
     isBlocked: {type:Boolean,default:true},
 
     password:{type:String,required:true},
+
+    profileImage:{type:[String],default:[]}
 
     
   })

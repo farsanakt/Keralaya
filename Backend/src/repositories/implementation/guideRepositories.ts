@@ -62,6 +62,26 @@ export class GuideRepositories implements IGuideRepository {
               throw new Error('Failed to delete location');
             }
           }
+
+      
+          async updateProfile(guideId: string, guideData: IGuide): Promise<{ message: string } | null> {
+            try {
+              const updatedProfile = await Guide.findByIdAndUpdate(
+                guideId, // Pass the ID directly
+                { $set: guideData }, // Update data properly
+                { new: true } // Return the updated document
+              );
+          
+              if (!updatedProfile) {
+                return null; // Return null if no document was found
+              }
+          
+              return { message: "Profile updated successfully" };
+            } catch (error) {
+              console.error("Error updating profile:", error);
+              throw new Error("Profile update failed");
+            }
+          }
           
 
           

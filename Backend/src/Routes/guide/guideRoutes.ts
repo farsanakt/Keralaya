@@ -13,8 +13,10 @@ guide_route.post('/editlocation',upload.array('image',4),guideController.editLoc
 guide_route.delete('/deleteplace/:id',guideController.deletePlaces)
 
 guide_route.get('/guidedetails/:email',guideController.guideData)
-  
 
+guide_route.post('/updateprofiles',upload.single('profileImage'),guideController.updateProfile)
+  
+    
 export default guide_route;
 
 
