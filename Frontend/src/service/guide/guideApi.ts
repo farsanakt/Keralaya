@@ -62,6 +62,7 @@ export const addLocations = async (formData: FormData) => {
   
   }
 
+  const token=localStorage.getItem('accessToken')
   export const deletePlace=async(id:string)=>{
 
     console.log('delere',id)
@@ -72,10 +73,11 @@ export const addLocations = async (formData: FormData) => {
 
   }
 
-  export const guideDetails=async(email:string)=>{
+  export const guideDetails=async()=>{
 
-    console.log(email,'em')
-    const response=await api.get(`/guidedetails/${email}`)
+   
+
+    const response=await api.get('/guidedetails',{headers:{Authorization: `Bearer ${token}`}})
 
 
     return response

@@ -5,14 +5,12 @@ import Location from "@/models/guideModel/placeModel";
 
 
 export class GuideRepositories implements IGuideRepository {
-
-                
+        
         async createUser(data:any):Promise <IGuide | null>{
                         
             return await Guide.create(data)
         }     
        
-
         async findUserById(guideId:string) : Promise<IGuide | null>{
         return await Guide.findById(guideId)
         }
@@ -21,7 +19,6 @@ export class GuideRepositories implements IGuideRepository {
             return await Guide.findOne({email})
 
         }
-
 
         async getallLocations():Promise<ILocation[] | null>{
 
@@ -50,38 +47,54 @@ export class GuideRepositories implements IGuideRepository {
           }
 
         async deletePlaceById(id: string): Promise<{ message: string } | null> {
+
             try {
+
               const deletedLoc = await Location.findByIdAndDelete(id);
 
               if (!deletedLoc) {
-                return null;
+
+                return null
               }
-              return { message: 'Location deleted successfully' };
+
+              return { message: 'Location deleted successfully' }
+
             } catch (error) {
-              console.error('Error while deleting location:', error);
-              throw new Error('Failed to delete location');
+
+              console.error('Error while deleting location:', error)
+
+              throw new Error('Failed to delete location')
+
             }
+
           }
 
-      
-          async updateProfile(guideId: string, guideData: IGuide): Promise<{ message: string } | null> {
+        async updateProfile(guideId: string, guideData: IGuide): Promise<{ message: string } | null> {
+
             try {
+             
               const updatedProfile = await Guide.findByIdAndUpdate(
-                guideId, // Pass the ID directly
-                { $set: guideData }, // Update data properly
-                { new: true } // Return the updated document
-              );
+                guideId, 
+                { $set: guideData },
+                { new: true }
+              )
           
               if (!updatedProfile) {
-                return null; // Return null if no document was found
+                return null;
               }
           
-              return { message: "Profile updated successfully" };
+              return { message: "Profile updated successfully" }
+
             } catch (error) {
-              console.error("Error updating profile:", error);
-              throw new Error("Profile update failed");
+
+              console.error("Error updating profile:", error)
+
+              throw new Error("Profile update failed")
+
             }
+
           }
+          
           
 
           

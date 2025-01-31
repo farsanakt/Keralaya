@@ -13,7 +13,7 @@ const authenticateToken = (req: CustomeRequest, res: Response, next: NextFunctio
     try {
         const token = req.headers['authorization'];
 
-        console.log(token, 'token');
+        console.log(token, 'token')
 
         if (!token) {
 

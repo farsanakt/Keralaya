@@ -1,19 +1,16 @@
 import { BaseRepository } from "@/repositories/implementation/BaseRepository";
 import { GuideRepositories } from "@/repositories/implementation/guideRepositories";
+import logger from "@/utils/logger.utils";
 
 
 export class GuideService{
 
      private guideRepository: GuideRepositories;
 
-     
-    
       constructor() {
     
         this.guideRepository = new GuideRepositories()
 
-        
-    
       }
 
 
@@ -27,7 +24,7 @@ export class GuideService{
         
        } catch (error) {
 
-        console.log('locations not found')
+        logger.info('error occur in fetching all locations',error)
         
        }
 
@@ -49,7 +46,6 @@ export class GuideService{
 
           }
       
-          
           place.name = name || place.name;
           place.district = district || place.district;
           place.street = street || place.street;
@@ -80,7 +76,9 @@ export class GuideService{
         } catch (error) {
 
           console.error('Error updating location:', error)
+
           throw error
+
         }
       };
 
@@ -117,7 +115,6 @@ export class GuideService{
          
         } catch (error) {
 
-
           console.log('error occured in guide repo',error)
           
         }
@@ -126,15 +123,19 @@ export class GuideService{
 
       updateProfile=async(guidedata:any)=>{
 
+        console.log('rechecd in progile')
+
         try {
 
-          const {id,name,email,phone,experience,expertise,file}=guidedata
+          const {id,name,email,phone,experience,expertise,profileImage}=guidedata
 
           const updateProfileData=await this.guideRepository.updateProfile(id,guidedata)
 
-          
-          
+          return updateProfileData
+
         } catch (error) {
+
+          logger.info('error in guideprofile updation')
           
         }
 

@@ -6,7 +6,8 @@ import Places from "@/models/guideModel/placeModel"
 import { GuideService } from "@/services/guide/guideService";
 import { HttpStatus } from "@/enums/HttpStatus";
 import logger from "@/utils/logger.utils";
-import { error } from "console";
+import { error, profile } from "console";
+import { CustomeRequest } from "@/middleware/isAuthenticated";
 
 const guideService=new GuideService()
 
@@ -78,7 +79,6 @@ class GuideController {
     }
   }
 
-
   async displayLocations(req:Request,res:Response){
 
     try {
@@ -106,8 +106,7 @@ class GuideController {
 
   }
 
-
-   async editLocations(req: MulterRequest, res: Response) {
+  async editLocations(req: MulterRequest, res: Response) {
      try {
 
       const {id, name, district, street, pincode }: LocationRequestBody = req.body
@@ -121,8 +120,6 @@ class GuideController {
 
          }
 
-         
-
          const response=await guideService.editPlaces(locationData)
                 
                 
@@ -132,7 +129,6 @@ class GuideController {
                 
        }
       }
-
 
   async deletePlaces(req:Request,res:Response){
 
@@ -166,16 +162,19 @@ class GuideController {
 
   }
 
-  async guideData(req:Request,res:Response){
+  async guideData(req:CustomeRequest,res:Response){
 
     console.log('reached in guidedata controller')
 
     try {
 
-      const {email}=req.params
+      const email=req.user?._doc?.email; 
 
+      console.log(email,'ememmem')
+      
       const response=await guideService.guideData(email)
-
+      
+      
       if(response){
 
         res.status(HttpStatus.CREATED).json(response)
@@ -205,12 +204,33 @@ class GuideController {
 
       const files=req.file
 
-      const guidedata={id,name,email,phone,experience,expertise,files}
+      if (!files) {
 
-      console.log(guidedata,'l')
+        res.status(400).json({ message: "Profile image is required" })
 
-      const response=await guideService.updateProfile(guidedata)
-     
+        return
+
+     }
+ 
+     const result=await cloudinary.uploader.upload(files.path,{folder:"Profile"})
+  
+     const imgUrl=result.secure_url
+
+     const guidedata={id,name,email,phone,experience,expertise,profileImage:imgUrl}
+
+     const response=await guideService.updateProfile(guidedata)
+
+     if(!response){
+
+     res.status(HttpStatus.BAD_REQUEST).json({message:'something went wrong'})
+
+     return
+
+     }
+
+     res.status(200).json(response)
+
+     return
 
     } catch (error) {
 

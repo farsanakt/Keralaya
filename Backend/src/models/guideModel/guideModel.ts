@@ -12,7 +12,7 @@ export interface IGuide extends  Document{
     isBlocked:Boolean,
     password:string,
     status:string
-    profileImage:string[]
+    profileImage:string
 
 
 }
@@ -35,7 +35,7 @@ const GuideSchema = new mongoose.Schema<IGuide>({
 
     password:{type:String,required:true},
 
-    profileImage:{type:[String],default:[]}
+    profileImage:{type:String,default:''}
 
     
   })
