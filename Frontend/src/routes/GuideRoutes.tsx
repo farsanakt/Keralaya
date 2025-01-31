@@ -1,4 +1,5 @@
-import { Route,Routes } from "react-router-dom";
+
+import { Route, Routes } from 'react-router-dom';
 import Welcome from "../pages/guide/Welcome";
 import Registration from "../pages/guide/Registration";
 import Dashboard from "../pages/guide/Dashboard";
@@ -9,25 +10,19 @@ import Places from "@/pages/guide/Places";
 import GuideProfileComponent from "@/pages/guide/Profile";
 
 const GuideRoutes = () => {
-   
-    
   return (
+    <Routes>
+      {/* Public Routes */}
+      <Route path="/" element={<Welcome />} />
+      <Route path="login" element={<PublicRoute> <GuideLogin /> </PublicRoute>} />
+      <Route path="registration" element={<PublicRoute> <Registration /> </PublicRoute>} />
+      
+      {/* Protected Routes */}
+      <Route path="dashboard" element={<ProtectedRoute> <Dashboard /> </ProtectedRoute>} />
+      <Route path="places" element={<ProtectedRoute> <Places /> </ProtectedRoute>} />
+      <Route path="profile" element={<ProtectedRoute> <GuideProfileComponent /> </ProtectedRoute>} />
+    </Routes>
+  );
+};
 
-    <div>
-      <Routes>
-      <Route path="/" element={<PublicRoute> <Welcome/></PublicRoute>} />
-
-        <Route path="/login" element={<PublicRoute> <GuideLogin/></PublicRoute>} />
-        <Route path="/registration" element={<PublicRoute> <Registration/></PublicRoute>} />
-        
-
-        <Route path='/dashboard' element={<ProtectedRoute element={<Dashboard/>} />} />
-        <Route path='/places' element={<Places/>} />
-        <Route path='/profile'  element={<GuideProfileComponent/>} />
-       
-      </Routes>
-    </div>
-  )
-}
-
-export default GuideRoutes
+export default GuideRoutes;

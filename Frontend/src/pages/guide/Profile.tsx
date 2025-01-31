@@ -59,10 +59,12 @@ export default function GuideProfileComponent() {
     try {
 
       const response = await guideDetails()
-      
-      const validatedData = guideSchema.parse(response.data)
 
-      setGuideeData(validatedData)
+      console.log(response,'res')
+      
+      // const validatedData = guideSchema.parse(response.data)
+
+      setGuideeData(response.data)
 
     } catch (error) {
 

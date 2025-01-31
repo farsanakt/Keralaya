@@ -7,6 +7,7 @@ import Sidebar from '../../components/admin/Sidebar';
 ChartJS.register(Title, Tooltip, Legend, LineElement, CategoryScale, LinearScale, PointElement);
 
 const Dashboard: React.FC = () => {
+  alert('iii')
   const data = {
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
     datasets: [

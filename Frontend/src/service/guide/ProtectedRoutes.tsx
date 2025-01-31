@@ -2,19 +2,16 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
+
 type ProtectedRouteProps = {
+  children: React.ReactNode;
+};
 
-  element: JSX.Element
-
-}
-
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
-
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const isAuthenticated = useSelector((state: any) => state.guide.isAuthenticated);
 
-  console.log(isAuthenticated,'jjj  ')
- 
-  return isAuthenticated ? element : <Navigate to="/guide/login" />;
+  
+  return isAuthenticated ? <>{children}</> : <Navigate to="/guide/login" />;
 };
 
 export default ProtectedRoute;

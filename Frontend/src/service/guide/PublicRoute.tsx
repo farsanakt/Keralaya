@@ -1,24 +1,23 @@
-import React from 'react'
-import { Navigate } from 'react-router'
-import { useSelector } from 'react-redux'
+import React from "react";
+import { Navigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-
-interface PublicRouteProps{
-    children:React.ReactNode
+interface PublicRouteProps {
+  children: React.ReactNode; 
 }
 
-const PublicRoute  :React.FC<PublicRouteProps>=({children})=>{
-    
+const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
+  const currentGuide = useSelector((state: any) => state.guide.currentGuide);
 
-    const isAuthenticated=useSelector((state:any)=>state.guide.isAuthenticated);
+  console.log("Public Route: currentGuide =", currentGuide);
 
-    console.log('public route',isAuthenticated);
+  
+  if (currentGuide) {
+    return <Navigate to="/guide/dashboard" replace />;
+  }
 
+  
+  return <>{children}</>;
+};
 
-    return isAuthenticated ? <Navigate to='/guide' /> : <> {children} </>
-}
-
-   
-
-
-export default PublicRoute
+export default PublicRoute;

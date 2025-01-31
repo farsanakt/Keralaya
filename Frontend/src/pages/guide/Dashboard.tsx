@@ -1,7 +1,10 @@
 import React from "react";
 import { FiHome, FiStar, FiBook, FiBarChart2, FiUser, FiDollarSign, FiClock } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard: React.FC = () => {
+  const navigate=useNavigate()
+  
   return (
     <div className="flex min-h-screen bg-gray-100">
     
@@ -24,7 +27,8 @@ const Dashboard: React.FC = () => {
             <FiBarChart2 className="text-xl" />
             <span className="text-lg">Revenue</span>
           </li>
-          <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer">
+          <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer"
+          onClick={() => navigate("/guide/profile")}>
             <FiUser className="text-xl" />
             <span className="text-lg">Profile</span>
           </li>
@@ -36,6 +40,13 @@ const Dashboard: React.FC = () => {
             <FiClock className="text-xl" />
             <span className="text-lg">Slot</span>
           </li>
+              <li 
+          className="flex items-center space-x-4 hover:text-green-500 cursor-pointer"
+          onClick={() => navigate("/guide/places")}
+        >
+          <FiClock className="text-xl" />
+          <span className="text-lg">Locations</span>
+        </li>
         </ul>
       </aside>
 

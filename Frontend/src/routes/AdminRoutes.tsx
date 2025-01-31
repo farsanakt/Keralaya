@@ -15,7 +15,7 @@ const AdminRoutes = () => {
         <Route path="/dashboard" element={<Dashboard/>} />
         <Route path="/userlist" element={<UserList/>} />
         <Route path="/guidelist" element={<GuideList/>} />
-        {/* <Route path="/places" element={<AdminPlaces/>}/> */}
+        
       </Routes>
     </div>
   )
