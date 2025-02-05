@@ -46,34 +46,59 @@ class UserController{
 
     }
 
-    async searchLocation(req:Request,res:Response){
+   //  async searchLocation(req:Request,res:Response){
 
-      console.log('reached jop')
+   //    console.log('reached jop')
 
-      const query = req.query.query;  
+   //    const query = req.query.query;  
 
-      console.log(query)
+   //    console.log(query)
 
-      if (typeof query !== 'string') {
+   //    if (typeof query !== 'string') {
 
-         return res.status(400).json({ error: 'Invalid or missing query parameter' });
-       }
+   //       return res.status(400).json({ error: 'Invalid or missing query parameter' });
+   //     }
      
-      const response=await userService.searchLocation(query)
+   //    const response=await userService.searchLocation(query)
 
-      res.status(HttpStatus.CREATED).json(response)
+   //    res.status(HttpStatus.CREATED).json(response)
 
-      return response
+   //    return response
 
-    }
+   //  }
 
-    async singleLocation(req:Request,res:Response){
+   //  async singleLocation(req:Request,res:Response){
 
-      const placeid=req.query.placeid
+   //    const placeid=req.query.placeid
 
-      console.log(placeid,'hj')
+   //    console.log(placeid,'hj')
 
-    }
+   //  }
+
+
+   async getLocations(req:Request,res:Response){
+
+      console.log('reached in getlocations')
+
+      try {
+
+         const input=req.query.input as string
+        
+         const response=await userService.getLocations(input)
+
+         if(response){
+
+            res.status(HttpStatus.CREATED).json(response)
+
+         }
+         
+      } catch (error) {
+
+         res.status(HttpStatus.BAD_REQUEST).json('location not fou')
+         
+      }
+
+   }
 
 }
 

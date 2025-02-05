@@ -113,3 +113,13 @@ export const searchResult=async(placeid:string)=>{
     return response
 
 }
+
+export const getLocation=async(input:string)=>{
+
+    const response = await api.get('/getlocation', {
+        params: { input }, 
+      });
+
+    return response
+
+}

@@ -1,5 +1,7 @@
 import User, { IUser } from "@/models/userModel/userModel";
 import { UpdateProfileDto } from "@/dto/userDto";
+import { ILocation} from "@/models/guideModel/placeModel";
+import Location from "@/models/guideModel/placeModel"
 
 
 
@@ -36,11 +38,31 @@ export class UserRepositories {
     }
 
       async updateProfile(userId:string,updateProfileDto:UpdateProfileDto) : Promise<IUser | null>{
+
         return await User.findByIdAndUpdate(
             userId,
             {$set:updateProfileDto},
             {new:true}
+            
         )
     }
+
+    async getLocations(district: string): Promise<ILocation[] | null> {
+
+        try {
+
+          const places = await Location.find({ district: { $regex: new RegExp(district, "i") } })
+
+          return places
+
+        } catch (error) {
+
+          console.error("Error fetching locations:", error)
+
+          return null;
+
+        }
+      }
+      
 
 }

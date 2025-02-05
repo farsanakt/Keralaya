@@ -7,6 +7,8 @@ export class UserService{
 
     private userRepositories: UserRepositories
 
+    
+
     constructor(){
 
         this.userRepositories=new UserRepositories()
@@ -33,28 +35,21 @@ export class UserService{
         return await this.userRepositories.findUserById(userId)
     }
 
-    async searchLocation(query:string){
+  
+    async getLocations(input:string){
 
-        const appkey='AIzaSyD6M06Pi3FmCySvZ-33n3K9UXwN_y7CvHs'
+      try {
 
-        try {
+        const location= await this.userRepositories.getLocations(input)
 
-            const response = await axios.get(`https://maps.googleapis.com/maps/api/place/autocomplete/json`, {
-                params: {
-                  input:query,  // The location you're searching for, e.g., "Calicut"
-                  key: appkey  // Your API key
-                }
-              });
+        return location
+        
+      } catch (error) {
 
-            const places = response.data;
+        console.log('error occured in getlocation service')
+        
+      }
 
-            console.log(places)
-
-            return places;  
-            
-        } catch (error) {
-            
-        }
 
     }
 
