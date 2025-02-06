@@ -123,3 +123,11 @@ export const getLocation=async(input:string)=>{
     return response
 
 }
+
+export const getLocationDetails=async(id:string)=>{
+
+    const response=await api.get('/locationdetails',{params:{id}})
+
+    return response
+
+}

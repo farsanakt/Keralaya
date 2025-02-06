@@ -100,6 +100,28 @@ class UserController{
 
    }
 
+   async locationDetails(req:Request,res:Response){
+  
+      try {
+
+         const id=req.query.id as string
+
+         const response=await userService.locationDetails(id)
+
+         if(response){
+
+            res.status(HttpStatus.CREATED).json(response)
+
+         }
+
+      } catch (error) {
+
+         res.status(HttpStatus.BAD_REQUEST).json('location not found')
+         
+      }
+
+   }
+
 }
 
 export default UserController

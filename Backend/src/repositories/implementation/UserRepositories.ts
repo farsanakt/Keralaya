@@ -63,6 +63,10 @@ export class UserRepositories {
 
         }
       }
+
+      async findLocationById(id:string) : Promise <ILocation | null >{
+        return await Location.findById(id)
+    }
       
 
 }

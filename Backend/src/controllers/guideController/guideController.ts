@@ -17,6 +17,7 @@ interface LocationRequestBody {
   district: string;
   street: string;
   pincode: string;
+  discription:string
 }
 
 class GuideController {
@@ -24,7 +25,7 @@ class GuideController {
   async addLocations(req: MulterRequest, res: Response) {
     try {
 
-      const { name, district, street, pincode }: LocationRequestBody = req.body
+      const { name, district, street, pincode ,discription}: LocationRequestBody = req.body
 
       const files = req.files as Express.Multer.File[]
   
@@ -56,6 +57,7 @@ class GuideController {
         district,
         street,
         pincode,
+        discription,
         images: uploadedImages, 
       });
   

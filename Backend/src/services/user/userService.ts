@@ -50,6 +50,21 @@ export class UserService{
         
       }
 
+    }
+
+    async locationDetails(id:string){
+
+      try {
+
+        const  details=await this.userRepositories.findLocationById(id)
+
+        return details
+        
+      } catch (error) {
+        
+        console.log('error occured in locationdetals service')
+
+      }
 
     }
 

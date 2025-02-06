@@ -5,6 +5,7 @@ import Signup from "../pages/user/SignUp";
 import Profile from "../pages/user/Profile";
 import ProtectedRoute from "../service/user/ProtectedRoute";
 import PublicRoute from "../service/user/PublicRoute";
+import CardComponent from "@/pages/user/SingleLocation";
 
 
 
@@ -20,6 +21,8 @@ const UserRoutes = () => {
           path="/profile"
           element={<ProtectedRoute element={<Profile />} />}
         />
+        <Route path="/singlelocation/:id"  element={<CardComponent/>}/>
+       
       </Routes>
     </div>
   );

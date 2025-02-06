@@ -6,11 +6,14 @@ import waterfalls from '../../assets/m1.jpg';
 import mountain from '../../assets/m2.jpg';
 import { getLocation } from '@/service/user/userApi';
 import { MapPin } from 'lucide-react'
+import { useNavigate } from 'react-router-dom';
 
 const Home: React.FC = () => {
   const [searchInput, setSearchInput] = useState('');
-  const [searchResults, setSearchResults] = useState<{street : string }[]>([]);
+  const [searchResults, setSearchResults] = useState<{_id:string,street : string }[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
+
+  const navigate=useNavigate()
 
 
 
@@ -63,13 +66,25 @@ const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
       setShowDropdown(false)
 
+      
+
     }
   };
 
-  const handleSelect = (street: string) => {
-    setSearchInput(`Location: ${street}`);
+  const handleSelect = (id: string, street: string) => {
+
+    if (!id) {
+
+    console.error("ID is undefined or null, cannot navigate.")
+
+    return
+
+  }
+    setSearchInput(`Location: ${street}`)
     setShowDropdown(false);
+    navigate(`/singlelocation/${id}`)
   };
+  
 
   return (
     <main className="bg-gray-50">
@@ -97,10 +112,10 @@ const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
                  <li
                    key={index}
                    className="px-4 py-2 hover:bg-gray-200 cursor-pointer text-left"
-                   onClick={() => handleSelect(result.street)}
+                   onClick={() => handleSelect(result._id,result.street)}
                  >
                    <div className="flex justify-center items-center gap-2">
-                     <MapPin className="w-4 h-4 text-green-600" /> {/* Centered Location Pin */}
+                     <MapPin className="w-4 h-4 text-green-600" />
                      <span>{result.street}</span>
                    </div>
                  </li>

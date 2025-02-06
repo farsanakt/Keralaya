@@ -5,11 +5,11 @@ import authenticateToken from '@/middleware/isAuthenticated';
 
 const guide_route = express.Router();
 
-guide_route.post('/addlocation', upload.array('image', 4), guideController.addLocations)
+guide_route.post('/addlocation', upload.array('image', 5), guideController.addLocations)
 
 guide_route.get('/displayplaces',guideController.displayLocations)
 
-guide_route.post('/editlocation',upload.array('image',4),guideController.editLocations)
+guide_route.post('/editlocation',upload.array('image',5),guideController.editLocations)
 
 guide_route.delete('/deleteplace/:id',guideController.deletePlaces)
 

@@ -26,6 +26,8 @@ interface FormData {
   district: string;
   street: string;
   pincode: string;
+  discription:string
+  
 
 }
 
@@ -39,6 +41,7 @@ export function AddLocationModal({ isOpen, onClose }: AddLocationModalProps) {
       district: "",
       street: "",
       pincode: "",
+      discription:""
       
     },
   });
@@ -75,6 +78,7 @@ export function AddLocationModal({ isOpen, onClose }: AddLocationModalProps) {
       formData.append('district', data.district);
       formData.append('street', data.street);
       formData.append('pincode', data.pincode);
+      formData.append('discription',data.discription)
   
       
       images.forEach((img) => {
@@ -129,6 +133,16 @@ export function AddLocationModal({ isOpen, onClose }: AddLocationModalProps) {
                 className="col-span-3"
               />
             </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="district" className="text-right">
+                Discription
+              </Label>
+              <Input
+                id="discription"
+                {...register("discription", { required: "discription is required" })}
+                className="col-span-3"
+              />
+            </div>
 
             
             <div className="grid grid-cols-4 items-center gap-4">
@@ -175,7 +189,7 @@ export function AddLocationModal({ isOpen, onClose }: AddLocationModalProps) {
                     {images.map((img, index) => (
                       <div
                         key={index}
-                        className="relative w-24 h-24 flex-shrink-0" // Reduced size and flex-shrink for horizontal alignment
+                        className="relative w-24 h-24 flex-shrink-0" 
                       >
                         <img
                           src={img.preview}
