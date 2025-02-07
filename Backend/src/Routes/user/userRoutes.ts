@@ -22,6 +22,8 @@ user_route.get('/getlocation',userController.getLocations)
 
 user_route.get('/locationdetails',userController.locationDetails)
 
+user_route.get('/guidedetails',userController.guideDetails)
+
     
 
 export default user_route

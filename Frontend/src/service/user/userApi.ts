@@ -131,3 +131,13 @@ export const getLocationDetails=async(id:string)=>{
     return response
 
 }
+
+export const getGuideDetails=async(district:string )=>{
+
+    console.log(district,'d')
+    
+    const response = await api.get('/guidedetails', { params: { district } });
+
+    return response
+
+}

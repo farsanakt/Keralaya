@@ -24,7 +24,7 @@ export class AuthService {
 
     try {
 
-      const { name, email, password, experience, expertise, languages } =guideDto;
+      const { name, email, password, experience, expertise, languages,district } =guideDto;
 
 
       const existingGuide = await this.guideRepository.findUserByEmail(email);

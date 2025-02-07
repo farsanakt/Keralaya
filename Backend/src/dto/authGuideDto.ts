@@ -7,6 +7,7 @@ export interface guideRegisterDto{
     experience:number,
     expertise:string,
     languages:string[]
+    district:string
     
     
 

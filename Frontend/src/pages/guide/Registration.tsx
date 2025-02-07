@@ -18,6 +18,7 @@ const Registration: React.FC = () => {
     languages: [] as string[],
     password: "",
     confirmPassword: "",
+    district:""
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false); 
@@ -109,6 +110,20 @@ const Registration: React.FC = () => {
               onChange={handleInputChange}
               className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
               placeholder="Enter your email"
+              required
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label htmlFor="District" className="text-gray-700 font-medium mb-2">District</label>
+            <input
+              type="district"
+              name="district"
+              id="district"
+              value={formData.district}
+              onChange={handleInputChange}
+              className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              placeholder="Enter your district"
               required
             />
           </div>

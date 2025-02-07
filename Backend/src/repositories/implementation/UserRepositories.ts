@@ -2,6 +2,7 @@ import User, { IUser } from "@/models/userModel/userModel";
 import { UpdateProfileDto } from "@/dto/userDto";
 import { ILocation} from "@/models/guideModel/placeModel";
 import Location from "@/models/guideModel/placeModel"
+import { Guide, IGuide } from "@/models/guideModel/guideModel";
 
 
 
@@ -66,6 +67,25 @@ export class UserRepositories {
 
       async findLocationById(id:string) : Promise <ILocation | null >{
         return await Location.findById(id)
+    }
+
+
+    
+    async getGuide(district: string): Promise<IGuide[] | null> {
+
+      try {
+
+        const places = await Guide.find({ district: { $regex: new RegExp(district, "i") } })
+
+        return places
+
+      } catch (error) {
+
+        console.error("Error fetching locations:", error)
+
+        return null;
+
+      }
     }
       
 

@@ -68,6 +68,23 @@ export class UserService{
 
     }
 
+    async getGuideDetails(dis:string){
+
+     try {
+
+      const details=await this.userRepositories.getGuide(dis)
+
+      return details
+      
+     } catch (error) {
+      
+
+      console.log('error occur in gettig guide details')
+
+     }
+
+    }
+
 
     
 

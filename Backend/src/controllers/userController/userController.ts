@@ -122,6 +122,27 @@ class UserController{
 
    }
 
+   async guideDetails(req:Request,res:Response){
+      
+      try {
+         const dis=req.query.district as string
+         
+         const response=await userService.getGuideDetails(dis)
+
+         if(response){
+
+            res.status(HttpStatus.CREATED).json(response)
+
+         }
+         
+      } catch (error) {
+
+         res.status(HttpStatus.BAD_REQUEST).json('guide not found')
+         
+      }
+
+   }
+
 }
 
 export default UserController

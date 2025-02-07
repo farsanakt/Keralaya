@@ -13,6 +13,7 @@ export interface IGuide extends  Document{
     password:string,
     status:string
     profileImage:string
+    district:string
 
 
 }
@@ -24,6 +25,8 @@ const GuideSchema = new mongoose.Schema<IGuide>({
     email: { type: String, required: true, unique: true },
 
     phone: { type: String, required: true },
+
+    district: { type: String, required: true },
 
     experience: { type: String, required: true },
 
