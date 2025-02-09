@@ -202,7 +202,7 @@ class GuideController {
 
       console.log('reached in updateprofile controller in guide side')
       
-      const {id,name,email,phone,experience,expertise}=req.body
+      const {_id,name,email,phone,experience,expertise}=req.body
 
       const files=req.file
 
@@ -218,9 +218,13 @@ class GuideController {
   
      const imgUrl=result.secure_url
 
-     const guidedata={id,name,email,phone,experience,expertise,profileImage:imgUrl}
+     const guidedata={_id,name,email,phone,experience,expertise,profileImage:imgUrl}
+
+     console.log(guidedata,'daa')
 
      const response=await guideService.updateProfile(guidedata)
+
+     console.log(response,'iii')
 
      if(!response){
 

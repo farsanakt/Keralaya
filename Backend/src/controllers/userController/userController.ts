@@ -33,6 +33,8 @@ class UserController{
 
          const {updateddata}=req.body
 
+         console.log('uu',updateddata)
+
          const response=await userService.updateProfile(updateddata)
 
          res.status(HttpStatus.CREATED).json({message:'profile updated successfully..!'})

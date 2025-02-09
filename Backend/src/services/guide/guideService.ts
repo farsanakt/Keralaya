@@ -127,9 +127,11 @@ export class GuideService{
 
         try {
 
-          const {id,name,email,phone,experience,expertise,profileImage}=guidedata
+          const {_id,name,email,phone,experience,expertise,profileImage}=guidedata
 
-          const updateProfileData=await this.guideRepository.updateProfile(id,guidedata)
+          const updateProfileData=await this.guideRepository.updateProfile(_id,guidedata)
+
+          console.log(updateProfileData,'jjjjjjjj')
 
           return updateProfileData
 

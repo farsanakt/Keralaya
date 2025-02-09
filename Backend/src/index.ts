@@ -9,8 +9,9 @@ import guide_authRoute from "./Routes/guide/authRoutes";
 import admin_Routes from "./Routes/admin/adminRoutes";
 import cookieparser from 'cookie-parser'
 import guide_route from "./Routes/guide/guideRoutes";
-
-
+import morgan from 'morgan'
+import { createStream } from "rotating-file-stream";
+import path = require("path");
 dotenv.config(); 
 
 
@@ -29,6 +30,14 @@ app.use(cookieparser())
 
 connectMongoDb();
 
+
+const accessLogStream = createStream('access.log', {
+  interval: '1d', 
+  path: path.join(__dirname, 'logs'),
+});
+
+app.use(morgan('combined', { stream: accessLogStream })); 
+app.use(morgan('dev')); 
 
 app.use('/', user_route);
 app.use('/', userAuth_route);
