@@ -30,55 +30,44 @@ export class GuideService{
 
       }
 
+
       editPlaces = async (locationData: any) => {
 
-        console.log('Reached here', locationData);
-      
-        const { id, name, district, street, pincode, files } = locationData;
-      
         try {
+
+          const { id, name, district, street, pincode, images } = locationData;
           
           const place = await this.guideRepository.findLocationById(id);
-      
+          
           if (!place) {
 
-            return 
+            return null
 
           }
-      
+          
+         
           place.name = name || place.name;
           place.district = district || place.district;
           place.street = street || place.street;
           place.pincode = pincode || place.pincode;
-      
           
-          if (files && files.length > 0) {
+          
+          if (images && images.length > 0) {
 
-            
-            const newImagePath = files[0].path; 
-
-            place.images = newImagePath
-
-          } else {
-
-            
-            place.images = place.images;
+            place.images = images
 
           }
-      
           
           const updatedPlace = await this.guideRepository.saveLocation(place)
-      
-          console.log('Location updated successfully:', updatedPlace)
 
           return updatedPlace
-
+      
         } catch (error) {
 
           console.error('Error updating location:', error)
 
           throw error
-
+          
         }
       };
 

@@ -67,3 +67,8 @@ export const editPlace=async(formData:FormData)=>{
     return response
 
 }
+
+export const approvPlaces = async (id: string, status: string) => {
+    const response = await api.patch(`/approvelocation/${id}`, { status });
+    return response;
+};

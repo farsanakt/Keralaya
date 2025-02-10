@@ -7,12 +7,13 @@ export class UserService{
 
     private userRepositories: UserRepositories
 
-    
 
     constructor(){
 
         this.userRepositories=new UserRepositories()
     }
+
+    
 
     async  userProfile(email:string):Promise<IUser | null>{
 

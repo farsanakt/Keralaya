@@ -13,6 +13,8 @@ admin_Routes.patch('/updateUser/:id',adminController.updateUserStatus)
 
 admin_Routes.patch('/updateguide/:id',adminController.updateGuideStatus)
 
+admin_Routes.patch('/approvelocation/:id',adminController.approveLocation)
+
 
 
 export default admin_Routes

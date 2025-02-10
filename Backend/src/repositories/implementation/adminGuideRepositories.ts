@@ -1,4 +1,6 @@
 import { Guide, IGuide } from "@/models/guideModel/guideModel";
+import { ILocation } from "@/models/guideModel/placeModel";
+import Location from "@/models/guideModel/placeModel"
 
 import { IAdminGuideRepository } from "@/repositories/interface/IAdminGuideRepositories";
 
@@ -24,6 +26,17 @@ export class AdminGuideRepository implements IAdminGuideRepository{
         return  await Guide.findById(guideId)
 
     }
+
+    async findPlace(id:string):Promise<ILocation|null>{
+
+        return await Location.findById(id)
+
+    }
+
+    updatePlaceStatus = async (id: string, status: string) => {
+        return await Location.findByIdAndUpdate(id, { status }, { new: true });
+    };
+    
 
     async save(guide:IGuide){
 

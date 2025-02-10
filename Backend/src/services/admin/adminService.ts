@@ -1,16 +1,31 @@
 import { AdminGuideRepository } from "../../repositories/implementation/adminGuideRepositories"
 import { AdminUserRepository } from "../../repositories/implementation/adminUserRepositorie"
-const adminUserRepository=new AdminUserRepository()
+
 const adminGuideRepository=new AdminGuideRepository()
 
 
+
+
 export class AdminService{
+
+   private adminUserRepository:AdminUserRepository
+
+   private adminGuideRepository:AdminGuideRepository
+
+
+   constructor(){
+
+    this.adminUserRepository=new AdminUserRepository()
+
+    this.adminGuideRepository=new AdminGuideRepository()
+
+   }
 
     getallusers=async()=>{
 
         try {
 
-            const users=await adminUserRepository.getAllUsers()
+            const users=await this.adminUserRepository.getAllUsers()
 
             return users
             
@@ -22,14 +37,13 @@ export class AdminService{
 
     }
 
-
     userBlockStatus=async(userId:string)=>{
 
         try {
 
             console.log('i am here')
 
-            const user=await adminUserRepository.findUser(userId)
+            const user=await this.adminUserRepository.findUser(userId)
 
             console.log(user,'user')
 
@@ -41,7 +55,7 @@ export class AdminService{
 
             user.isBlocked=!user.isBlocked
 
-            const response=await adminUserRepository.save(user)
+            const response=await this.adminUserRepository.save(user)
 
             return response
 
@@ -54,7 +68,6 @@ export class AdminService{
 
     }
     
-
     getallguide=async()=>{
 
         try {
@@ -97,6 +110,22 @@ export class AdminService{
         }
 
     }
+
+    approvePlace = async (id: string,status:string) => {
+        try {
+            const place = await adminGuideRepository.findPlace(id);
+    
+            console.log(place, 'place');
+    
+            if (place) {
+                const updatedPlace = await adminGuideRepository.updatePlaceStatus(id,status);
+                console.log(updatedPlace, 'updated place');
+            }
+        } catch (error) {
+            console.error('Error updating place status:', error);
+        }
+    };
+    
 
 
   

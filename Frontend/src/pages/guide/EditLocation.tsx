@@ -24,7 +24,9 @@ interface EditLocationModalProps {
 }
 
 export function EditLocationModal({ place, onClose, onSave }: EditLocationModalProps) {
+
   const [editedPlace, setEditedPlace] = useState<Place>(place)
+  const [newImageFiles, setNewImageFiles] = useState<File[]>([])
   const [isOpen, setIsOpen] = useState(true)
   const { toast } = useToast()
 
@@ -34,18 +36,27 @@ export function EditLocationModal({ place, onClose, onSave }: EditLocationModalP
   }
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+
     const files = event.target.files
     if (files && files.length > 0) {
-      const newImages = Array.from(files).map((file) => URL.createObjectURL(file))
+      const filesArray = Array.from(files)
+      setNewImageFiles((prev) => [...prev, ...filesArray])
+      const newImages = filesArray.map((file) => URL.createObjectURL(file))
       setEditedPlace((prev) => ({ ...prev, images: [...prev.images, ...newImages] }))
     }
   }
 
   const removeImage = (index: number) => {
-    setEditedPlace((prev) => ({
-      ...prev,
-      images: prev.images.filter((_, i) => i !== index),
-    }))
+    setEditedPlace((prev) => {
+      const newImages = [...prev.images]
+      
+      if (newImages[index].startsWith('blob:')) {
+        URL.revokeObjectURL(newImages[index])
+        setNewImageFiles((prev) => prev.filter((_, i) => i !== index - editedPlace.images.length + newImageFiles.length))
+      }
+      newImages.splice(index, 1)
+      return { ...prev, images: newImages }
+    })
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -58,30 +69,35 @@ export function EditLocationModal({ place, onClose, onSave }: EditLocationModalP
     formData.append("street", editedPlace.street)
     formData.append("pincode", editedPlace.pincode)
 
-    const fileInput = document.getElementById("images") as HTMLInputElement
-    if (fileInput && fileInput.files) {
-      for (let i = 0; i < fileInput.files.length; i++) {
-        formData.append("image", fileInput.files[i])
-      }
-    }
-
+    
     editedPlace.images.forEach((imageUrl) => {
       if (!imageUrl.startsWith("blob:")) {
-        formData.append("image", imageUrl)
+        formData.append("existingImageUrls", imageUrl)
       }
+    })
+
+    
+    newImageFiles.forEach((file) => {
+      formData.append("image", file)
     })
 
     try {
       const response = await editPlace(formData)
       const updatedPlace = response.data
-      console.log("resss", response.data)
+    
+      editedPlace.images.forEach((image) => {
+        if (image.startsWith('blob:')) {
+          URL.revokeObjectURL(image)
+        }
+      })
+
       onSave(updatedPlace)
       toast({
         title: "Success",
         description: "Place updated successfully",
       })
-      setIsOpen(false) // Close the modal
-      onClose() // Close the modal after successful edit
+      setIsOpen(false)
+      onClose()
     } catch (error) {
       console.error("Error updating place:", error)
       toast({
@@ -97,6 +113,12 @@ export function EditLocationModal({ place, onClose, onSave }: EditLocationModalP
       open={isOpen}
       onOpenChange={(open) => {
         if (!open) {
+          
+          editedPlace.images.forEach((image) => {
+            if (image.startsWith('blob:')) {
+              URL.revokeObjectURL(image)
+            }
+          })
           setIsOpen(false)
           onClose()
         }
@@ -161,13 +183,19 @@ export function EditLocationModal({ place, onClose, onSave }: EditLocationModalP
                 Images
               </Label>
               <div className="col-span-3">
-                <Input id="images" type="file" accept="image/*" multiple onChange={handleImageUpload} />
+                <Input 
+                  id="images" 
+                  type="file" 
+                  accept="image/*" 
+                  multiple 
+                  onChange={handleImageUpload}
+                />
                 <ScrollArea className="h-[200px] w-full rounded-md border p-4 mt-2">
                   <div className="grid grid-cols-3 gap-2">
                     {editedPlace.images.map((image, index) => (
                       <div key={index} className="relative">
                         <img
-                          src={image || "/placeholder.svg"}
+                          src={image}
                           alt={`Image ${index + 1}`}
                           className="w-full h-24 object-cover rounded-md"
                         />
@@ -195,4 +223,3 @@ export function EditLocationModal({ place, onClose, onSave }: EditLocationModalP
     </Dialog>
   )
 }
-

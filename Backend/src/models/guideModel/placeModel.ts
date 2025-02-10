@@ -7,6 +7,7 @@ import mongoose, { Schema, Document } from "mongoose";
   pincode: string;
   discription:string;
   images: string[]; 
+  status: "pending" | "approved" | "rejected"; 
 }
 
 const locationSchema = new Schema<ILocation>({
@@ -16,6 +17,11 @@ const locationSchema = new Schema<ILocation>({
   pincode: { type: String, required: true },
   discription: { type: String, required: true },
   images: { type: [String], required: true },
+  status: {
+    type: String,
+    enum: ["pending", "approved", "rejected"],
+    default: "pending", 
+  },
 });
 
 export default mongoose.model<ILocation>("Location", locationSchema);

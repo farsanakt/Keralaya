@@ -133,3 +133,33 @@
 2025-01-31 22:10:02 [info]: reached updateprofile Controller 
 2025-01-31 22:11:53 [info]: reached updateprofile Controller 
 2025-01-31 22:14:39 [info]: reached updateprofile Controller 
+2025-02-09 14:27:02 [info]: reached in admin authController 
+2025-02-09 14:27:02 [info]: {"email":"admin@gmail.com","password":"Admin@123"} 
+2025-02-09 14:27:34 [info]: Reached Userlist controller 
+2025-02-09 14:27:34 [info]: Reached Userlist controller 
+2025-02-09 14:27:36 [info]: entered to updating user status controller 
+2025-02-09 14:27:37 [info]: Reached Userlist controller 
+2025-02-09 14:27:37 [info]: Reached Userlist controller 
+2025-02-09 14:27:39 [info]: Reached GuideList controller 
+2025-02-09 14:27:39 [info]: Reached GuideList controller 
+2025-02-09 14:27:41 [info]: reached in update guidestatus controller 
+2025-02-09 14:27:42 [info]: Reached GuideList controller 
+2025-02-09 14:27:42 [info]: Reached GuideList controller 
+2025-02-09 14:43:25 [info]: Reached GuideList controller 
+2025-02-09 14:43:25 [info]: Reached GuideList controller 
+2025-02-09 15:23:24 [info]: Reached GuideList controller 
+2025-02-09 15:23:24 [info]: Reached GuideList controller 
+2025-02-09 15:23:39 [info]: Reached GuideList controller 
+2025-02-09 15:23:39 [info]: Reached GuideList controller 
+2025-02-09 15:23:44 [info]: Reached GuideList controller 
+2025-02-09 15:23:44 [info]: Reached GuideList controller 
+2025-02-09 15:36:44 [info]: Reached GuideList controller 
+2025-02-09 15:36:44 [info]: Reached GuideList controller 
+2025-02-09 15:37:17 [info]: Reached GuideList controller 
+2025-02-09 15:37:17 [info]: Reached GuideList controller 
+2025-02-09 15:37:39 [info]: Reached GuideList controller 
+2025-02-09 15:37:39 [info]: Reached GuideList controller 
+2025-02-09 15:40:40 [info]: Reached GuideList controller 
+2025-02-09 15:40:40 [info]: Reached GuideList controller 
+2025-02-09 15:42:26 [info]: Reached GuideList controller 
+2025-02-09 15:42:26 [info]: Reached GuideList controller 

@@ -85,6 +85,21 @@ class AdminController{
 
     }
 
+    async approveLocation(req:Request,res:Response){
+
+        console.log('reached in approved ')
+
+        const { id } = req.params;
+        const { status } = req.body;
+
+        const response=await adminService.approvePlace(id,status)
+
+        console.log(req.params.id,'id')
+
+        
+
+    }
+
 
 
  

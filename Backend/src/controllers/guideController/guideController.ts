@@ -109,28 +109,66 @@ class GuideController {
   }
 
   async editLocations(req: MulterRequest, res: Response) {
-     try {
 
-      const {id, name, district, street, pincode }: LocationRequestBody = req.body
+    try {
 
-        const files = req.files as Express.Multer.File[]
-               
+      const { id, name, district, street, pincode, existingImageUrls } = req.body
 
-        const locationData={
+      const files = req.files as Express.Multer.File[]
+      
+      let uploadedImages: string[] = []
+  
+     
+      if (existingImageUrls) {
 
-         id,name,district,street,pincode,files
+        uploadedImages = Array.isArray(existingImageUrls) ? existingImageUrls : [existingImageUrls]
 
-         }
-
-         const response=await guideService.editPlaces(locationData)
-                
-                
-       } catch (error) {
-
-        console.error("Error adding location:", error);
-                
-       }
       }
+  
+      
+      if (files && files.length > 0) {
+
+        for (const file of files) {
+
+          const result = await cloudinary.uploader.upload(file.path, { folder: "locations"})
+
+          uploadedImages.push(result.secure_url)
+
+        }
+      }
+  
+      const locationData = {
+        id,
+        name,
+        district,
+        street,
+        pincode,
+        images: uploadedImages  
+      }
+  
+      const response = await guideService.editPlaces(locationData)
+      
+      if (!response) {
+
+         res.status(404).json({ message: "Location not found" })
+
+         return
+      }
+  
+      res.status(200).json(response)
+
+      return
+  
+    } catch (error) {
+
+       console.error("Error updating location:", error)
+
+       res.status(500).json({ message: "Error updating location" })
+
+       return
+       
+    }
+  }
 
   async deletePlaces(req:Request,res:Response){
 
@@ -220,11 +258,7 @@ class GuideController {
 
      const guidedata={_id,name,email,phone,experience,expertise,profileImage:imgUrl}
 
-     console.log(guidedata,'daa')
-
      const response=await guideService.updateProfile(guidedata)
-
-     console.log(response,'iii')
 
      if(!response){
 
