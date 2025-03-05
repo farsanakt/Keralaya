@@ -52,7 +52,7 @@ const Dashboard: React.FC = () => {
 
     
       <main className="flex-1 p-8 ml-4 bg-gray-50 rounded-lg shadow-md">
-        {/* Notifications and Stats */}
+      
         <div className="grid grid-cols-3 gap-6">
           <div className="bg-green-500 text-white p-6 rounded-lg shadow-md text-center">
             <h2 className="text-lg font-bold">Total Income</h2>
@@ -68,7 +68,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Reviews Section */}
+        
         <section className="mt-8 bg-white p-8 rounded-lg shadow-md">
           <h2 className="text-xl font-bold mb-4 text-gray-700">Reviews</h2>
           <div className="flex items-center space-x-8">

@@ -84,6 +84,14 @@ export const addLocations = async (formData: FormData) => {
 
   }
 
+  export const guiddeDetails = async (email: string) => {
+    const response = await api.get(`/guideDetaills/${email}` // ✅ Correct way to pass query parameters
+    );
+  
+    return response.data; // Return response data
+  };
+  
+
 
   export const updateProfile=async(guidedata:FormData)=>{
 
@@ -94,3 +102,30 @@ export const addLocations = async (formData: FormData) => {
     return response
 
   }
+
+  export const guideSlot = async (dates: string[], email: string): Promise<any> => {
+    try {
+      const response = await api.post("/guideslot", { dates, email });
+      return response.data;
+    } catch (error) {
+      console.error("Error submitting guide slots:", error);
+      throw error;
+    }
+  };
+
+  export const allGuide=async()=>{
+
+    try {
+      
+
+      const response=await api.get('/allguideList')
+
+      return response
+
+    } catch (error) {
+      
+    }
+
+  }
+  
+  

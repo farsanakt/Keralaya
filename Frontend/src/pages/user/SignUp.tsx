@@ -152,11 +152,7 @@ const Signup: React.FC = () => {
 
     try {
       const response = await singUpRequest(formData);
-      console.log(response,'resp')
-
-      console.log('hjo[[  ')
-
-
+     
 
       if (response.data.success) {
         
@@ -178,7 +174,7 @@ const Signup: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col">
       <header className="w-full bg-[#f8fafc] shadow-md">
-        {/* <UserHeader /> */}
+       
       </header>
 
       <main className="flex-grow flex items-center justify-center bg-[#f8fafc] mt-6">

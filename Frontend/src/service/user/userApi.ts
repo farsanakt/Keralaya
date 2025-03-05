@@ -141,3 +141,13 @@ export const getGuideDetails=async(district:string )=>{
     return response
 
 }
+
+export const singleGuidee=async(id:string)=>{
+
+    console.log('jkjk')
+
+    const response=await api.get(`/singleguidee/${id}`)
+
+    return response
+
+}

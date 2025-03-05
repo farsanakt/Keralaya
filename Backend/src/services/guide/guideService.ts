@@ -120,8 +120,6 @@ export class GuideService{
 
           const updateProfileData=await this.guideRepository.updateProfile(_id,guidedata)
 
-          console.log(updateProfileData,'jjjjjjjj')
-
           return updateProfileData
 
         } catch (error) {
@@ -131,5 +129,27 @@ export class GuideService{
         }
 
       }
+
+      setSlotAvailability = async (email: string, dates: string[]) => {
+        try {
+          
+          const formattedDates = dates.map(dateStr => {
+    
+            return new Date(`${dateStr}T00:00:00.000Z`);
+          });
+          
+          const result = await this.guideRepository.saveAvailability(email, formattedDates)
+
+          return result
+
+        } catch (error) {
+
+          console.error("Error setting slot availability:", error)
+
+          return { message: "Failed to set availability slots" }
+
+        }
+      };
+
       
 }

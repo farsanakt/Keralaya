@@ -94,6 +94,24 @@ export class GuideRepositories implements IGuideRepository {
             }
 
           }
+
+
+          async saveAvailability(email: string, dates: Date[]): Promise<{ message: string } | null> {
+            const existingGuide = await Guide.findOne({ email });
+        
+            if (existingGuide) {
+                
+                existingGuide.availabilitySlots = dates
+
+                await existingGuide.save()
+                
+                return { message: "Availability slots updated successfully." }
+            }
+        
+            return null;
+        }
+        
+        
           
           
 

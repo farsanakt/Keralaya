@@ -87,6 +87,34 @@ export class UserRepositories {
 
       }
     }
+
+    async allGuide():Promise<IGuide[] |null >{
+
+      return Guide.find()
+
+    }
+
+    async singleguide(id:string):Promise<IGuide[]|null>{
+
+      try {
+        const guide=await Guide.find({_id:id})
+        
+        if(guide){
+
+          return guide
+        }
+
+        return null
+        
+      } catch (error) {
+
+        console.error("Error fetching guide:", error);
+
+        return null;
+        
+      }
+
+    }
       
 
 }

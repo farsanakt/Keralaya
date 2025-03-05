@@ -24,6 +24,10 @@ user_route.get('/locationdetails',userController.locationDetails)
 
 user_route.get('/guidedetails',userController.guideDetails)
 
+user_route.get('/allguideList',userController.allGuideList)
+
+user_route.get('/singleguidee/:id',userController.singleGuide)
+
     
 
 export default user_route

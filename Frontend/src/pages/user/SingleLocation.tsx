@@ -28,7 +28,7 @@ interface LocationDetails {
 }
 
 const GuideCard: React.FC<{ guide: Guide }> = ({ guide }) => {
-  // Function to render star ratings
+ 
   const renderStarRatings = (rating: number) => {
     const fullStars = Math.floor(rating);
     const halfStar = rating % 1 >= 0.5;
@@ -56,7 +56,7 @@ const GuideCard: React.FC<{ guide: Guide }> = ({ guide }) => {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 grid grid-cols-3 gap-4">
-      {/* Left Section - Profile */}
+     
       <div className="col-span-1 flex flex-col items-center">
         <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-200 mb-4">
           <img 
@@ -68,7 +68,7 @@ const GuideCard: React.FC<{ guide: Guide }> = ({ guide }) => {
         <h3 className="text-lg font-semibold text-center">{guide.name}</h3>
       </div>
 
-      {/* Middle Section - Guide Details */}
+      
       <div className="col-span-1 space-y-2">
         <div className="flex items-center space-x-2">
           <MapPin className="w-5 h-5 text-gray-500" />
@@ -81,14 +81,14 @@ const GuideCard: React.FC<{ guide: Guide }> = ({ guide }) => {
           <strong>Experience:</strong> {guide.experience} years
         </div>
         
-        {/* Star Ratings */}
+        
         <div className="flex items-center space-x-2">
           {renderStarRatings(4.5)}
           <span className="text-sm text-gray-500">(127 Reviews)</span>
         </div>
       </div>
 
-      {/* Right Section - Booking */}
+      
       <div className="col-span-1 flex flex-col justify-center items-center">
         <div className="text-center mb-4">
           <p className="text-xl font-bold text-blue-600">₹2,000 

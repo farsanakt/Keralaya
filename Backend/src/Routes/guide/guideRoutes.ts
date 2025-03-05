@@ -16,6 +16,12 @@ guide_route.delete('/deleteplace/:id',guideController.deletePlaces)
 guide_route.get('/guidedetails',authenticateToken,guideController.guideData)
 
 guide_route.post('/updateprofiles',upload.single('profileImage'),guideController.updateProfile)
+
+guide_route.post('/guideslot',guideController.availableSLots)
+
+ guide_route.get('/guideDetaills/:email',guideController.guideDetails)
+
+
   
     
 export default guide_route;

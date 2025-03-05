@@ -6,6 +6,8 @@ import Profile from "../pages/user/Profile";
 import ProtectedRoute from "../service/user/ProtectedRoute";
 import PublicRoute from "../service/user/PublicRoute";
 import CardComponent from "@/pages/user/SingleLocation";
+import GuideList from '../pages/user/GuideList';
+import GuideDetails from "@/pages/user/GuideDetails";
 
 
 
@@ -22,6 +24,8 @@ const UserRoutes = () => {
           element={<ProtectedRoute element={<Profile />} />}
         />
         <Route path="/singlelocation/:id"  element={<CardComponent/>}/>
+        <Route path="/guidelist"   element={<ProtectedRoute element={<GuideList/>}/>}/>
+        <Route path="/guidedetails/:id"   element={<ProtectedRoute element={<GuideDetails/>}/>}/>
        
       </Routes>
     </div>

@@ -57,9 +57,6 @@ export class AuthService {
 
     const existingUser = await this.userRepositories.findUserByEmail(email);
 
-    console.log("llllllllliiiiiiiiiiiiiiiiiii");
-
-    console.log(existingUser, "hhhhhh");
 
     if (existingUser && existingUser.isVerified) {
 
@@ -70,8 +67,6 @@ export class AuthService {
     }
 
     if (existingUser && !existingUser.isVerified) {
-
-      console.log("1111");
 
       const getOtp = await this.otpRepositories.findOtpByEmail(email);
 

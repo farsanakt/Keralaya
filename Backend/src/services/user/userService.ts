@@ -88,5 +88,37 @@ export class UserService{
 
 
     
+    allGuide=async()=>{
+
+      try {
+
+        const allGuides=await this.userRepositories.allGuide()
+
+        return allGuides
+        
+      } catch (error) {
+        
+      }
+
+    }
+
+    singleGuidee=async(id:string)=>{
+
+      try {
+
+        const singleGuide=await this.userRepositories.singleguide(id)
+
+        return singleGuide
+        
+      } catch (error) {
+
+        console.log('error in single guide serive in user side')
+        
+      }
+    }
+  
+
+
+    
 
 }

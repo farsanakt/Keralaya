@@ -38,7 +38,7 @@ const initialGuideState: Guide = {
   profileImage: "",
 }
 
-// Custom loading skeleton component since we can't import from shadcn
+
 const Skeleton = ({ className }: { className: string }) => (
   <div className={`animate-pulse bg-gray-200 rounded ${className}`} />
 )
@@ -114,7 +114,7 @@ export default function GuideProfileComponent() {
 
       console.log(guideeData,'hhh')
       
-      // Manually append each field to FormData
+    
       formData.append("_id", guideeData._id)
       formData.append("name", guideeData.name)
       formData.append("email", guideeData.email)
@@ -122,12 +122,12 @@ export default function GuideProfileComponent() {
       formData.append("experience", guideeData.experience)
       formData.append("expertise", guideeData.expertise)
       
-      // Handle languages array
+      
       guideeData.languages.forEach(lang => {
         formData.append("languages[]", lang)
       })
 
-      // Handle profile image
+     
       if (guideeData.profileImage instanceof File) {
         formData.append("profileImage", guideeData.profileImage)
       }

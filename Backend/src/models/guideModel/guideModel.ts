@@ -14,6 +14,7 @@ export interface IGuide extends  Document{
     status:string
     profileImage:string
     district:string
+    availabilitySlots:Date[]
 
 
 }
@@ -38,7 +39,9 @@ const GuideSchema = new mongoose.Schema<IGuide>({
 
     password:{type:String,required:true},
 
-    profileImage:{type:String,default:''}
+    profileImage:{type:String,default:''},
+
+    availabilitySlots: { type: [Date], default: [] }
 
     
   })
