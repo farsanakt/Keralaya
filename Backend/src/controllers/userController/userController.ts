@@ -2,9 +2,13 @@ import { Request,Response } from "express";
 import { UserService } from "@/services/user/userService";
 import { HttpStatus } from "@/enums/HttpStatus";
 import logger from "@/utils/logger.utils";
+import Stripe from "stripe";
+const STRIPEKEY = process.env.STRIPE_SECRET_KEY
 
 const userService=new UserService()
 
+
+ 
 class UserController{
 
     async userProfile(req:Request,res:Response){
@@ -158,6 +162,51 @@ class UserController{
 
    }
    
+
+ }
+
+ async createPaymentIntent(req:Request,res:Response){
+
+try {
+   console.log('ddffd')
+
+   const { slotId, guideId, userEmail, amount } = req.body;
+
+   
+   const result = await userService.createPaymentIntent(slotId, guideId, userEmail, amount);
+
+   if(result){
+      res.status(HttpStatus.CREATED).json(result)
+   }
+   
+} catch (error) {
+
+   console.log('errror in createpayment')
+
+   
+}
+
+   
+
+   
+
+
+ }
+
+ async paymentConfirmation(req:Request,res:Response){
+
+   try {
+      const { slotId, guideId, userEmail, amount, userSecret, paymentIntentid } = req.body;
+
+     
+
+      const response=await userService.paymentConfirmation(slotId,guideId,userEmail,amount,paymentIntentid,userSecret)
+
+
+      
+   } catch (error) {
+      
+   }
 
  }
 

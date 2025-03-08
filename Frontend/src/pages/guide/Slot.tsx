@@ -9,10 +9,21 @@ interface GuideSlotCalendarProps {
   title?: string;
 }
 
+interface AvailableDateItem {
+  date: string;
+  isBlocked: boolean;
+  isBooked: boolean;
+  _id: string;
+}
+
 interface GuideData {
-  availabilitySlots?: string[];
+  availableDates?: AvailableDateItem[];
   email?: string;
   name?: string;
+  createdAt?: string;
+  guideId?: string;
+  updatedAt?: string;
+  _id?: string;
   [key: string]: any;
 }
 
@@ -31,7 +42,6 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
   
   const { currentGuide } = useSelector((state: RootState) => state.guide);
   const email = currentGuide?.data;
-
   
   const fetchGuideDetails = async (email: string) => {
     try {
@@ -40,14 +50,12 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
       setGuideData(response);
       console.log("Guide data loaded:", response);
       
-     
-      if (response?.availabilitySlots && response.availabilitySlots.length > 0) {
-        const formattedSlots = response.availabilitySlots.map((slot: string) => {
-       
-          return new Date(slot).toISOString().split('T')[0];
-        });
+      // Process available dates from the new format
+      if (response?.availableDates && response.availableDates.length > 0) {
+        const formattedSlots = response.availableDates
+          .filter((slot: AvailableDateItem) => !slot.isBlocked && !slot.isBooked)
+          .map((slot: AvailableDateItem) => slot.date.split('T')[0]);
         
-       
         if (!isEditMode) {
           setSelectedDates(formattedSlots);
         }
@@ -58,7 +66,6 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
       setIsLoading(false);
     }
   };
-  
   
   useEffect(() => {
     if (email) {
@@ -81,7 +88,6 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
   const handleDateClick = (day: number | null): void => {
     if (!day || !isEditMode) return;
   
- 
     const clickedDate = new Date(
       currentDate.getFullYear(),
       currentDate.getMonth(),
@@ -90,7 +96,6 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
   
     if (clickedDate < today) return;
   
-    
     const dateString = formatDateToString(clickedDate);
   
     setSelectedDates(prevDates =>
@@ -110,14 +115,14 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
   
   const handleEditToggle = () => {
     if (isEditMode) {
-      
+      // Discard changes and reload from server
       fetchGuideDetails(email);
     } else {
-      
-      if (guideData?.availabilitySlots) {
-        const formattedSlots = guideData.availabilitySlots.map((slot: string) => {
-          return new Date(slot).toISOString().split('T')[0];
-        });
+      // Load current slots into edit mode
+      if (guideData?.availableDates) {
+        const formattedSlots = guideData.availableDates
+          .filter((slot: AvailableDateItem) => !slot.isBlocked && !slot.isBooked)
+          .map((slot: AvailableDateItem) => slot.date.split('T')[0]);
         setSelectedDates(formattedSlots);
       }
     }
@@ -135,8 +140,6 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
       console.log("Response from server:", response);
       alert("Slots saved successfully!");
       setIsEditMode(false);
-     
-
       fetchGuideDetails(email);
     } catch (error) {
       console.error("Error saving slots:", error);
@@ -186,18 +189,30 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
           const isPastDate = dateObj < today;
           const isSelected = selectedDates.includes(dateString);
           
+          // Check if date is booked or blocked (not available for selection)
+          const isBooked = guideData?.availableDates?.some(slot => 
+            slot.date.split('T')[0] === dateString && slot.isBooked
+          );
+          
+          const isBlocked = guideData?.availableDates?.some(slot => 
+            slot.date.split('T')[0] === dateString && slot.isBlocked
+          );
+          
           return (
             <div
               key={`day-${day}`}
               onClick={() => handleDateClick(day)}
               className={`h-12 border border-gray-200 flex items-center justify-center relative cursor-pointer transition-colors duration-150
                 ${isPastDate ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 
+                  isBooked ? 'bg-red-500 text-white cursor-not-allowed' :
+                  isBlocked ? 'bg-gray-400 text-white cursor-not-allowed' :
                   isSelected ? (isEditMode ? 'bg-black text-white' : 'bg-blue-600 text-white') : 
                   isEditMode ? 'hover:bg-gray-200' : ''}`
               }
-              style={{ cursor: isEditMode || !isSelected ? 'pointer' : 'default' }}
+              style={{ cursor: (isEditMode && !isPastDate && !isBooked && !isBlocked) || (!isEditMode && isSelected) ? 'pointer' : 'default' }}
             >
               <span className="text-sm">{day}</span>
+              {isBooked && <span className="absolute bottom-1 left-0 right-0 text-xs text-center">Booked</span>}
             </div>
           );
         })}
@@ -207,7 +222,6 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
   
   return (
     <div className="max-w-lg mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
-      
       <div className="p-4 text-center">
         <h1 className="text-2xl font-bold text-black">{title}</h1>
         {guideData?.name && (
@@ -215,9 +229,7 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
         )}
       </div>
       
-     
       <div className="w-full h-px bg-gray-300"></div>
-      
       
       <div className="p-4 bg-black text-white flex justify-between items-center">
         <button onClick={prevMonth} className="text-white p-2 rounded hover:bg-gray-800 transition-colors duration-150">
@@ -231,7 +243,6 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
         </button>
       </div>
       
-      
       <div className="grid grid-cols-7 bg-gray-100">
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
           <div key={day} className="py-2 text-center text-sm font-medium text-gray-800">
@@ -239,7 +250,6 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
           </div>
         ))}
       </div>
-      
       
       <div className="p-2">
         {isLoading ? (
@@ -249,19 +259,26 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
         )}
       </div>
       
-      
       <div className="p-4 border-t border-gray-200">
-        <div className="flex items-center mb-4">
-          <div className="flex items-center mr-4">
+        <div className="flex items-center mb-4 flex-wrap">
+          <div className="flex items-center mr-4 mb-2">
             <div className="w-4 h-4 bg-gray-100 border border-gray-200 rounded mr-2"></div>
             <span className="text-sm">Past Dates</span>
           </div>
-          <div className="flex items-center mr-4">
+          <div className="flex items-center mr-4 mb-2">
             <div className="w-4 h-4 bg-blue-600 border border-blue-600 rounded mr-2"></div>
-            <span className="text-sm">Available Slots</span>
+            <span className="text-sm">Available</span>
+          </div>
+          <div className="flex items-center mr-4 mb-2">
+            <div className="w-4 h-4 bg-red-500 border border-red-500 rounded mr-2"></div>
+            <span className="text-sm">Booked</span>
+          </div>
+          <div className="flex items-center mr-4 mb-2">
+            <div className="w-4 h-4 bg-gray-400 border border-gray-400 rounded mr-2"></div>
+            <span className="text-sm">Blocked</span>
           </div>
           {isEditMode && (
-            <div className="flex items-center">
+            <div className="flex items-center mb-2">
               <div className="w-4 h-4 bg-black border border-black rounded mr-2"></div>
               <span className="text-sm">Selected</span>
             </div>
@@ -276,7 +293,7 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
             }
           </p>
           <div className="flex space-x-2">
-            {guideData?.availabilitySlots && guideData.availabilitySlots.length > 0 && !isEditMode && (
+            {guideData?.availableDates && guideData.availableDates.length > 0 && !isEditMode && (
               <button 
                 onClick={handleEditToggle} 
                 className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors duration-150"
@@ -303,7 +320,7 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
               </>
             )}
             
-            {(!guideData?.availabilitySlots || guideData.availabilitySlots.length === 0) && !isEditMode && (
+            {(!guideData?.availableDates || guideData.availableDates.length === 0) && !isEditMode && (
               <button 
                 onClick={handleEditToggle} 
                 className="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition-colors duration-150"

@@ -229,8 +229,6 @@ export class AuthService {
     const {email,password}=userData
 
     const existingUser=await this.userRepositories.findUserByEmail(email)
-    
-    // console.log(existingUser,'existing')
 
     if(!existingUser ){
 
@@ -240,7 +238,6 @@ export class AuthService {
 
     const  validPassword=await bcrypt.compare(password,existingUser.password) 
 
-    // console.log(validPassword,'validPassword')
 
     if(!validPassword){
 
@@ -262,13 +259,9 @@ export class AuthService {
 
     const { ...data} = existingUser;
 
-    // console.log(data,'user data ')
-
     const accessToken= await generateAcessToken(data as IUser)
 
     const refreshToken=await generateRefreshToken(existingUser)
-
-    // console.log(refreshToken,'tokenvfgfgfg')
 
     return {success:true,message:'logged successfully',data:userDataa,accessToken,refreshToken}
 

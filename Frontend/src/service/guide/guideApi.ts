@@ -127,5 +127,19 @@ export const addLocations = async (formData: FormData) => {
     }
 
   }
+
+  export const availableGuide=async(id:string)=>{
+
+    try {
+
+      const response=await api.get(`/availableguide/${id}`)
+
+      return response
+      
+    } catch (error) {
+      
+    }
+
+  }
   
   

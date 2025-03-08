@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react';
 import UserFooter from '@/components/user/UserFooter';
 import UserHeader from '@/components/user/UserHeader';
 import { useParams } from "react-router-dom";
-import { singleGuidee } from '@/service/user/userApi';
+import { singleGuidee, usercheckOut } from '@/service/user/userApi';
+import { availableGuide } from '@/service/guide/guideApi';
+import { AppDispatch, RootState } from '@/redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { loadStripe } from "@stripe/stripe-js";
+import Payment from './Checkout';
 
 
 interface Review {
@@ -22,20 +27,34 @@ interface TimeSlot {
   isAvailable: boolean;
 }
 
+
 interface Guide {
   _id: string;
   name: string;
-  areaOfExpertise: string;
+  expertise: string;
   experience: string;
   rating: number;
   languages: string[];
   district: string;
-  amountPerDay: number;
+  charge: number;
   imageUrl: string;
   reviews: Review[];
-  availableSlots: TimeSlot[];
 }
 
+interface AvailableDateItem {
+  date: string;
+  isBlocked: boolean;
+  isBooked: boolean;
+  _id: string;
+}
+
+interface GuideAvailability {
+  _id: string;
+  guideId: string;
+  availableDates: AvailableDateItem[];
+  createdAt?: string;
+  updatedAt?: string;
+}
 
 const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
   return (
@@ -62,46 +81,53 @@ const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
   );
 };
 
-
 const months = ["This Month", "Next Month", "Two Months Ahead"];
 
 const GuideDetails: React.FC = () => {
   const { id } = useParams();
   const [guide, setGuide] = useState<Guide | null>(null);
+  const [availability, setAvailability] = useState<GuideAvailability | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<TimeSlot | null>(null);
-  const [activeMonth, setActiveMonth] = useState(0)
+  const [activeMonth, setActiveMonth] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  
+  const [userSecert, setUserSecert] = useState(null);
+  const [paymentIntentid, setPaymentIntentid] = useState(null);
+  const dispatch: AppDispatch = useDispatch();
+
+  const { currentUser } = useSelector((state: RootState) => state.user);
+
+  const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth();
   const currentYear = currentDate.getFullYear();
 
-  // Transform availability slots to TimeSlot format
-  const transformAvailabilitySlots = (slots: string[]): TimeSlot[] => {
-    return slots.map((dateString, index) => {
-      const date = new Date(dateString);
+  // Transform availability dates to TimeSlot format
+  const transformAvailabilitySlots = (availableDates: AvailableDateItem[]): TimeSlot[] => {
+    return availableDates.filter(item => !item.isBlocked && !item.isBooked).map((dateItem, index) => {
+      const date = new Date(dateItem.date);
       return {
-        id: `slot-${index}`,
-        date: dateString.split('T')[0],
+        id: dateItem._id || `slot-${index}`,
+        date: dateItem.date.split('T')[0],
         day: date.toLocaleDateString('en-US', { weekday: 'long' }),
         startTime: "09:00", 
         endTime: "17:00",  
-        isAvailable: true   
+        isAvailable: !dateItem.isBooked && !dateItem.isBlocked
       };
     });
   };
   
-  
   const getFilteredSlots = () => {
-    if (!guide) return [];
+    if (!availability || !availability.availableDates || availability.availableDates.length === 0) {
+      return [];
+    }
 
     const targetMonth = (currentMonth + activeMonth) % 12;
     const targetYear = currentYear + Math.floor((currentMonth + activeMonth) / 12);
     
-    return guide.availableSlots.filter(slot => {
+    return transformAvailabilitySlots(availability.availableDates).filter(slot => {
       const slotDate = new Date(slot.date);
       return slotDate.getMonth() === targetMonth && slotDate.getFullYear() === targetYear;
     });
@@ -112,28 +138,29 @@ const GuideDetails: React.FC = () => {
       try {
         setLoading(true);
         if (id) {
-          console.log(id,'hhhhfhhfghfj')
-          const response = await singleGuidee(id)
-          console.log(response,'jjjj')
-          if (response.data && response.data.length > 0) {
-            const guideData = response.data[0];
-            
+          // Fetch guide details
+          const guideResponse = await singleGuidee(id);
+          
+          if (guideResponse.data && guideResponse.data.length > 0) {
+            const guideData = guideResponse.data[0];
             
             const transformedGuide: Guide = {
               _id: guideData._id,
               name: guideData.name,
-              areaOfExpertise: guideData.areaOfExpertise || 'Not specified',
+              expertise: guideData.expertise || 'Not specified',
               experience: guideData.experience || 'Not specified',
               rating: guideData.rating || 0,
-              languages: guideData.languages ,
-              district: guideData.district,
-              amountPerDay: guideData.amountPerDay || 0,
+              languages: guideData.languages || [],
+              district: guideData.district || 'Not specified',
+              charge: guideData.charge || 0,
               imageUrl: guideData.profileImage || "/api/placeholder/200/200",
-              reviews: guideData.reviews || [],
-              availableSlots: transformAvailabilitySlots(guideData.availabilitySlots || [])
+              reviews: guideData.reviews || []
             };
 
             setGuide(transformedGuide);
+
+            // Fetch guide availability immediately
+            await fetchGuideAvailability(id);
           }
         }
       } catch (err) {
@@ -147,18 +174,73 @@ const GuideDetails: React.FC = () => {
     fetchGuideDetails();
   }, [id]);
 
+  const fetchGuideAvailability = async (guideId: string) => {
+    try {
+      const availabilityResponse = await availableGuide(guideId);
+      console.log('Availability response:', availabilityResponse);
+      
+      if (availabilityResponse && availabilityResponse.data) {
+        setAvailability(availabilityResponse.data);
+      } else {
+        console.warn('No availability data found');
+      }
+    } catch (err) {
+      console.error('Error fetching guide availability:', err);
+    }
+  };
+
+  const travelGuide = async (guideId: string) => {
+    try {
+      
+      await fetchGuideAvailability(guideId);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error('Error fetching guide availability:', error);
+    }
+  };
+  
+  const guideId = id;
+  console.log(guideId);
+  
+  const amount = '2000';
+  const userEmail = currentUser?.message?.data?.email;
+
+  const bookingSubmit = async (slotId: string) => {
+    console.log('fdfdkjfdfdf')
+    console.log(selectedSlot, 'hhhhh');
+  
+    console.log(userEmail, 'email');
+  
+    const response = await usercheckOut({
+      slotId,
+      guideId,
+      userEmail,
+      amount
+    });
+
+    console.log("Payment Response:", response);
+    if(response) {
+      setUserSecert(response.data.client_secret)
+      setPaymentIntentid(response.data.paymentIntentid)
+      console.log(paymentIntentid, 'jjjjjjj')
+    }
+  };
+  
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p>Loading guide details...</p>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-red-500">
-        <p>{error}</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          <p className="font-bold">Error</p>
+          <p>{error}</p>
+        </div>
       </div>
     );
   }
@@ -166,22 +248,22 @@ const GuideDetails: React.FC = () => {
   if (!guide) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p>No guide found</p>
+        <p className="text-lg text-gray-600">No guide found</p>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-white text-black flex flex-col">
-      {/* Header */}
+    
       <UserHeader/>
       
-      {/* Main Content */}
+      
       <main className="flex-grow p-4 md:p-8 max-w-6xl mx-auto">
-        {/* Guide Details Section */}
+       
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 border-b border-gray-200 pb-8">
           <div className="md:col-span-1 flex justify-center">
-            <div className="w-48 h-48 overflow-hidden rounded-full border-2 border-black">
+            <div className="w-48 h-48 overflow-hidden rounded-full border-2 border-black shadow-md">
               <img 
                 src={guide.imageUrl} 
                 alt={`Guide ${guide.name}`} 
@@ -194,29 +276,29 @@ const GuideDetails: React.FC = () => {
             <div className="mb-4">
               <StarRating rating={guide.rating} />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg shadow-sm">
               <div>
-                <p className="font-semibold">Area of Expertise:</p>
-                <p>{guide.areaOfExpertise}</p>
+                <p className="font-semibold text-gray-700">Area of Expertise:</p>
+                <p className="text-gray-900">{guide.expertise}</p>
               </div>
               <div>
-                <p className="font-semibold">Experience:</p>
-                <p>{guide.experience}</p>
+                <p className="font-semibold text-gray-700">Experience:</p>
+                <p className="text-gray-900">{guide.experience}</p>
               </div>
               <div>
-                <p className="font-semibold">Languages:</p>
-                <p>{guide.languages.join(", ")}</p>
+                <p className="font-semibold text-gray-700">Languages:</p>
+                <p className="text-gray-900">{guide.languages.join(", ")}</p>
               </div>
               <div>
-                <p className="font-semibold">District:</p>
-                <p>{guide.district}</p>
+                <p className="font-semibold text-gray-700">District:</p>
+                <p className="text-gray-900">{guide.district}</p>
               </div>
             </div>
-            <div className="mt-6">
-              <p className="text-2xl font-bold">${guide.amountPerDay} per day</p>
+            <div className="mt-6 flex items-center justify-between">
+              <p className="text-2xl font-bold text-black">${guide.charge} <span className="text-sm font-normal text-gray-600">per day</span></p>
               <button
-                onClick={() => setIsModalOpen(true)}
-                className="mt-4 bg-black text-white px-6 py-2 rounded-md hover:bg-gray-800 transition duration-200"
+                onClick={() => travelGuide(guide._id)}
+                className="bg-black text-white px-6 py-2 rounded-md hover:bg-gray-800 transition duration-200 shadow-sm"
               >
                 Travel with this guide
               </button>
@@ -224,7 +306,7 @@ const GuideDetails: React.FC = () => {
           </div>
         </div>
 
-        {/* Reviews Section */}
+    
         <div className="mb-12">
           <h2 className="text-2xl font-bold mb-6 border-b border-gray-200 pb-2">
             Reviews ({guide.reviews.length})
@@ -232,10 +314,10 @@ const GuideDetails: React.FC = () => {
           <div className="space-y-6">
             {guide.reviews.length > 0 ? (
               guide.reviews.map((review, index) => (
-                <div key={index} className="border-b border-gray-100 pb-6">
+                <div key={index} className="border-b border-gray-100 pb-6 hover:bg-gray-50 p-4 rounded transition duration-150">
                   <div className="flex justify-between items-center mb-2">
                     <h3 className="font-semibold">{review.userName || 'Anonymous'}</h3>
-                    <span className="text-sm">{review.date || 'No date'}</span>
+                    <span className="text-sm text-gray-500">{review.date || 'No date'}</span>
                   </div>
                   <div className="mb-2">
                     <StarRating rating={review.rating || 0} />
@@ -244,17 +326,20 @@ const GuideDetails: React.FC = () => {
                 </div>
               ))
             ) : (
-              <p className="text-gray-500 text-center">No reviews yet</p>
+              <div className="text-center py-12 bg-gray-50 rounded-lg">
+                <p className="text-gray-500">No reviews yet</p>
+                <p className="text-sm text-gray-400 mt-2">Be the first to review after your trip!</p>
+              </div>
             )}
           </div>
         </div>
       </main>
 
-      {/* Availability Modal */}
+     
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-40">
           <div className="bg-white rounded-lg p-6 max-w-2xl w-full max-h-screen overflow-y-auto">
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center mb-6 border-b pb-4">
               <h2 className="text-xl font-bold">Select Available Date</h2>
               <button 
                 onClick={() => setIsModalOpen(false)}
@@ -267,14 +352,14 @@ const GuideDetails: React.FC = () => {
             </div>
             
             {/* Month Selector */}
-            <div className="flex space-x-2 mb-6">
+            <div className="flex space-x-2 mb-6 overflow-x-auto pb-2">
               {months.map((month, index) => (
                 <button
                   key={index}
                   onClick={() => setActiveMonth(index)}
-                  className={`px-4 py-2 rounded-md transition ${
+                  className={`px-4 py-2 rounded-md transition flex-shrink-0 ${
                     activeMonth === index
-                      ? 'bg-black text-white'
+                      ? 'bg-black text-white shadow-md'
                       : 'bg-gray-200 text-black hover:bg-gray-300'
                   }`}
                 >
@@ -284,19 +369,16 @@ const GuideDetails: React.FC = () => {
             </div>
             
             {/* Slots List */}
-            <div className="grid grid-cols-1 gap-3">
+            <div className="grid grid-cols-1 gap-3 max-h-96 overflow-y-auto p-2">
               {getFilteredSlots().length > 0 ? (
                 getFilteredSlots().map((slot) => (
                   <button
                     key={slot.id}
                     onClick={() => setSelectedSlot(slot)}
-                    disabled={!slot.isAvailable}
-                    className={`p-4 rounded-md border ${
+                    className={`p-4 rounded-md border transition duration-150 ${
                       selectedSlot?.id === slot.id
-                        ? 'border-black bg-gray-100'
-                        : slot.isAvailable
-                        ? 'border-gray-300 hover:border-black'
-                        : 'border-gray-200 bg-gray-50 opacity-50 cursor-not-allowed'
+                        ? 'border-black bg-gray-100 shadow-md'
+                        : 'border-gray-300 hover:border-black hover:bg-gray-50'
                     }`}
                   >
                     <div className="flex justify-between items-center">
@@ -305,18 +387,17 @@ const GuideDetails: React.FC = () => {
                         <p className="text-sm font-bold">{slot.day}</p>
                       </div>
                       <div>
-                        {slot.isAvailable ? (
-                          <span className="text-sm bg-black text-white px-2 py-1 rounded">Available</span>
-                        ) : (
-                          <span className="text-sm bg-gray-200 text-gray-700 px-2 py-1 rounded">Booked</span>
-                        )}
+                        <span className="text-sm bg-green-500 text-white px-2 py-1 rounded-full">Available</span>
                       </div>
                     </div>
                   </button>
                 ))
               ) : (
-                <div className="text-center py-8 text-gray-500">
-                  No available slots for this month
+                <div className="text-center py-12 bg-gray-50 rounded-lg">
+                  <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <p className="mt-2 text-gray-500">No available slots for this month</p>
                 </div>
               )}
             </div>
@@ -324,14 +405,13 @@ const GuideDetails: React.FC = () => {
             <div className="mt-8">
               <button
                 onClick={() => {
-                  // Handle booking logic here
-                  alert(`Booking confirmed for ${selectedSlot?.date} (${selectedSlot?.day})`);
+                  bookingSubmit(selectedSlot?.id)
                   setIsModalOpen(false);
                 }}
                 disabled={!selectedSlot}
-                className={`w-full py-3 rounded-md ${
+                className={`w-full py-3 rounded-md font-medium transition-colors ${
                   selectedSlot
-                    ? 'bg-black text-white hover:bg-gray-800'
+                    ? 'bg-black text-white hover:bg-gray-800 shadow-md'
                     : 'bg-gray-200 text-gray-500 cursor-not-allowed'
                 }`}
               >
@@ -340,6 +420,18 @@ const GuideDetails: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      
+      {userSecert && (
+        <Payment 
+          userSecret={userSecert} 
+          guideId={guideId} 
+          amount={amount} 
+          userEmail={userEmail} 
+          slotId={selectedSlot?.id}
+          paymentIntentid={paymentIntentid}
+        />
       )}
       
       {/* Footer */}

@@ -28,6 +28,10 @@ user_route.get('/allguideList',userController.allGuideList)
 
 user_route.get('/singleguidee/:id',userController.singleGuide)
 
+user_route.post('/createPaymentIntent',userController.createPaymentIntent)
+
+user_route.post('/paymentconfirmation',userController.paymentConfirmation)
+
     
 
 export default user_route

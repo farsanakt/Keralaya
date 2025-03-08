@@ -14,7 +14,8 @@ export interface IGuide extends  Document{
     status:string
     profileImage:string
     district:string
-    availabilitySlots:Date[]
+    charge:string
+    
 
 
 }
@@ -41,7 +42,9 @@ const GuideSchema = new mongoose.Schema<IGuide>({
 
     profileImage:{type:String,default:''},
 
-    availabilitySlots: { type: [Date], default: [] }
+    charge:{type:String,default:'2000'}
+
+    
 
     
   })

@@ -2,15 +2,26 @@
 import axios from "axios"
 import { IUser } from "../../models/userModel/userModel"
 import { UserRepositories } from "../../repositories/implementation/UserRepositories"
+import { SlotRepositories } from "@/repositories/implementation/SlotRepositories"
+import Stripe from "stripe"
+const STRIPEKEY = process.env.STRIPE_KEY
+
+const stripe = new Stripe(STRIPEKEY as string, {
+  apiVersion: "2025-02-24.acacia", // Use the correct version from TypeScript error
+});
+
 
 export class UserService{
 
     private userRepositories: UserRepositories
 
+    private slotRepositories:SlotRepositories
+
 
     constructor(){
 
         this.userRepositories=new UserRepositories()
+        this.slotRepositories=new SlotRepositories()
     }
 
     
@@ -117,6 +128,70 @@ export class UserService{
       }
     }
   
+    createPaymentIntent = async(slotId:string,guideId:string,userEmail:string,amount:string)=>{
+
+      const paymentIntent = await stripe.paymentIntents.create({
+
+        amount: Number(amount) * 100,
+        currency: 'usd',
+        payment_method_types: ["card"],
+        
+    }); 
+
+    const client_secret=paymentIntent.client_secret
+    const paymentIntentid=paymentIntent.id
+
+    return {client_secret,paymentIntentid}
+
+
+    }
+
+    paymentConfirmation = async (
+      slotId: string,
+      guideId: string,
+      userEmail: string,
+      amount: string,
+      stripePaymentIntentId: string,
+      stripeClientSecret: string
+    ) => {
+
+      try {
+        
+        const guideSlot = await this.slotRepositories.findSlot(guideId);
+    
+        if (!guideSlot) {
+          throw new Error("Slot not found");
+        }
+    
+        const updatedSlot = await this.slotRepositories.updateSlotStatus(guideId, slotId);
+    
+        if (!updatedSlot) {
+          throw new Error("Failed to update slot");
+        }
+    
+        
+        const newPayment = await this.slotRepositories.createPayment({
+          slotId,
+          guideId,
+          userEmail,
+          amount: parseFloat(amount),
+          stripePaymentIntentId,
+          stripeClientSecret
+        });
+    
+        return {
+          success: true,
+          message: "Payment confirmed & slot updated",
+          updatedSlot,
+          newPayment
+        };
+      } catch (error) {
+        console.error("Payment confirmation failed:", error);
+        throw new Error("Payment confirmation failed");
+      }
+    };
+    
+    
 
 
     

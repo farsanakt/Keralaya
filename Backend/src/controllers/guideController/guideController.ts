@@ -281,33 +281,6 @@ class GuideController {
 
   }
 
-  async availableSLots(req:Request,res:Response){
-
-
-    console.log('jjdjdkdfj')
-    
-    try {
-
-     const dates=req.body.dates
-     const email=req.body.email
-
-     console.log(dates,email)
-
-     if(!dates || !email){
-
-      res.status(HttpStatus.BAD_REQUEST).json({success:false,message:'Invalid request.dates and email are required'})
-
-     }
-
-     const response=await guideService.setSlotAvailability(email,dates)
-
-     console.log(response,'res')
-      
-    } catch (error) {
-      
-    }
-
-  }
 
   async guideDetails(req:Request,res:Response){
 

@@ -2,6 +2,8 @@ import { Guide ,IGuide} from "@/models/guideModel/guideModel";
 import { IGuideRepository } from "@/repositories/interface/IGuideRepositories";
 import {ILocation} from "@/models/guideModel/placeModel"
 import Location from "@/models/guideModel/placeModel";
+import GuideAvalilability from '@/models/guideModel/slotModel'
+import { IGuideAvailability } from "@/models/guideModel/slotModel"; 
 
 
 export class GuideRepositories implements IGuideRepository {
@@ -95,22 +97,20 @@ export class GuideRepositories implements IGuideRepository {
 
           }
 
+          async findGuideByEmail (email:string) : Promise<IGuideAvailability | null> {
+            const guide=await Guide.findOne({email})
+            if(guide){
 
-          async saveAvailability(email: string, dates: Date[]): Promise<{ message: string } | null> {
-            const existingGuide = await Guide.findOne({ email });
-        
-            if (existingGuide) {
-                
-                existingGuide.availabilitySlots = dates
-
-                await existingGuide.save()
-                
-                return { message: "Availability slots updated successfully." }
+              
+              const guideSlot=await GuideAvalilability.findOne({guideId:guide._id})
+              return guideSlot
             }
-        
-            return null;
+            return null
+
         }
-        
+
+
+       
         
           
           

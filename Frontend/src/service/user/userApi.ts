@@ -151,3 +151,25 @@ export const singleGuidee=async(id:string)=>{
     return response
 
 }
+
+export const usercheckOut = async (data: { slotId: string; guideId: string; userEmail: string; amount: string }) => {
+    const response = await api.post('/createPaymentIntent', data)
+    return response;
+  };
+
+
+  export const paymentConfirmation = async (data: {
+    slotId: string;
+    guideId: string;
+    userEmail: string;
+    amount: string;
+    usersecert: string;
+    paymentIntentid: string;
+  }) => {
+    console.log("Data before sending:", data)
+  
+    const response = await api.post("/paymentconfirmation", data);
+    return response.data;
+  };
+  
+  

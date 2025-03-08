@@ -1,4 +1,4 @@
-import { BaseRepository } from "@/repositories/implementation/BaseRepository";
+
 import { GuideRepositories } from "@/repositories/implementation/guideRepositories";
 import logger from "@/utils/logger.utils";
 
@@ -98,7 +98,7 @@ export class GuideService{
 
         try {
 
-          const guidedetails=await this.guideRepository.findUserByEmail(email)
+          const guidedetails=await this.guideRepository.findGuideByEmail(email)
 
           return guidedetails
          
@@ -130,26 +130,7 @@ export class GuideService{
 
       }
 
-      setSlotAvailability = async (email: string, dates: string[]) => {
-        try {
-          
-          const formattedDates = dates.map(dateStr => {
     
-            return new Date(`${dateStr}T00:00:00.000Z`);
-          });
-          
-          const result = await this.guideRepository.saveAvailability(email, formattedDates)
-
-          return result
-
-        } catch (error) {
-
-          console.error("Error setting slot availability:", error)
-
-          return { message: "Failed to set availability slots" }
-
-        }
-      };
 
       
 }

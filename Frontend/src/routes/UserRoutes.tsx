@@ -26,6 +26,7 @@ const UserRoutes = () => {
         <Route path="/singlelocation/:id"  element={<CardComponent/>}/>
         <Route path="/guidelist"   element={<ProtectedRoute element={<GuideList/>}/>}/>
         <Route path="/guidedetails/:id"   element={<ProtectedRoute element={<GuideDetails/>}/>}/>
+        {/* <Route path='/checkout' element={</>} */}
        
       </Routes>
     </div>
