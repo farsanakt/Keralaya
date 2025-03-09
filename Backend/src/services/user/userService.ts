@@ -128,68 +128,25 @@ export class UserService{
       }
     }
   
-    createPaymentIntent = async(slotId:string,guideId:string,userEmail:string,amount:string)=>{
-
-      const paymentIntent = await stripe.paymentIntents.create({
-
-        amount: Number(amount) * 100,
-        currency: 'usd',
-        payment_method_types: ["card"],
-        
-    }); 
-
-    const client_secret=paymentIntent.client_secret
-    const paymentIntentid=paymentIntent.id
-
-    return {client_secret,paymentIntentid}
-
-
-    }
-
-    paymentConfirmation = async (
-      slotId: string,
-      guideId: string,
-      userEmail: string,
-      amount: string,
-      stripePaymentIntentId: string,
-      stripeClientSecret: string
-    ) => {
-
+    bookingDetails = async (email: string) => {
       try {
-        
-        const guideSlot = await this.slotRepositories.findSlot(guideId);
+        const bkDetails = await this.userRepositories.findBookingDetails(email);
     
-        if (!guideSlot) {
-          throw new Error("Slot not found");
+        if (bkDetails && bkDetails.length > 0) {
+         
+          const guideDetails = await Promise.all(
+            bkDetails.map((booking) => this.userRepositories.singleguide(booking.guideId))
+          );
+    
+          return { guideDetails, bkDetails };
         }
     
-        const updatedSlot = await this.slotRepositories.updateSlotStatus(guideId, slotId);
-    
-        if (!updatedSlot) {
-          throw new Error("Failed to update slot");
-        }
-    
-        
-        const newPayment = await this.slotRepositories.createPayment({
-          slotId,
-          guideId,
-          userEmail,
-          amount: parseFloat(amount),
-          stripePaymentIntentId,
-          stripeClientSecret
-        });
-    
-        return {
-          success: true,
-          message: "Payment confirmed & slot updated",
-          updatedSlot,
-          newPayment
-        };
+        return null;
       } catch (error) {
-        console.error("Payment confirmation failed:", error);
-        throw new Error("Payment confirmation failed");
+        console.log("Something went wrong", error);
       }
     };
+    
     
     
 

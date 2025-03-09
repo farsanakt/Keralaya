@@ -3,9 +3,11 @@ import express from "express"
 import UserController from "@/controllers/userController/userController"
 import authenticateToken from "@/middleware/isAuthenticated"
 import { userStatus } from "@/middleware/userStatus"
+import PaymentController from "@/controllers/userController/paymentController"
 
 
 const userController=new UserController()
+const paymentController=new PaymentController()
 
 
 
@@ -28,9 +30,11 @@ user_route.get('/allguideList',userController.allGuideList)
 
 user_route.get('/singleguidee/:id',userController.singleGuide)
 
-user_route.post('/createPaymentIntent',userController.createPaymentIntent)
+user_route.post('/createPaymentIntent',paymentController.createPaymentIntent)
 
-user_route.post('/paymentconfirmation',userController.paymentConfirmation)
+user_route.post('/paymentconfirmation',paymentController.paymentConfirmation)
+
+user_route.get('/bookingDetails/:email',userController.bookingDetails)
 
     
 

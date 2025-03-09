@@ -165,46 +165,25 @@ class UserController{
 
  }
 
- async createPaymentIntent(req:Request,res:Response){
 
-try {
-   console.log('ddffd')
-
-   const { slotId, guideId, userEmail, amount } = req.body;
-
-   
-   const result = await userService.createPaymentIntent(slotId, guideId, userEmail, amount);
-
-   if(result){
-      res.status(HttpStatus.CREATED).json(result)
-   }
-   
-} catch (error) {
-
-   console.log('errror in createpayment')
-
-   
-}
-
-   
-
-   
-
-
- }
-
- async paymentConfirmation(req:Request,res:Response){
+ async bookingDetails(req:Request,res:Response){
 
    try {
-      const { slotId, guideId, userEmail, amount, userSecret, paymentIntentid } = req.body;
 
-     
+      const {email}=req.params
 
-      const response=await userService.paymentConfirmation(slotId,guideId,userEmail,amount,paymentIntentid,userSecret)
+      const response=await userService.bookingDetails(email)
 
+      if(response){
 
+         res.status(HttpStatus.CREATED).json(response)
+
+      }
+      
       
    } catch (error) {
+
+      res.status(HttpStatus.BAD_REQUEST).json({message:'something went wrong'})
       
    }
 

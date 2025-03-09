@@ -5,6 +5,7 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { profileRequest, updateProfie } from "../../service/user/userApi";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import UserSidebar from "@/components/user/UserSidebar";
 
 type User = {
   _id: string;
@@ -120,40 +121,7 @@ const Profile: React.FC = () => {
         <UserHeader />
       </header>
       <div className="flex flex-grow">
-        <aside className="w-64 bg-[#00563f] text-white flex flex-col shadow-lg mt-6 mb-6 ml-4 rounded-md">
-          <div className="p-6 text-center font-bold text-lg">
-            <p>User Dashboard</p>
-          </div>
-          <nav className="flex-grow space-y-4 p-4">
-            <a
-              href="/profile"
-              className="block py-2 px-4 rounded-md hover:bg-[#00482f] transition"
-            >
-              My Profile
-            </a>
-            <a
-              href="/guides"
-              className="block py-2 px-4 rounded-md hover:bg-[#00482f] transition"
-            >
-              Guides
-            </a>
-            <a
-              href="/reviews"
-              className="block py-2 px-4 rounded-md hover:bg-[#00482f] transition"
-            >
-              Reviews
-            </a>
-            <a
-              href="/reports"
-              className="block py-2 px-4 rounded-md hover:bg-[#00482f] transition"
-            >
-              Reports
-            </a>
-          </nav>
-          <footer className="p-4 text-center text-sm border-t border-[#00482f]">
-            © 2024 YourApp
-          </footer>
-        </aside>
+      <UserSidebar/>
         <main className="flex-grow flex items-center justify-center mt-6">
           <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
             <div className="flex flex-col items-center mb-6">

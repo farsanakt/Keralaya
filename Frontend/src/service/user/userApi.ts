@@ -171,5 +171,16 @@ export const usercheckOut = async (data: { slotId: string; guideId: string; user
     const response = await api.post("/paymentconfirmation", data);
     return response.data;
   };
+
+
+  export const userBookingDetails=async(email:string)=>{
+
+
+    console.log('email',email)
+    const response=await api.get(`/bookingDetails/${email}`)
+
+    return response
+
+  }
   
   

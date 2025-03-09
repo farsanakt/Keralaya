@@ -3,6 +3,7 @@ import { UpdateProfileDto } from "@/dto/userDto";
 import { ILocation} from "@/models/guideModel/placeModel";
 import Location from "@/models/guideModel/placeModel"
 import { Guide, IGuide } from "@/models/guideModel/guideModel";
+import BookingModel, { IBooking } from "@/models/userModel/BookingModel";
 
 
 
@@ -113,6 +114,12 @@ export class UserRepositories {
         return null;
         
       }
+
+    }
+
+    async findBookingDetails(email:string):Promise<IBooking[]| null>{
+
+      return await BookingModel.find({userEmail:email})
 
     }
       

@@ -8,6 +8,7 @@ import PublicRoute from "../service/user/PublicRoute";
 import CardComponent from "@/pages/user/SingleLocation";
 import GuideList from '../pages/user/GuideList';
 import GuideDetails from "@/pages/user/GuideDetails";
+import BookingDetailsTable from "@/pages/user/Booking";
 
 
 
@@ -26,6 +27,7 @@ const UserRoutes = () => {
         <Route path="/singlelocation/:id"  element={<CardComponent/>}/>
         <Route path="/guidelist"   element={<ProtectedRoute element={<GuideList/>}/>}/>
         <Route path="/guidedetails/:id"   element={<ProtectedRoute element={<GuideDetails/>}/>}/>
+        <Route path='/booking'element={<ProtectedRoute element={<BookingDetailsTable/>}/>}/>
         {/* <Route path='/checkout' element={</>} */}
        
       </Routes>
