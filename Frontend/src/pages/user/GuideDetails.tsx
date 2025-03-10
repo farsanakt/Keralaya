@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import UserFooter from '@/components/user/UserFooter';
 import UserHeader from '@/components/user/UserHeader';
 import { useParams } from "react-router-dom";
-import { singleGuidee, usercheckOut } from '@/service/user/userApi';
+import { fetchingReviewData, singleGuidee, usercheckOut } from '@/service/user/userApi';
 import { availableGuide } from '@/service/guide/guideApi';
 import { AppDispatch, RootState } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
@@ -38,7 +38,8 @@ interface Guide {
   district: string;
   charge: number;
   imageUrl: string;
-  reviews: Review[];
+  // reviews:sr[]
+  
 }
 
 interface AvailableDateItem {
@@ -55,6 +56,20 @@ interface GuideAvailability {
   createdAt?: string;
   updatedAt?: string;
 }
+
+interface IUserReview {
+  email: string;
+  username: string;
+  comment: string;
+  rating: number;
+}
+
+interface IReview {
+  guideId: string;
+  reviews: IUserReview[];
+  averageRating: number;
+}
+
 
 const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
   return (
@@ -94,6 +109,8 @@ const GuideDetails: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [userSecert, setUserSecert] = useState(null);
   const [paymentIntentid, setPaymentIntentid] = useState(null);
+  const [review, setReview] = useState<IReview | null>(null);
+
   const dispatch: AppDispatch = useDispatch();
 
   const { currentUser } = useSelector((state: RootState) => state.user);
@@ -133,7 +150,23 @@ const GuideDetails: React.FC = () => {
     });
   };
 
+  const fetchingReview = async () => {
+    console.log("Fetching reviews...");
+  
+    if (!id) return; // Ensure id exists before making a request
+  
+    try {
+      const response = await fetchingReviewData(id);
+      if (response && response.data) {
+        setReview(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
+  };
+  
   useEffect(() => {
+    fetchingReview()
     const fetchGuideDetails = async () => {
       try {
         setLoading(true);
@@ -172,6 +205,7 @@ const GuideDetails: React.FC = () => {
     };
 
     fetchGuideDetails();
+    
   }, [id]);
 
   const fetchGuideAvailability = async (guideId: string) => {
@@ -225,6 +259,8 @@ const GuideDetails: React.FC = () => {
       console.log(paymentIntentid, 'jjjjjjj')
     }
   };
+
+
   
   if (loading) {
     return (
@@ -306,23 +342,22 @@ const GuideDetails: React.FC = () => {
           </div>
         </div>
 
-    
         <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6 border-b border-gray-200 pb-2">
-            Reviews ({guide.reviews.length})
+        <h2 className="text-2xl font-bold mb-6 border-b border-gray-200 pb-2">
+            Reviews ({review?.reviews?.length ?? 0})
           </h2>
           <div className="space-y-6">
-            {guide.reviews.length > 0 ? (
-              guide.reviews.map((review, index) => (
+            {review?.reviews?.length ? (
+              review.reviews.map((reviewItem, index) => (
                 <div key={index} className="border-b border-gray-100 pb-6 hover:bg-gray-50 p-4 rounded transition duration-150">
                   <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-semibold">{review.userName || 'Anonymous'}</h3>
-                    <span className="text-sm text-gray-500">{review.date || 'No date'}</span>
+                    <h3 className="font-semibold">{reviewItem.username || "Anonymous"}</h3>
+                    <span className="text-sm text-gray-500">Date Not Available</span>
                   </div>
                   <div className="mb-2">
-                    <StarRating rating={review.rating || 0} />
+                    <StarRating rating={reviewItem.rating || 0} />
                   </div>
-                  <p className="text-gray-700">{review.comment || 'No comment'}</p>
+                  <p className="text-gray-700">{reviewItem.comment || "No comment provided."}</p>
                 </div>
               ))
             ) : (
@@ -333,6 +368,8 @@ const GuideDetails: React.FC = () => {
             )}
           </div>
         </div>
+
+
       </main>
 
      

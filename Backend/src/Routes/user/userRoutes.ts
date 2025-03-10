@@ -36,6 +36,10 @@ user_route.post('/paymentconfirmation',paymentController.paymentConfirmation)
 
 user_route.get('/bookingDetails/:email',userController.bookingDetails)
 
+user_route.post('/reviewPosting',userController.postReview)
+
+user_route.get('/fetchingReview/:id',userController.guideReviews)
+
     
 
 export default user_route

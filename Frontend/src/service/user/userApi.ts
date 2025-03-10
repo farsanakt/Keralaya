@@ -175,12 +175,26 @@ export const usercheckOut = async (data: { slotId: string; guideId: string; user
 
   export const userBookingDetails=async(email:string)=>{
 
-
-    console.log('email',email)
     const response=await api.get(`/bookingDetails/${email}`)
 
     return response
 
   }
   
+
+  export const postReview=async(reviewData:any)=>{
+
+    const response=await api.post('/reviewPosting',reviewData)
+
+    return response
+
+  }
   
+
+  export const fetchingReviewData=async(id:string)=>{
+
+    const response=await api.get(`/fetchingReview/${id}`)
+
+    return response
+
+  }

@@ -4,6 +4,9 @@ import { ILocation} from "@/models/guideModel/placeModel";
 import Location from "@/models/guideModel/placeModel"
 import { Guide, IGuide } from "@/models/guideModel/guideModel";
 import BookingModel, { IBooking } from "@/models/userModel/BookingModel";
+import ReviewModel from "@/models/userModel/reviewModel";
+import reviewModel from "@/models/userModel/reviewModel";
+import { IReview } from "@/models/userModel/reviewModel";
 
 
 
@@ -122,6 +125,49 @@ export class UserRepositories {
       return await BookingModel.find({userEmail:email})
 
     }
+
+    async saveReview(reviewData: { guideId: string; email: string; username: string; rating: number; comment: string }) {
+      try {
+        const { guideId, email, username, rating, comment } = reviewData;
+    
+        const existingReview = await ReviewModel.findOne({ guideId, "reviews.email": email });
+    
+        if (existingReview) {
+          return { success: false, message: "You have already submitted a review for this guide." };
+        }
+    
+        let review = await ReviewModel.findOne({ guideId });
+    
+        if (!review) {
+         
+          review = new ReviewModel({
+            guideId,
+            reviews: [{ email, username, comment, rating }],
+            averageRating: rating, 
+          });
+        } else {
+         
+          review.reviews.push({ email, username, comment, rating });
+    
+          const totalRatings = review.reviews.length;
+          const totalScore = review.reviews.reduce((sum, r) => sum + r.rating, 0);
+          review.averageRating = totalScore / totalRatings;
+        }
+    
+        await review.save();
+        return { success: true, message: "Review added successfully", review };
+      } catch (error) {
+        console.error("Database error:", error);
+        return { success: false, message: "Database error" };
+      }
+    }
+
+    async findGuideReview(id:string):Promise<IReview | null>{
+
+      return await reviewModel.findOne({guideId:id})
+      
+    }
+    
       
 
 }

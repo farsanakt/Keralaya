@@ -209,10 +209,10 @@ class GuideController {
     try {
 
       const email=req.user?._doc?.email; 
-
-      console.log(email,'ememmem')
       
       const response=await guideService.guideData(email)
+
+      console.log(response,'kkkkkopeee')
       
       
       if(response){

@@ -1,8 +1,10 @@
 import UserSidebar from '@/components/user/UserSidebar';
 import { RootState } from '@/redux/store';
-import { userBookingDetails } from '@/service/user/userApi';
+import { postReview, userBookingDetails } from '@/service/user/userApi';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; 
 
 // Define types for our data structures
 interface BookingDetails {
@@ -49,7 +51,7 @@ const BookingDetailsTable: React.FC = () => {
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [showReviewModal, setShowReviewModal] = useState<boolean>(false);
   const [showInvoiceModal, setShowInvoiceModal] = useState<boolean>(false);
-  const [review, setReview] = useState<ReviewData>({ rating: 5, comment: "" });
+  const [review, setReview] = useState<ReviewData>({ rating: 0, comment: "" });
   const [loading, setLoading] = useState<boolean>(true);
 
   const userDetails = async () => {
@@ -92,7 +94,8 @@ const BookingDetailsTable: React.FC = () => {
 
   // Function to open the review modal
   const handleOpenReviewModal = (): void => {
-    setShowReviewModal(true);
+    setShowReviewModal(true)
+    
   };
 
   // Function to close the review modal
@@ -111,19 +114,46 @@ const BookingDetailsTable: React.FC = () => {
   };
 
   // Function to submit the review
-  const handleSubmitReview = (): void => {
-    if (selectedBooking) {
-      // Here you would implement the logic to submit the review
-      console.log("Submitting review:", review, "for booking:", selectedBooking._id);
-      
-      // Reset the review form
-      setReview({ rating: 5, comment: "" });
-      
-      // Close the modals
-      setShowReviewModal(false);
-      setSelectedBooking(null);
+  const handleSubmitReview = async () => {
+    if (!review.rating || !review.comment) {
+      toast.error("Please provide a rating and a comment.");
+      return;
+    }
+  
+    const username = currentUser?.message?.data?.username;
+    const email = currentUser?.message?.data?.email;
+  
+    const reviewData = {
+      guideId: selectedBooking?.guide?._id,
+      rating: review.rating,
+      comment: review.comment,
+      username,
+      email,
+    };
+  
+    try {
+      const response = await postReview(reviewData);
+  
+      if (response.data.success) {
+        toast.success("Review submitted successfully!");
+        handleCloseReviewModal(); // Close the modal after submission
+      } else {
+        toast.error(response.data.message || "Failed to submit review.");
+        handleCloseReviewModal()
+      }
+    } catch (error: any) {
+      console.error("Error submitting review:", error);
+  
+      // ✅ Extracting error message correctly
+      const errorMessage =
+        error.response?.data?.message || "Something went wrong. Please try again.";
+  
+      toast.error(errorMessage);
+      handleCloseReviewModal()
     }
   };
+  
+  
 
   // Function to generate invoice number
   const generateInvoiceNumber = (bookingId: string): string => {

@@ -189,6 +189,51 @@ class UserController{
 
  }
 
+ async postReview(req:Request,res:Response){
+
+   try {
+
+      const reviewData=req.body
+
+      const response=await userService.reviewPosting(reviewData)
+
+      if (!response.success) {
+          res.status(400).json(response);
+          return
+       }
+   
+       res.status(201).json(response);
+      
+   } catch (error) {
+      res.status(500).json({ message: "Server error" });
+   }
+
+ }
+
+ async guideReviews(req:Request,res:Response){
+
+   const {id}=req.params
+
+   try {
+
+      const response=await userService.fetchingGuideReview(id)
+      console.log(response,'hhhhop')
+
+      if(response){
+
+         res.status(HttpStatus.CREATED).json(response)
+
+      }
+      
+   } catch (error) {
+
+      res.status(HttpStatus.BAD_REQUEST).json({message:'something went wrong'})
+      
+   }
+  
+
+ }
+
 }
 
 export default UserController

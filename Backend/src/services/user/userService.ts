@@ -146,6 +146,35 @@ export class UserService{
         console.log("Something went wrong", error);
       }
     };
+
+    async reviewPosting(reviewData: any) {
+
+      try {
+
+        return await this.userRepositories.saveReview(reviewData)
+
+      } catch (error) {
+
+        return { success: false, message: "Service error" }
+
+      }
+    }
+
+     fetchingGuideReview=async(id:string)=>{
+
+      try {
+
+        const guideReviews=await this.userRepositories.findGuideReview(id)
+
+        return guideReviews
+        
+      } catch (error) {
+
+        console.log('error occur in fetching guidereviews')
+        
+      }
+
+    }
     
     
     
