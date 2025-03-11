@@ -19,8 +19,9 @@ const Dashboard: React.FC = () => {
             <FiStar className="text-xl" />
             <span className="text-lg">Reviews</span>
           </li>
-          <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer">
+          <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer" onClick={()=>navigate('/guide/bookings')}>
             <FiBook className="text-xl" />
+            
             <span className="text-lg">Booking</span>
           </li>
           <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer">

@@ -98,7 +98,7 @@ export class GuideService{
 
         try {
 
-          const guidedetails=await this.guideRepository.findGuideByEmail(email)
+          const guidedetails=await this.guideRepository.findUserByEmail(email)
 
           return guidedetails
          
@@ -116,7 +116,7 @@ export class GuideService{
 
         try {
 
-          const {_id,name,email,phone,experience,expertise,profileImage}=guidedata
+          const {_id,name,email,phone,experience,expertise,profileImage,district}=guidedata
 
           const updateProfileData=await this.guideRepository.updateProfile(_id,guidedata)
 
@@ -125,6 +125,37 @@ export class GuideService{
         } catch (error) {
 
           logger.info('error in guideprofile updation')
+          
+        }
+
+      }
+
+
+      userBookingDetails=async(email:string)=>{
+
+        try {
+
+          const guide=await this.guideRepository.findUserByEmail(email)
+
+          if(guide){
+
+            const guideId = guide._id ? guide._id.toString() : "";
+           
+
+
+            const userBookings=await this.guideRepository.findBookingsById(guideId)
+
+            return userBookings
+
+          }
+
+          return {message:'there is no upcoming bookings'}
+
+
+          
+        } catch (error) {
+
+          console.log('error occur in guideservice of fetchignuserbooking details')
           
         }
 

@@ -240,7 +240,8 @@ class GuideController {
 
       console.log('reached in updateprofile controller in guide side')
       
-      const {_id,name,email,phone,experience,expertise}=req.body
+      const {_id,name,email,phone,experience,expertise,district}=req.body
+      console.log(district,'dis')
 
       const files=req.file
 
@@ -256,7 +257,7 @@ class GuideController {
   
      const imgUrl=result.secure_url
 
-     const guidedata={_id,name,email,phone,experience,expertise,profileImage:imgUrl}
+     const guidedata={_id,name,email,phone,experience,expertise,profileImage:imgUrl,district}
 
      const response=await guideService.updateProfile(guidedata)
 
@@ -288,6 +289,8 @@ class GuideController {
 
     const response=await guideService.guideData(email)
 
+    console.log(response,'gggggggopppe')
+
     if(!response){
 
       res.status(HttpStatus.BAD_REQUEST).json({message:'something went wrong'})
@@ -299,6 +302,28 @@ class GuideController {
       res.status(200).json(response)
 
       
+
+  }
+
+  async userBookingDetails(req:Request,res:Response){
+   
+   const {email}=req.params
+    try {
+
+      const response=await guideService.userBookingDetails(email)
+
+      if(response){
+
+        res.status(HttpStatus.CREATED).json(response)
+
+      }
+
+      
+    } catch (error) {
+
+      res.status(HttpStatus.BAD_REQUEST).json({message:'something went wrong'})
+      
+    }
 
   }
 

@@ -11,8 +11,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { LANGUAGES, EXPERTISE_AREAS } from "@/types/guideprofile"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/redux/store"
-import { guideDetails, updateProfile } from "@/service/guide/guideApi"
-import { z } from "zod"
+import { guiddeDetails, updateProfile } from "@/service/guide/guideApi"
 import { useToast } from "@/components/ui/use-toast"
 
 // Define more specific types
@@ -25,6 +24,8 @@ interface Guide {
   experience: string;
   phone: string;
   profileImage: string | File;
+  charge?: string;
+  district?: string;
 }
 
 const initialGuideState: Guide = {
@@ -36,8 +37,9 @@ const initialGuideState: Guide = {
   experience: "",
   phone: "",
   profileImage: "",
+  charge: "",
+  district: ""
 }
-
 
 const Skeleton = ({ className }: { className: string }) => (
   <div className={`animate-pulse bg-gray-200 rounded ${className}`} />
@@ -47,41 +49,60 @@ export default function GuideProfileComponent() {
   const [isEditing, setIsEditing] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const [guideeData, setGuideeData] = useState<Guide>(initialGuideState)
+  const [guideData, setGuideData] = useState<Guide>(initialGuideState)
   const [errors, setErrors] = useState<Partial<Record<keyof Guide, string>>>({})
   const { currentGuide } = useSelector((state: RootState) => state.guide)
   const { toast } = useToast()
 
-  const guideData = async () => {
+  const fetchGuideData = async () => {
     if (!currentGuide?.data) {
       console.error("currentGuide is undefined!")
       return
     }
-
+  
+    // Ensure currentGuide.data is a string before using it as an email
+    const email: string = typeof currentGuide.data === "string" ? currentGuide.data : "";
+  
+    if (!email) {
+      console.error("Invalid email provided!");
+      return;
+    }
+  
     try {
-      setIsLoading(true)
-      const response = await guideDetails()
+      setIsLoading(true);
+      // Use the correct function name that matches your API service
+      const response = await guiddeDetails(email); 
+  
+      console.log("Guide data response:", response);
       
-      if (response?.data?.[0]) {
+      if (response) {
+        // Map backend data to frontend Guide interface
         const validatedData: Guide = {
-          ...response.data[0],
-          languages: response.data[0].languages || [],
-          profileImage: response.data[0].profileImage || ""
-        }
-        setGuideeData(validatedData)
+          _id: response._id || "",
+          name: response.name || "",
+          email: response.email || "",
+          expertise: response.expertise || "",
+          languages: response.languages || [],
+          experience: response.experience || "",
+          phone: response.phone || "",
+          profileImage: response.profileImage || "",
+          charge: response.charge || "",
+          district: response.district || ""
+        };
+        setGuideData(validatedData);
       }
     } catch (error) {
-      console.error("Error fetching guide details:", error)
+      console.error("Error fetching guide details:", error);
       toast({
         title: "Error",
         description: "Failed to fetch guide details",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
-
+  };
+  
   const handleImageClick = () => {
     if (isEditing) {
       fileInputRef.current?.click()
@@ -91,51 +112,57 @@ export default function GuideProfileComponent() {
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file) {
-      setGuideeData({ ...guideeData, profileImage: file })
+      setGuideData({ ...guideData, profileImage: file })
     }
   }
 
   const handleLanguageChange = (languageId: string) => {
-    const updatedLanguages = guideeData.languages.includes(languageId)
-      ? guideeData.languages.filter((id) => id !== languageId)
-      : [...guideeData.languages, languageId]
+    const updatedLanguages = guideData.languages.includes(languageId)
+      ? guideData.languages.filter((id) => id !== languageId)
+      : [...guideData.languages, languageId]
 
-    setGuideeData({ ...guideeData, languages: updatedLanguages })
+    setGuideData({ ...guideData, languages: updatedLanguages })
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
-    setGuideeData({ ...guideeData, [name]: value })
+    setGuideData({ ...guideData, [name]: value })
   }
 
   const handleSave = async () => {
     try {
       const formData = new FormData()
-
-      console.log(guideeData,'hhh')
       
-    
-      formData.append("_id", guideeData._id)
-      formData.append("name", guideeData.name)
-      formData.append("email", guideeData.email)
-      formData.append("phone", guideeData.phone)
-      formData.append("experience", guideeData.experience)
-      formData.append("expertise", guideeData.expertise)
+      // Append all fields to formData
+      formData.append("_id", guideData._id)
+      formData.append("name", guideData.name)
+      formData.append("email", guideData.email)
+      formData.append("phone", guideData.phone)
+      formData.append("experience", guideData.experience)
+      formData.append("expertise", guideData.expertise)
       
+      if (guideData.charge) {
+        formData.append("charge", guideData.charge)
+      }
       
-      guideeData.languages.forEach(lang => {
+      if (guideData.district) {
+        formData.append("district", guideData.district)
+      }
+      
+      // Handle languages as an array
+      guideData.languages.forEach(lang => {
         formData.append("languages[]", lang)
       })
 
-     
-      if (guideeData.profileImage instanceof File) {
-        formData.append("profileImage", guideeData.profileImage)
+      // Handle profile image if it's a File
+      if (guideData.profileImage instanceof File) {
+        formData.append("profileImage", guideData.profileImage)
       }
 
       const response = await updateProfile(formData)
       
       if (response) {
-        await guideData()
+        await fetchGuideData()
         setIsEditing(false)
         toast({
           title: "Success",
@@ -153,7 +180,7 @@ export default function GuideProfileComponent() {
   }
 
   useEffect(() => {
-    guideData()
+    fetchGuideData()
   }, [currentGuide])
 
   if (isLoading) {
@@ -191,12 +218,12 @@ export default function GuideProfileComponent() {
                 }`}
                 onClick={handleImageClick}
               >
-                {guideeData.profileImage ? (
+                {guideData.profileImage ? (
                   <img
                     src={
-                      typeof guideeData.profileImage === "string"
-                        ? guideeData.profileImage
-                        : URL.createObjectURL(guideeData.profileImage)
+                      typeof guideData.profileImage === "string"
+                        ? guideData.profileImage
+                        : URL.createObjectURL(guideData.profileImage)
                     }
                     alt="Profile"
                     className="w-full h-full object-cover"
@@ -248,6 +275,8 @@ export default function GuideProfileComponent() {
                   { icon: Mail, name: "email", label: "Email", type: "email", disabled: true },
                   { icon: Phone, name: "phone", label: "Phone Number", type: "text" },
                   { icon: Award, name: "experience", label: "Years of Experience", type: "text" },
+                  // { icon: Award, name: "charge", label: "Charge (₹)", type: "text" },
+                  { icon: Award, name: "district", label: "District", type: "text" },
                 ].map((field) => (
                   <div key={field.name} className="flex items-center space-x-4">
                     <field.icon className="w-6 h-6 text-gray-600" />
@@ -259,7 +288,7 @@ export default function GuideProfileComponent() {
                         id={field.name}
                         name={field.name}
                         type={field.type}
-                        value={guideeData[field.name as keyof Guide] as string}
+                        value={guideData[field.name as keyof Guide] as string || ""}
                         onChange={handleInputChange}
                         disabled={!isEditing || field.disabled}
                         className={`mt-1 ${
@@ -282,9 +311,9 @@ export default function GuideProfileComponent() {
                 </Label>
                 <Select
                   disabled={!isEditing}
-                  value={guideeData.expertise}
+                  value={guideData.expertise}
                   onValueChange={(value) => {
-                    setGuideeData({ ...guideeData, expertise: value })
+                    setGuideData({ ...guideData, expertise: value })
                   }}
                 >
                   <SelectTrigger className={`w-full ${errors.expertise ? "border-red-500" : ""}`}>
@@ -310,7 +339,7 @@ export default function GuideProfileComponent() {
                     <div key={language.id} className="flex items-center space-x-2">
                       <Checkbox
                         id={language.id}
-                        checked={guideeData.languages.includes(language.id)}
+                        checked={guideData.languages.includes(language.id)}
                         onCheckedChange={() => handleLanguageChange(language.id)}
                         disabled={!isEditing}
                       />

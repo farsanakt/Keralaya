@@ -4,6 +4,8 @@ import {ILocation} from "@/models/guideModel/placeModel"
 import Location from "@/models/guideModel/placeModel";
 import GuideAvalilability from '@/models/guideModel/slotModel'
 import { IGuideAvailability } from "@/models/guideModel/slotModel"; 
+import BookingModel, { IBooking } from "@/models/userModel/BookingModel";
+import userModel from "@/models/userModel/userModel";
 
 
 export class GuideRepositories implements IGuideRepository {
@@ -73,6 +75,8 @@ export class GuideRepositories implements IGuideRepository {
 
         async updateProfile(guideId: string, guideData: IGuide): Promise<{ message: string } | null> {
 
+          console.log(guideData,'data')
+
             try {
              
               const updatedProfile = await Guide.findByIdAndUpdate(
@@ -108,6 +112,15 @@ export class GuideRepositories implements IGuideRepository {
             return null
 
         }
+
+
+        async findBookingsById(id:string):Promise<IBooking[] |null>{
+
+          return await BookingModel.find({guideId:id})
+          
+        }
+
+        
 
 
        

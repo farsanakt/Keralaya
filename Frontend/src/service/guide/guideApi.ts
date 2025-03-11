@@ -85,10 +85,10 @@ export const addLocations = async (formData: FormData) => {
   }
 
   export const guiddeDetails = async (email: string) => {
-    const response = await api.get(`/guideDetaills/${email}` // ✅ Correct way to pass query parameters
+    const response = await api.get(`/guideDetaillsee/${email}`
     );
   
-    return response.data; // Return response data
+    return response.data; 
   };
   
 
@@ -142,4 +142,12 @@ export const addLocations = async (formData: FormData) => {
 
   }
   
+
+  export const userBookingDetails=async(email:string)=>{
+
+    const response =await api.get(`/userbookingDetails/${email}`)
+
+    return response
+
+  }
   

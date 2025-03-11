@@ -20,9 +20,11 @@ guide_route.post('/updateprofiles',upload.single('profileImage'),guideController
 
 guide_route.post('/guideslot',slotController.availableSLots)
 
- guide_route.get('/guideDetaills/:email',guideController.guideDetails)
+ guide_route.get('/guideDetaillsee/:email',guideController.guideDetails)
 
  guide_route.get('/availableguide/:id',slotController.availableGuideSlot)
+
+ guide_route.get('/userbookingDetails/:email',guideController.userBookingDetails)
 
 
 
