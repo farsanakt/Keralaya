@@ -60,6 +60,28 @@ class SlotController{
 
   }
 
+  async slotManagement(req:Request,res:Response){
+
+    try {
+
+      const {email}=req.params
+
+      const response=await slotService.slotMangagement(email)
+
+      if(response){
+
+        res.status(HttpStatus.CREATED).json(response)
+
+      }
+      
+    } catch (error) {
+
+      res.status(HttpStatus.BAD_REQUEST).json({message:'something went wrong'})
+      
+    }
+
+  }
+
 
 }
 

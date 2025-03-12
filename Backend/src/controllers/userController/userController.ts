@@ -144,6 +144,8 @@ class UserController{
 
  async singleGuide(req:Request,res:Response){
 
+   console.log('reached here')
+
     try {
 
       const {id}=req.params

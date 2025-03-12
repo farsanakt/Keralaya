@@ -26,6 +26,8 @@ guide_route.post('/guideslot',slotController.availableSLots)
 
  guide_route.get('/userbookingDetails/:email',guideController.userBookingDetails)
 
+ guide_route.get('/guideslots/:email',slotController.slotManagement)
+
 
 
 

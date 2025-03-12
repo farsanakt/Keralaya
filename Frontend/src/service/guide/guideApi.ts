@@ -90,6 +90,14 @@ export const addLocations = async (formData: FormData) => {
   
     return response.data; 
   };
+
+  export const slotmanagement=async(email:string)=>{
+
+    const response=await api.get(`guideslots/${email}`)
+
+    return response
+
+  }
   
 
 

@@ -289,8 +289,6 @@ class GuideController {
 
     const response=await guideService.guideData(email)
 
-    console.log(response,'gggggggopppe')
-
     if(!response){
 
       res.status(HttpStatus.BAD_REQUEST).json({message:'something went wrong'})

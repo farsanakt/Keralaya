@@ -37,7 +37,7 @@ const Dashboard: React.FC = () => {
             <FiDollarSign className="text-xl" />
             <span className="text-lg">Transaction</span>
           </li>
-          <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer">
+          <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer" onClick={()=>navigate('/guide/slot')}>
             <FiClock className="text-xl" />
             <span className="text-lg">Slot</span>
           </li>
