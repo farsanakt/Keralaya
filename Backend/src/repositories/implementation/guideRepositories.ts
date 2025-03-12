@@ -120,6 +120,22 @@ export class GuideRepositories implements IGuideRepository {
           
         }
 
+        async updateStatus(id:string):Promise<IBooking|null>{
+
+          const existing=await BookingModel.findById(id)
+
+          if(existing){
+
+            existing.status='completed'
+
+            await existing.save()
+
+          }
+          return existing
+
+
+        }
+
         
 
 

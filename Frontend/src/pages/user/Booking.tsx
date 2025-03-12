@@ -136,7 +136,7 @@ const BookingDetailsTable: React.FC = () => {
   
       if (response.data.success) {
         toast.success("Review submitted successfully!");
-        handleCloseReviewModal(); // Close the modal after submission
+        handleCloseReviewModal()
       } else {
         toast.error(response.data.message || "Failed to submit review.");
         handleCloseReviewModal()
@@ -144,7 +144,7 @@ const BookingDetailsTable: React.FC = () => {
     } catch (error: any) {
       console.error("Error submitting review:", error);
   
-      // ✅ Extracting error message correctly
+      
       const errorMessage =
         error.response?.data?.message || "Something went wrong. Please try again.";
   
@@ -155,7 +155,7 @@ const BookingDetailsTable: React.FC = () => {
   
   
 
-  // Function to generate invoice number
+  
   const generateInvoiceNumber = (bookingId: string): string => {
     const date = new Date();
     const year = date.getFullYear();
@@ -173,7 +173,7 @@ const BookingDetailsTable: React.FC = () => {
       <div className="flex-1 p-4">
         <h2 className="text-xl font-bold mb-4">Your Bookings</h2>
         
-        {/* Bookings Table */}
+       
         <div className="overflow-x-auto bg-white rounded-lg shadow">
           {loading ? (
             <div className="p-4 text-center">Loading your bookings...</div>
@@ -229,7 +229,7 @@ const BookingDetailsTable: React.FC = () => {
           )}
         </div>
 
-        {/* Booking Details Modal */}
+        
         {selectedBooking && (
           <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">

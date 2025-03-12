@@ -28,6 +28,8 @@ guide_route.post('/guideslot',slotController.availableSLots)
 
  guide_route.get('/guideslots/:email',slotController.slotManagement)
 
+ guide_route.post('/completedtravel/:id',guideController.completedTravel)
+
 
 
 

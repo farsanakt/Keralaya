@@ -144,8 +144,6 @@ class UserController{
 
  async singleGuide(req:Request,res:Response){
 
-   console.log('reached here')
-
     try {
 
       const {id}=req.params
@@ -219,8 +217,7 @@ class UserController{
    try {
 
       const response=await userService.fetchingGuideReview(id)
-      console.log(response,'hhhhop')
-
+     
       if(response){
 
          res.status(HttpStatus.CREATED).json(response)

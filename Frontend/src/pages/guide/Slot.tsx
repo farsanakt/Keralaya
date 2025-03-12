@@ -2,6 +2,8 @@ import { RootState } from '@/redux/store';
 import { guiddeDetails, guideSlot, slotmanagement } from '@/service/guide/guideApi';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 interface GuideSlotCalendarProps {
   initialDate?: Date;
@@ -62,10 +64,10 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
     try {
       setIsLoading(true);
       const response = await slotmanagement(email);
-      setGuideData(response.data); // Access the data property from the response
+      setGuideData(response.data)
       console.log("Guide data loaded:", response);
       
-      // Process available dates from the response structure
+      
       if (response?.data?.availability?.availableDates && response.data.availability.availableDates.length > 0) {
         const formattedSlots = response.data.availability.availableDates
           .filter((slot: AvailableDateItem) => !slot.isBlocked && !slot.isBooked)
@@ -144,23 +146,24 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
     setIsEditMode(!isEditMode);
   };
   
-  const submitDates = async () => {
-    if (selectedDates.length === 0) {
-      alert("Please select at least one date.");
-      return;
-    }
-  
-    try {
-      const response = await guideSlot(selectedDates, email);
-      console.log("Response from server:", response);
-      alert("Slots saved successfully!");
-      setIsEditMode(false);
-      fetchGuideDetails(email);
-    } catch (error) {
-      console.error("Error saving slots:", error);
-      alert("Failed to save slots.");
-    }
-  };
+
+const submitDates = async () => {
+  if (selectedDates.length === 0) {
+    toast.error("Please select at least one date.");
+    return;
+  }
+
+  try {
+    const response = await guideSlot(selectedDates, email)
+    console.log("Response from server:", response);
+    toast.success('Slots updated successfully!');
+    setIsEditMode(false);
+    fetchGuideDetails(email);
+  } catch (error) {
+    console.error("Error saving slots:", error);
+    toast.error("Failed to save slots. Please try again.");
+  }
+};
   
   const renderCalendar = (): JSX.Element[] => {
     const daysInMonth = getDaysInMonth(currentDate);

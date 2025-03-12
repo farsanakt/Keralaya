@@ -158,4 +158,23 @@ export const addLocations = async (formData: FormData) => {
     return response
 
   }
+
+  export const completedTravel=async(id:string)=>{
+
+    const response=await api.post(`/completedtravel/${id}`)
+
+    return response
+
+  }
+
+  export const guidelogout=async()=>{
+  
+    console.log('ashdkfusdhf q');
+    
+      const response=await api.get('/guidelogout')
+    console.log(response);
+    
+      return response
+  
+  }
   

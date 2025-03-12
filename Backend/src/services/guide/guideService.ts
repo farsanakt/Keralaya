@@ -161,6 +161,22 @@ export class GuideService{
 
       }
 
+      completedTravel=async(id:string)=>{
+
+        try {
+
+          const updating=await this.guideRepository.updateStatus(id)
+
+          return updating
+
+          
+        } catch (error) {
+
+          console.log('error occur in guiderepo')
+          
+        }
+
+      }
     
 
       

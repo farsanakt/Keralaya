@@ -42,8 +42,6 @@ class SlotController{
 
        const response=await slotService.guideSlot(id)
 
-       console.log(response,'fdfdffd')
-
        if(!response){
 
         res.status(HttpStatus.BAD_REQUEST).json({message:"no slot available"})

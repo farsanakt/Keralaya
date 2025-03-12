@@ -1,55 +1,100 @@
+import { logout, resetGuide } from "@/redux/slices/guideSlice";
+import { guidelogout } from "@/service/guide/guideApi";
 import React from "react";
-import { FiHome, FiStar, FiBook, FiBarChart2, FiUser, FiDollarSign, FiClock } from "react-icons/fi";
+import { FiHome, FiStar, FiBook, FiBarChart2, FiUser, FiDollarSign, FiClock, FiLogOut } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 const Dashboard: React.FC = () => {
   const navigate=useNavigate()
+
+  // const handleLogout=async()=>{
+
+  //   try {
+  //         const response = await guidelogout();
+  //         if(response)
+  //        {
+  //         console.log('inisde this');
+          
+  //         localStorage.removeItem('accessToken');
+  //         dispatch(logout());
+  //         navigate('/guide/login')
+  //        }
+  //         setDropdownOpen(false);
+  //         console.log(response);
+  //       } catch (error) {
+          
+  //       }
+
+  // }
+  const handleLogout = async () => {
+    try {
+        const response = await guidelogout();
+        if (response) {
+            console.log('Inside this');
+            
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem("persist:root");
+            dispatch(logout()); 
+
+            navigate('/guide/login');
+        }
+        setDropdownOpen(false);
+    } catch (error) {
+        console.error("Logout failed:", error);
+    }
+};
+
   
   return (
     <div className="flex min-h-screen bg-gray-100">
     
-      <aside className="w-1/5 bg-white shadow-lg p-6 rounded-r-lg">
-        <h1 className="text-2xl font-bold text-green-600 mb-8 text-center">Dashboard</h1>
-        <ul className="space-y-6">
-          <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer">
-            <FiHome className="text-xl" />
-            <span className="text-lg">Dashboard</span>
-          </li>
-          <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer">
-            <FiStar className="text-xl" />
-            <span className="text-lg">Reviews</span>
-          </li>
-          <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer" onClick={()=>navigate('/guide/bookings')}>
-            <FiBook className="text-xl" />
-            
-            <span className="text-lg">Booking</span>
-          </li>
-          <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer">
-            <FiBarChart2 className="text-xl" />
-            <span className="text-lg">Revenue</span>
-          </li>
-          <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer"
-          onClick={() => navigate("/guide/profile")}>
-            <FiUser className="text-xl" />
-            <span className="text-lg">Profile</span>
-          </li>
-          <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer">
-            <FiDollarSign className="text-xl" />
-            <span className="text-lg">Transaction</span>
-          </li>
-          <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer" onClick={()=>navigate('/guide/slot')}>
-            <FiClock className="text-xl" />
-            <span className="text-lg">Slot</span>
-          </li>
-              <li 
-          className="flex items-center space-x-4 hover:text-green-500 cursor-pointer"
-          onClick={() => navigate("/guide/places")}
-        >
-          <FiClock className="text-xl" />
-          <span className="text-lg">Locations</span>
-        </li>
-        </ul>
-      </aside>
+    <aside className="w-1/5 bg-white shadow-lg p-6 rounded-r-lg flex flex-col h-screen">
+  <h1 className="text-2xl font-bold text-green-600 mb-8 text-center">Dashboard</h1>
+  <ul className="space-y-6 flex-grow">
+    <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer">
+      <FiHome className="text-xl" />
+      <span className="text-lg">Dashboard</span>
+    </li>
+    <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer">
+      <FiStar className="text-xl" />
+      <span className="text-lg">Reviews</span>
+    </li>
+    <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer" onClick={() => navigate('/guide/bookings')}>
+      <FiBook className="text-xl" />
+      <span className="text-lg">Booking</span>
+    </li>
+    <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer">
+      <FiBarChart2 className="text-xl" />
+      <span className="text-lg">Revenue</span>
+    </li>
+    <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer" onClick={() => navigate("/guide/profile")}>
+      <FiUser className="text-xl" />
+      <span className="text-lg">Profile</span>
+    </li>
+    <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer">
+      <FiDollarSign className="text-xl" />
+      <span className="text-lg">Transaction</span>
+    </li>
+    <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer" onClick={() => navigate('/guide/slot')}>
+      <FiClock className="text-xl" />
+      <span className="text-lg">Slot</span>
+    </li>
+    <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer" onClick={() => navigate("/guide/places")}>
+      <FiClock className="text-xl" />
+      <span className="text-lg">Locations</span>
+    </li>
+  </ul>
+
+  {/* Logout Button */}
+  <button 
+    className="mt-auto flex items-center space-x-4 p-3 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-all"
+    onClick={handleLogout}
+  >
+    <FiLogOut className="text-xl" />
+    <span className="text-lg">Logout</span>
+  </button>
+</aside>
+
 
     
       <main className="flex-1 p-8 ml-4 bg-gray-50 rounded-lg shadow-md">
@@ -121,3 +166,11 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
+
+function dispatch(arg0: { payload: undefined; type: "guide/logout"; }) {
+  throw new Error("Function not implemented.");
+}
+function setDropdownOpen(arg0: boolean) {
+  throw new Error("Function not implemented.");
+}
+

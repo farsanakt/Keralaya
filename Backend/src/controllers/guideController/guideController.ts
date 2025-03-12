@@ -85,14 +85,6 @@ class GuideController {
 
     try {
 
-      // console.log('reached here')
-
-      // const places=await Places.find()
-
-      // console.log(places,'kfkkfjgfjkg')
-
-      // return
-
       const response=await guideService.getAllPlaces()
 
       if(response){
@@ -204,16 +196,11 @@ class GuideController {
 
   async guideData(req:CustomeRequest,res:Response){
 
-    console.log('reached in guidedata controller')
-
     try {
 
       const email=req.user?._doc?.email; 
       
       const response=await guideService.guideData(email)
-
-      console.log(response,'kkkkkopeee')
-      
       
       if(response){
 
@@ -241,7 +228,6 @@ class GuideController {
       console.log('reached in updateprofile controller in guide side')
       
       const {_id,name,email,phone,experience,expertise,district}=req.body
-      console.log(district,'dis')
 
       const files=req.file
 
@@ -282,7 +268,6 @@ class GuideController {
 
   }
 
-
   async guideDetails(req:Request,res:Response){
 
     const {email}=req.params
@@ -299,7 +284,6 @@ class GuideController {
  
       res.status(200).json(response)
 
-      
 
   }
 
@@ -320,6 +304,27 @@ class GuideController {
     } catch (error) {
 
       res.status(HttpStatus.BAD_REQUEST).json({message:'something went wrong'})
+      
+    }
+
+  }
+
+  async completedTravel(req:Request,res:Response){
+
+    try {
+      const {id}=req.params
+
+      const response=await guideService.completedTravel(id)
+
+      if(response){
+
+        res.status(HttpStatus.CREATED).json(response)
+
+      }
+      
+    } catch (error) {
+
+      res.status(HttpStatus.BAD_REQUEST).json({message:'something went wrong,please try again'})
       
     }
 

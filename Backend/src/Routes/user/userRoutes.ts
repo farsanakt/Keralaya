@@ -18,8 +18,6 @@ user_route.get('/userProfile/:email',authenticateToken,userStatus,userController
 
 user_route.post('/updateprofile',authenticateToken,userController.updateProfile)
 
-
-
 user_route.get('/getlocation',userController.getLocations)
 
 user_route.get('/locationdetails',userController.locationDetails)

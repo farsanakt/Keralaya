@@ -3,7 +3,7 @@ import { Info, Check } from 'lucide-react';
 import Sidebar from '@/components/guide/Sidebar';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { userBookingDetails } from '@/service/guide/guideApi';
+import { completedTravel, userBookingDetails } from '@/service/guide/guideApi';
 
 interface Booking {
   id: string;
@@ -28,6 +28,8 @@ const Bookings: React.FC = () => {
     return email.split('@')[0];
   };
 
+
+  
   const bookingDetails = async () => {
     if (currentGuide) {
       try {
@@ -36,13 +38,13 @@ const Bookings: React.FC = () => {
         const response = await userBookingDetails(email);
         
         if (response && response.data && Array.isArray(response.data)) {
-          // Transform the API response to match our Booking interface
+          
           const formattedBookings = response.data.map((booking: any) => ({
             id: booking.id || booking._id,
             name: getUsernameFromEmail(booking.userEmail),
             userEmail: booking.userEmail,
-            place: "Adventure Location", // You might want to add this field to your API response
-            date: new Date().toISOString().split('T')[0], // Current date as placeholder
+            place: "Calicut", 
+            date: new Date().toISOString().split('T')[0], 
             paymentStatus: booking.paymentStatus.toLowerCase(),
             travelStatus: booking.status.toLowerCase(),
             amount: booking.amount,
@@ -59,12 +61,13 @@ const Bookings: React.FC = () => {
     }
   };
 
-  const handleComplete = (id: string) => {
-    setBookings((prevBookings) =>
-      prevBookings.map((booking) =>
-        booking.id === id ? { ...booking, travelStatus: 'completed' } : booking
-      )
-    );
+  const handleComplete = async(id: string) => {
+   
+    const response=await completedTravel(id)
+
+     navigate('/guide/bookings')
+
+
   };
 
   const navigate = (path: string) => {
@@ -73,7 +76,7 @@ const Bookings: React.FC = () => {
 
   useEffect(() => {
     bookingDetails();
-  }, [currentGuide]); // Only run when currentGuide changes, not on every render
+  }, [currentGuide]);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -170,11 +173,6 @@ const Bookings: React.FC = () => {
                         <button onClick={() => setSelectedBooking(booking)} className="text-red-500 hover:text-red-700 mr-3">
                           <Info size={16} className="mr-1 inline" /> Details
                         </button>
-                        {booking.travelStatus === 'pending' && (
-                          <button onClick={() => handleComplete(booking.id)} className="text-black hover:text-gray-600 bg-gray-100 px-2 py-1 rounded">
-                            <Check size={16} className="mr-1 inline" /> Complete
-                          </button>
-                        )}
                       </td>
                     </tr>
                   ))}

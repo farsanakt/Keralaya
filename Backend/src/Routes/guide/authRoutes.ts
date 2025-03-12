@@ -10,4 +10,6 @@ guide_authRoute.post('/registration',authController.registration)
 
 guide_authRoute.post('/guidelogin',authController.login)
 
+guide_authRoute.get('/guidelogout',authController.logout)
+
 export default guide_authRoute

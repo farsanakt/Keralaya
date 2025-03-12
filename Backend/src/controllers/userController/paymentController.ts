@@ -1,6 +1,7 @@
 import { Request,Response } from "express";
 import { PaymentService } from "@/services/user/paymentService";
 import { HttpStatus } from "@/enums/HttpStatus";
+import logger from "@/utils/logger.utils";
 
 const paymentService=new PaymentService()
 
@@ -10,7 +11,6 @@ class PaymentController{
     async createPaymentIntent(req:Request,res:Response){
 
         try {
-           console.log('ddffd')
         
            const { slotId, guideId, userEmail, amount } = req.body;
         
@@ -18,7 +18,9 @@ class PaymentController{
            const result = await paymentService.createPaymentIntent(slotId, guideId, userEmail, amount);
         
            if(result){
+
               res.status(HttpStatus.CREATED).json(result)
+
            }
            
         } catch (error) {
@@ -38,6 +40,8 @@ class PaymentController{
               const response=await paymentService.paymentConfirmation(slotId,guideId,userEmail,amount,paymentIntentid,userSecret)
         
            } catch (error) {
+
+            logger.info('something went wrong')
               
            }
         

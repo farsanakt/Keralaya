@@ -62,6 +62,25 @@ class AuthController {
 
     }
 
+    async logout(req:Request,res:Response){
+        console.log('reached here')
+
+        try {
+    
+        res.clearCookie('refreshToken')
+    
+        res.status(HttpStatus.OK).json({message:'logouted successfully'})
+    
+         return
+          
+        } catch (error) {
+    
+        logger.error(error)
+          
+        }
+    
+      }
+
 
 }
 

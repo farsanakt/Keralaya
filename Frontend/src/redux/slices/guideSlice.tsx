@@ -55,19 +55,30 @@ const guideReducer=createSlice({
             state.error=action.payload
 
         },
-        logout:(state)=>{
+        // logout:(state)=>{
+        //     state.isAuthenticated=false
+        //   state.currentGuide=null
 
-            state.currentGuide=null
 
-            state.isAuthenticated=false
 
+        // },
+        logout: (state) => {
+            state.isAuthenticated = false;
+            state.currentGuide = null;
+            state.loading = false;
+            state.error = false;
         },
+        resetGuide:(state)=>{
+            state.isAuthenticated=false;
+            state.currentGuide=null
+        }
+        
         
     }
 
 
 })
 
-export const {loginStart,loginFailed,loginSuccess,logout}=guideReducer.actions
+export const {loginStart,loginFailed,loginSuccess,logout,resetGuide}=guideReducer.actions
 
 export default guideReducer.reducer

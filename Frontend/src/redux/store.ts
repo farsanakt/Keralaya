@@ -7,7 +7,8 @@ import guideReducer from "./slices/guideSlice"
 
 const persistConfig = {
   key: "root", 
-  storage,     
+  storage, 
+     
 };
 
 const rootReducer = combineReducers({
