@@ -18,6 +18,7 @@ interface Guide {
 }
 
 interface LocationDetails {
+  _id:string;
   name: string;
   district: string;
   street: string;
@@ -116,6 +117,7 @@ const CardComponent = () => {
     if (locationId) {
       fetchLocationDetails(locationId);
     }
+    
   }, [locationId]);
 
   useEffect(() => {
@@ -142,6 +144,7 @@ const CardComponent = () => {
   const fetchGuideDetails = async (district: string) => {
     try {
       const response = await getGuideDetails(district);
+
       if (response && response.data) {
         setGuides(response.data);
       }
@@ -287,9 +290,9 @@ const CardComponent = () => {
 
             <section className="bg-white p-6 rounded-lg shadow-md border hover:shadow-lg transition-shadow duration-300">
               <h2 className="text-xl font-semibold text-gray-900">2000.00 </h2>
-              <p className="text-gray-600 text-sm mt-2">Check-in: August 2, 2024</p>
-              <p className="text-gray-600 text-sm">Check-out: August 5, 2024</p>
-             <Link to={'/guidelist'}>
+              {/* <p className="text-gray-600 text-sm mt-2">Check-in: August 2, 2024</p>
+              <p className="text-gray-600 text-sm">Check-out: August 5, 2024</p> */}
+             <Link to={`/guidelist/${locationId}`}>
 
              <button className="mt-6 w-full bg-blue-600 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-all duration-300 transform hover:-translate-y-1">
                 Book Now

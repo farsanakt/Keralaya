@@ -60,7 +60,7 @@ export default function GuideProfileComponent() {
       return
     }
   
-    // Ensure currentGuide.data is a string before using it as an email
+  
     const email: string = typeof currentGuide.data === "string" ? currentGuide.data : "";
   
     if (!email) {
@@ -70,13 +70,13 @@ export default function GuideProfileComponent() {
   
     try {
       setIsLoading(true);
-      // Use the correct function name that matches your API service
+     
       const response = await guiddeDetails(email); 
   
       console.log("Guide data response:", response);
       
       if (response) {
-        // Map backend data to frontend Guide interface
+       
         const validatedData: Guide = {
           _id: response._id || "",
           name: response.name || "",
@@ -133,7 +133,7 @@ export default function GuideProfileComponent() {
     try {
       const formData = new FormData()
       
-      // Append all fields to formData
+     
       formData.append("_id", guideData._id)
       formData.append("name", guideData.name)
       formData.append("email", guideData.email)

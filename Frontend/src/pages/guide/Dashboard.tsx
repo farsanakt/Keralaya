@@ -7,25 +7,6 @@ import { useNavigate } from "react-router-dom";
 const Dashboard: React.FC = () => {
   const navigate=useNavigate()
 
-  // const handleLogout=async()=>{
-
-  //   try {
-  //         const response = await guidelogout();
-  //         if(response)
-  //        {
-  //         console.log('inisde this');
-          
-  //         localStorage.removeItem('accessToken');
-  //         dispatch(logout());
-  //         navigate('/guide/login')
-  //        }
-  //         setDropdownOpen(false);
-  //         console.log(response);
-  //       } catch (error) {
-          
-  //       }
-
-  // }
   const handleLogout = async () => {
     try {
         const response = await guidelogout();

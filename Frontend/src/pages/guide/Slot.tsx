@@ -207,7 +207,7 @@ const submitDates = async () => {
           const isPastDate = dateObj < today;
           const isSelected = selectedDates.includes(dateString);
           
-          // Check if date is booked or blocked (not available for selection)
+          
           const isBooked = guideData?.availability?.availableDates?.some(slot => 
             slot.date.split('T')[0] === dateString && slot.isBooked
           );

@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
 
-// Define types for our data structures
+
 interface BookingDetails {
   date?: string;
   time?: string;
@@ -21,7 +21,7 @@ interface GuideDetails {
   email: string;
   phone: string;
   district: string;
-  // Add other fields as needed
+  
 }
 
 interface Booking {
@@ -63,7 +63,7 @@ const BookingDetailsTable: React.FC = () => {
         if (response.status === 201 && response.data) {
           const { bkDetails, guideDetails } = response.data;
           
-          // Combine booking details with guide details
+          
           const processedBookings = bkDetails.map((booking: any, index: string | number) => {
             const guide = guideDetails[index]?.[0];
             return {
@@ -82,38 +82,38 @@ const BookingDetailsTable: React.FC = () => {
     }
   };
 
-  // Function to handle opening the details modal
+ 
   const handleViewDetails = (booking: Booking): void => {
     setSelectedBooking(booking);
   };
 
-  // Function to close the details modal
+  
   const handleCloseDetails = (): void => {
     setSelectedBooking(null);
   };
 
-  // Function to open the review modal
+
   const handleOpenReviewModal = (): void => {
     setShowReviewModal(true)
     
   };
 
-  // Function to close the review modal
+ 
   const handleCloseReviewModal = (): void => {
     setShowReviewModal(false);
   };
 
-  // Function to open the invoice modal
+  
   const handleOpenInvoiceModal = (): void => {
     setShowInvoiceModal(true);
   };
 
-  // Function to close the invoice modal
+
   const handleCloseInvoiceModal = (): void => {
     setShowInvoiceModal(false);
   };
 
-  // Function to submit the review
+ 
   const handleSubmitReview = async () => {
     if (!review.rating || !review.comment) {
       toast.error("Please provide a rating and a comment.");

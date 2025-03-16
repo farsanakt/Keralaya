@@ -25,7 +25,7 @@ const UserRoutes = () => {
           element={<ProtectedRoute element={<Profile />} />}
         />
         <Route path="/singlelocation/:id"  element={<CardComponent/>}/>
-        <Route path="/guidelist"   element={<ProtectedRoute element={<GuideList/>}/>}/>
+        <Route path="/guidelist/:locationId"   element={<ProtectedRoute element={<GuideList/>}/>}/>
         <Route path="/guidedetails/:id"   element={<ProtectedRoute element={<GuideDetails/>}/>}/>
         <Route path='/booking'element={<ProtectedRoute element={<BookingDetailsTable/>}/>}/>
         {/* <Route path='/checkout' element={</>} */}

@@ -7,6 +7,7 @@ import UserFooter from '@/components/user/UserFooter';
 import UserHeader from '@/components/user/UserHeader';
 import { allGuide } from '@/service/guide/guideApi';
 import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 interface Guide {
   _id: string;
@@ -26,6 +27,8 @@ interface Guide {
 
 const GuideList: React.FC = () => {
 
+  const {locationId}=useParams()
+
   const navigate=useNavigate()
   const [guides, setGuides] = useState<Guide[]>([]);
   const [districts, setDistricts] = useState<string[]>([]);
@@ -37,6 +40,7 @@ const GuideList: React.FC = () => {
       const guidesData = response.data.map((guide: any) => ({
         id: guide._id,
         name: guide.name,
+        charge:guide.charge,
         image: guide.profileImage || '/api/placeholder/150/150',
         experience: guide.experience || 0,
         reviewCount: guide.reviewCount || 0,
@@ -73,6 +77,7 @@ const GuideList: React.FC = () => {
 
   useEffect(() => {
     fetchGuides();
+    console.log('loc',locationId)
   }, []);
 
   const filteredGuides = selectedDistrict
@@ -172,7 +177,7 @@ const GuideList: React.FC = () => {
 
                     <div className="flex justify-between items-center mt-4 pt-4 border-t">
                       <div className="text-lg font-semibold">
-                        ${guide.pricePerDay}
+                        ${guide.charge}
                         <span className="text-sm text-gray-500 font-normal"> / day</span>
                       </div>
                       <button onClick={()=>{handleSelect(guide.id)}} className="bg-blue-600 text-white px-4 py-2 rounded-md transition-all duration-300 transform group-hover:bg-blue-700 group-hover:scale-105">

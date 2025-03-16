@@ -76,13 +76,13 @@ const Registration: React.FC = () => {
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     
-    // Directly update the state without any restrictions
+   
     setFormData(prevState => ({ 
       ...prevState, 
       [name]: value 
     }));
     
-    // Clear the specific error when user starts typing
+  
     setErrors(prevErrors => ({
       ...prevErrors,
       [name]: ""

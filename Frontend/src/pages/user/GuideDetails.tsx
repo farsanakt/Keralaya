@@ -8,6 +8,7 @@ import { AppDispatch, RootState } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadStripe } from "@stripe/stripe-js";
 import Payment from './Checkout';
+import Swal from 'sweetalert2';
 
 
 interface Review {
@@ -238,28 +239,30 @@ const GuideDetails: React.FC = () => {
   
   const amount = '2000';
   const userEmail = currentUser?.message?.data?.email;
-
   const bookingSubmit = async (slotId: string) => {
-    console.log('fdfdkjfdfdf')
-    console.log(selectedSlot, 'hhhhh');
-  
-    console.log(userEmail, 'email');
-  
-    const response = await usercheckOut({
-      slotId,
-      guideId,
-      userEmail,
-      amount
+    
+    const result = await Swal.fire({
+      title: 'Confirm Booking',
+      text: 'Are you sure you want to proceed to payment?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, proceed to payment',
+      cancelButtonText: 'Cancel'
     });
-
-    console.log("Payment Response:", response);
-    if(response) {
-      setUserSecert(response.data.client_secret)
-      setPaymentIntentid(response.data.paymentIntentid)
-      console.log(paymentIntentid, 'jjjjjjj')
+  
+    
+    if (result.isConfirmed) {
+      const response = await usercheckOut({ slotId, guideId, userEmail, amount });
+      console.log("Payment Response:", response);
+      if(response) {
+        setUserSecert(response.data.client_secret)
+        setPaymentIntentid(response.data.paymentIntentid)
+        
+      }
     }
   };
-
 
   
   if (loading) {
