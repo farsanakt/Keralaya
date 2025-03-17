@@ -70,7 +70,7 @@ const GuideList: React.FC = () => {
     console.log(id)
 
     if(id){
-      navigate(`/guidedetails/${id}`)
+      navigate(`/guidedetails/${id}/${locationId}`)
     }
 
   }

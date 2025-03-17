@@ -1,5 +1,6 @@
 import { PaymentRepositories } from "@/repositories/implementation/paymentRepositories";
 import { SlotRepositories } from "@/repositories/implementation/SlotRepositories"
+import { UserRepositories } from "@/repositories/implementation/UserRepositories";
 import Stripe from "stripe"
 const STRIPEKEY = process.env.STRIPE_KEY
 
@@ -11,12 +12,14 @@ export class PaymentService{
 
 private paymentRepositories:PaymentRepositories
 private slotRepositories:SlotRepositories
+private userRepositories:UserRepositories
 
 
 constructor(){
 
     this.paymentRepositories=new PaymentRepositories()
     this.slotRepositories=new SlotRepositories()
+    this.userRepositories=new UserRepositories()
     
 
 }
@@ -45,7 +48,8 @@ createPaymentIntent = async(slotId:string,guideId:string,userEmail:string,amount
     userEmail: string,
     amount: string,
     stripePaymentIntentId: string,
-    stripeClientSecret: string
+    stripeClientSecret: string,
+    locationId:string
   ) => {
 
     try {
@@ -57,9 +61,19 @@ createPaymentIntent = async(slotId:string,guideId:string,userEmail:string,amount
       }
   
       const updatedSlot = await this.slotRepositories.updateSlotStatus(guideId, slotId);
+
+      const bookedLocation=await this.userRepositories.findLocationById(locationId)
   
       if (!updatedSlot) {
         throw new Error("Failed to update slot");
+      }
+
+      const selectedSlot = guideSlot.availableDates.find(
+        (dateSlot: any) => dateSlot._id.toString() === slotId
+      );
+  
+      if (!selectedSlot) {
+        throw new Error("Selected slot not found");
       }
   
       
@@ -73,6 +87,8 @@ createPaymentIntent = async(slotId:string,guideId:string,userEmail:string,amount
         stripeClientSecret
       });
 
+      console.log(selectedSlot,'sele')
+
       if(newPayment){
         
         await this.paymentRepositories.createBooking({
@@ -81,7 +97,10 @@ createPaymentIntent = async(slotId:string,guideId:string,userEmail:string,amount
         userEmail,
         amount: parseFloat(amount),
         status:'pending',
-        paymentStatus:'completed'
+        paymentStatus:'completed',
+        locname:bookedLocation?.street,
+        bookeddate:selectedSlot.date
+        
 
       })
     }

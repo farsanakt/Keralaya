@@ -168,8 +168,6 @@ export const addLocations = async (formData: FormData) => {
   }
 
   export const guidelogout=async()=>{
-  
-    console.log('ashdkfusdhf q');
     
       const response=await api.get('/guidelogout')
     console.log(response);

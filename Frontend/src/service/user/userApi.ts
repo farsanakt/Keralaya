@@ -165,8 +165,11 @@ export const usercheckOut = async (data: { slotId: string; guideId: string; user
     amount: string;
     usersecert: string;
     paymentIntentid: string;
+    locationId:string
+
   }) => {
     console.log("Data before sending:", data)
+   
   
     const response = await api.post("/paymentconfirmation", data);
     return response.data;

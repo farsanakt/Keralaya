@@ -100,7 +100,7 @@ const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
 const months = ["This Month", "Next Month", "Two Months Ahead"];
 
 const GuideDetails: React.FC = () => {
-  const { id } = useParams();
+  const { id ,locationId} = useParams();
   const [guide, setGuide] = useState<Guide | null>(null);
   const [availability, setAvailability] = useState<GuideAvailability | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -154,7 +154,7 @@ const GuideDetails: React.FC = () => {
   const fetchingReview = async () => {
     console.log("Fetching reviews...");
   
-    if (!id) return; // Ensure id exists before making a request
+    if (!id) return;
   
     try {
       const response = await fetchingReviewData(id);
@@ -172,7 +172,7 @@ const GuideDetails: React.FC = () => {
       try {
         setLoading(true);
         if (id) {
-          // Fetch guide details
+          
           const guideResponse = await singleGuidee(id);
           
           if (guideResponse.data && guideResponse.data.length > 0) {
@@ -188,12 +188,10 @@ const GuideDetails: React.FC = () => {
               district: guideData.district || 'Not specified',
               charge: guideData.charge || 0,
               imageUrl: guideData.profileImage || "/api/placeholder/200/200",
-              reviews: guideData.reviews || []
+              // reviews: guideData.reviews || []
             };
 
             setGuide(transformedGuide);
-
-            // Fetch guide availability immediately
             await fetchGuideAvailability(id);
           }
         }
@@ -471,6 +469,7 @@ const GuideDetails: React.FC = () => {
           userEmail={userEmail} 
           slotId={selectedSlot?.id}
           paymentIntentid={paymentIntentid}
+          locationId={locationId}
         />
       )}
       

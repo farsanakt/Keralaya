@@ -14,10 +14,11 @@ interface PaymentFormProps {
     userEmail: string;
     slotId?: string;
     paymentIntentid: string
+    locationId:string
 }
 
 
-const PaymentForm: React.FC<PaymentFormProps> = ({ userSecret, guideId, amount, userEmail, slotId, paymentIntentid }) => {
+const PaymentForm: React.FC<PaymentFormProps> = ({ userSecret, guideId, amount, userEmail, slotId, paymentIntentid,locationId }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -25,7 +26,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ userSecret, guideId, amount, 
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    console.log("User Secret:", userSecret);
+    console.log("User Secret:",locationId);
   }, [userSecret]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -47,7 +48,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ userSecret, guideId, amount, 
         setError(error.message);
       } else {
         setSuccess(true);
-        const response = await paymentConfirmation({userSecret, guideId, amount, userEmail, slotId, paymentIntentid})
+        const response = await paymentConfirmation({userSecret, guideId, amount, userEmail, slotId, paymentIntentid,locationId})
         console.log(response, 'cn')
       }
     } catch (err) {
@@ -124,8 +125,8 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ userSecret, guideId, amount, 
 };
 
 
-const Payment: React.FC<PaymentFormProps> = ({ userSecret, guideId, amount, userEmail, slotId, paymentIntentid }) => {
-  console.log('g', guideId, amount, userEmail, slotId);
+const Payment: React.FC<PaymentFormProps> = ({ userSecret, guideId, amount, userEmail, slotId, paymentIntentid,locationId }) => {
+  console.log('g', guideId, amount, userEmail, slotId,locationId);
   
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -137,6 +138,7 @@ const Payment: React.FC<PaymentFormProps> = ({ userSecret, guideId, amount, user
           userEmail={userEmail} 
           slotId={slotId}
           paymentIntentid={paymentIntentid}
+          locationId={locationId}
         />
       </Elements>
     </div>

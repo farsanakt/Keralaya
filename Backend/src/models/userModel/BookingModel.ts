@@ -7,7 +7,10 @@ export interface IBooking extends Document{
     guideId: string;
     amount: number;
     status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
-    paymentStatus: string
+    paymentStatus: string;
+    locname:string;
+    bookeddate:string
+
 
 }
 
@@ -18,7 +21,9 @@ const BookingSchema:Schema=new Schema(
         guideId:{type:String,required:true},
         amount:{type:String,required:true},
         status: { type: String, enum: ['pending', 'confirmed', 'cancelled', 'completed'], default: 'pending' },
-        paymentStatus:{type:String,required:true}
+        paymentStatus:{type:String,required:true},
+        locname:{type:String,required:true},
+        bookeddate:{type:String,required:true}
     }
 
 )

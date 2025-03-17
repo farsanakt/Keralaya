@@ -35,9 +35,9 @@ class PaymentController{
      async paymentConfirmation(req:Request,res:Response){
         
            try {
-              const { slotId, guideId, userEmail, amount, userSecret, paymentIntentid } = req.body;
+              const { slotId, guideId, userEmail, amount, userSecret, paymentIntentid ,locationId} = req.body;
         
-              const response=await paymentService.paymentConfirmation(slotId,guideId,userEmail,amount,paymentIntentid,userSecret)
+              const response=await paymentService.paymentConfirmation(slotId,guideId,userEmail,amount,paymentIntentid,userSecret,locationId)
         
            } catch (error) {
 
