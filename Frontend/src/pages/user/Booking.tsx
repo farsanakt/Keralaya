@@ -57,15 +57,15 @@ const BookingDetailsTable: React.FC = () => {
 
   const [showChatModal, setShowChatModal] = useState(false);
 
-// Add this function to handle opening the chat
-const handleOpenChat = () => {
-  setShowChatModal(true);
-};
+  
+  const handleOpenChat = () => {
+    setShowChatModal(true);
+  };
 
-// Add this function to handle closing the chat
-const handleCloseChat = () => {
-  setShowChatModal(false);
-};
+  
+  const handleCloseChat = () => {
+    setShowChatModal(false);
+  };
 
   const userDetails = async () => {
     if (currentUser?.message?.data?.email) {
@@ -331,6 +331,7 @@ const handleCloseChat = () => {
             <ChatModal
               bookingId={selectedBooking._id}
               onClose={handleCloseChat}
+              role="user"
             />
           )}
           

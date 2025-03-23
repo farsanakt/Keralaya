@@ -1,6 +1,6 @@
 import express from "express";
-import http from "http"; // Import HTTP module
-import { Server } from "socket.io"; // Import Socket.io
+import http from "http"; 
+import { Server } from "socket.io"; 
 import dotenv from "dotenv";
 import cors from "cors";
 import connectMongoDb from "./config/dbConfig";
@@ -78,8 +78,8 @@ io.on("connection", (socket) => {
   });
 
  
-  socket.on("sendMessage", async ({ senderId, receiverId, message,chatRoomId }) => {
-    console.log("Incoming message data:", { senderId, receiverId, message });
+  socket.on("sendMessage", async ({ senderId, receiverId, message,chatRoomId,rol}) => {
+    console.log("Incoming message data:", { senderId, receiverId, message ,rol});
 
     try {
     
@@ -89,6 +89,7 @@ io.on("connection", (socket) => {
         receiverId,
         message,
         chatRoomId,
+        role:rol,
       } as any);
 
       console.log("Message saved to DB:", newMessage)

@@ -4,9 +4,11 @@ import Sidebar from '@/components/guide/Sidebar';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { completedTravel, userBookingDetails } from '@/service/guide/guideApi';
+import ChatModal from '@/components/user/chat/chatModal';
 
 interface Booking {
   id: string;
+  _id?: string; 
   name: string;
   place?: string;
   date?: string;
@@ -17,6 +19,11 @@ interface Booking {
   guideId: string;
 }
 
+interface ChatDetails {
+  bookingId: string;
+  role: string;
+}
+
 const Bookings: React.FC = () => {
   const { currentGuide } = useSelector((state: RootState) => state.guide);
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -24,12 +31,27 @@ const Bookings: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>('Booking');
   const [loading, setLoading] = useState<boolean>(true);
 
+  const [showChatModal, setShowChatModal] = useState(false);
+  const [chatDetails, setChatDetails] = useState<ChatDetails | null>(null);
+
+  const handleOpenChat = () => {
+    if (selectedBooking) {
+      setChatDetails({
+        bookingId: selectedBooking.id || selectedBooking._id || "",
+        role: 'guide'
+      });
+      setShowChatModal(true);
+    }
+  };
+  
+  const handleCloseChat = () => {
+    setShowChatModal(false);
+  };
+
   const getUsernameFromEmail = (email: string) => {
     return email.split('@')[0];
   };
 
-
-  
   const bookingDetails = async () => {
     if (currentGuide) {
       try {
@@ -41,6 +63,7 @@ const Bookings: React.FC = () => {
           
           const formattedBookings = response.data.map((booking: any) => ({
             id: booking.id || booking._id,
+            _id: booking._id || booking.id, // Ensure _id is always available
             name: getUsernameFromEmail(booking.userEmail),
             userEmail: booking.userEmail,
             place: "Calicut", 
@@ -62,12 +85,17 @@ const Bookings: React.FC = () => {
   };
 
   const handleComplete = async(id: string) => {
-   
-    const response=await completedTravel(id)
-
-     navigate('/guide/bookings')
-
-
+    try {
+      const response = await completedTravel(id);
+      if (response && response.data) {
+        
+        bookingDetails();
+        
+        setSelectedBooking(null);
+      }
+    } catch (error) {
+      console.error("Error completing travel:", error);
+    }
   };
 
   const navigate = (path: string) => {
@@ -114,31 +142,45 @@ const Bookings: React.FC = () => {
                   <p className="text-gray-500">Date</p>
                   <p className="font-medium">{selectedBooking.date || "Not specified"}</p>
                 </div>
-                <div>
-                  <p className="text-gray-500">Amount</p>
-                  <p className="font-medium">${selectedBooking.amount}</p>
-                </div>
-                <div>
-                  <p className="text-gray-500">Payment Status</p>
-                  <p className={`font-medium ${selectedBooking.paymentStatus === 'completed' ? 'text-green-500' : 'text-orange-500'}`}>
-                    {selectedBooking.paymentStatus === 'completed' ? 'Paid' : 'Pending'}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-gray-500">Travel Status</p>
-                  <div className="flex items-center space-x-2">
-                    <p className={`font-medium ${selectedBooking.travelStatus === 'completed' ? 'text-green-500' : 'text-orange-500'}`}>
-                      {selectedBooking.travelStatus.charAt(0).toUpperCase() + selectedBooking.travelStatus.slice(1)}
-                    </p>
-                    {selectedBooking.travelStatus === 'pending' && (
-                      <button onClick={() => handleComplete(selectedBooking.id)} className="ml-2 px-3 py-1 bg-black text-white rounded text-sm hover:bg-gray-800">
-                        Mark Completed
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
+    <div>
+      <p className="text-gray-500">Amount</p>
+      <p className="font-medium">${selectedBooking.amount}</p>
+    </div>
+    <div>
+      <p className="text-gray-500">Payment Status</p>
+      <p className={`font-medium ${selectedBooking.paymentStatus === 'completed' ? 'text-green-500' : 'text-orange-500'}`}>
+        {selectedBooking.paymentStatus === 'completed' ? 'Paid' : 'Pending'}
+      </p>
+    </div>
+    <div>
+      <p className="text-gray-500">Travel Status</p>
+      <div className="flex items-center">
+        <p className={`font-medium ${selectedBooking.travelStatus === 'completed' ? 'text-green-500' : 'text-orange-500'}`}>
+          {selectedBooking.travelStatus.charAt(0).toUpperCase() + selectedBooking.travelStatus.slice(1)}
+        </p>
+        {selectedBooking.travelStatus === 'pending' && (
+          <button onClick={() => handleComplete(selectedBooking.id)} className="ml-2 px-3 py-1 bg-black text-white rounded text-sm hover:bg-gray-800">
+            Mark Completed
+          </button>
+        )}
+      </div>
+    </div>
+    <div className="flex justify-end items-center">
+      {selectedBooking.travelStatus === 'pending' && (
+        <button onClick={handleOpenChat} className="px-4 py-1.5 bg-black text-white rounded text-sm hover:bg-gray-800 transition-colors">
+          Chat
+        </button>
+      )}
+        {showChatModal && chatDetails && (
+  <ChatModal
+    bookingId={chatDetails.bookingId}
+    role={chatDetails.role}
+    onClose={handleCloseChat}
+  />
+)}
+    </div>
+  </div>
+</div>
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
