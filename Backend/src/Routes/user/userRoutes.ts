@@ -4,10 +4,12 @@ import UserController from "@/controllers/userController/userController"
 import authenticateToken from "@/middleware/isAuthenticated"
 import { userStatus } from "@/middleware/userStatus"
 import PaymentController from "@/controllers/userController/paymentController"
+import  ChatController from "@/controllers/userController/chatController"
 
 
 const userController=new UserController()
 const paymentController=new PaymentController()
+const chatController=new ChatController()
 
 
 
@@ -37,6 +39,12 @@ user_route.get('/bookingDetails/:email',userController.bookingDetails)
 user_route.post('/reviewPosting',userController.postReview)
 
 user_route.get('/fetchingReview/:id',userController.guideReviews)
+
+//  chat route 
+
+user_route.post("/send", chatController.sendMessage);
+user_route.get("/existingmessages/:id", chatController.getChatHistory);
+user_route.get('/idCreation/:id',chatController.idCreation)
 
     
 

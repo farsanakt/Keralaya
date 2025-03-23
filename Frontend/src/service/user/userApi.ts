@@ -201,3 +201,25 @@ export const usercheckOut = async (data: { slotId: string; guideId: string; user
     return response
 
   }
+  
+
+
+// Chat Api
+
+export const chatIdCreation=async(id:string)=>{
+
+    const response=await api.get(`/idCreation/${id}`)
+
+    return response
+
+}
+
+export const existingMessages=async(id:string)=>{
+
+    console.log('l')
+
+    const response=await api.get(`/existingmessages/${id}`)
+
+    return response
+
+}

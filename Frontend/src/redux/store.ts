@@ -3,6 +3,8 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage"; 
 import userReducer from "./slices/userSlice";
 import guideReducer from "./slices/guideSlice"
+import chatReducer from "./slices/chatSlice"; // Import the chat reducer
+
 
 
 const persistConfig = {
@@ -14,7 +16,8 @@ const persistConfig = {
 const rootReducer = combineReducers({
   user: persistReducer(persistConfig, userReducer),
 
-  guide:persistReducer(persistConfig,guideReducer)
+  guide:persistReducer(persistConfig,guideReducer),
+  chat: chatReducer,
  
 });
 

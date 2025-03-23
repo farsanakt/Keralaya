@@ -90,8 +90,11 @@ userAxiosInstance.interceptors.response.use(
 );
 
 async function getNewAccessToken() {
+  console.log('nmmmmmmude')
   const response = await axios.get(`${API_URL}/refresh-token`, {
     withCredentials: true,
   });
+  console.log(response.data,'refreshhhheeeeee')
+  
   return response.data.accessToken;
 }

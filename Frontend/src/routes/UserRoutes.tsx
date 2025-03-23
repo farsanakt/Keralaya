@@ -9,6 +9,8 @@ import CardComponent from "@/pages/user/SingleLocation";
 import GuideList from '../pages/user/GuideList';
 import GuideDetails from "@/pages/user/GuideDetails";
 import BookingDetailsTable from "@/pages/user/Booking";
+import Chat from "@/pages/user/Chat";
+import SocketTest from "@/pages/user/sample";
 
 
 
@@ -28,6 +30,8 @@ const UserRoutes = () => {
         <Route path="/guidelist/:locationId"   element={<ProtectedRoute element={<GuideList/>}/>}/>
         <Route path="/guidedetails/:id/:locationId"   element={<ProtectedRoute element={<GuideDetails/>}/>}/>
         <Route path='/booking'element={<ProtectedRoute element={<BookingDetailsTable/>}/>}/>
+        <Route path="/chat" element={<Chat />} />
+
         {/* <Route path='/checkout' element={</>} */}
        
       </Routes>

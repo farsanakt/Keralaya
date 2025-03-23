@@ -5,6 +5,9 @@ import bcrypt from "bcryptjs";
 import { IOtp } from "../../models/userModel/otpModel";
 import { generateAcessToken, generateRefreshToken } from "../../utils/token.util";
 import { IUser } from "../../models/userModel/userModel";
+import { RefreshDto } from "@/dto/userDto";
+import jwt from "jsonwebtoken";
+import User from "@/models/userModel/userModel"
 
 
 const mailService = new MailService();
@@ -326,6 +329,51 @@ export class AuthService {
       
     }
 
+  }
+
+  async checkToken(refreshDto: RefreshDto) {
+    try {
+      const token = refreshDto.token;
+
+      console.log('authtolen',token)
+  
+      const secret = process.env.JWT_REFRESHTOKEN;
+      if (!secret) {
+        return { success: false, message: "Internal Server Error" };
+      }
+      console.log(secret,'sece')
+  
+      const decoded = jwt.verify(token, secret) as jwt.JwtPayload;
+      
+      console.log(decoded,decoded._id,'ide')
+  
+      if (decoded && decoded._id) {
+       
+        const user = await User.findById(decoded._id).lean()
+  
+        if (!user) {
+          return { success: false, message: "User not found" };
+        }
+
+        console.log(user,'user')
+  
+        const newAccessToken = await generateAcessToken(user as IUser)
+
+        console.log(newAccessToken,'newww')
+  
+        return {
+          success: true,
+          message: "New token created",
+          accessToken: newAccessToken,
+        };
+      }
+    } catch (error) {
+      if (error instanceof jwt.TokenExpiredError) {
+        return { success: false, message: "Refresh token expired, please log in again" };
+      }
+      console.error("Error verifying refresh token:", error);
+      return { success: false, message: "Invalid refresh token" };
+    }
   }
   
   

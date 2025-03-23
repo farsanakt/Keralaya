@@ -20,4 +20,9 @@ userAuth_route.post('/resetPass',authController.resetPass)
 
 userAuth_route.get('/logout',authController.logout)
 
+userAuth_route.get('/refresh-token',authController.setNewToken)
+
+
+
+
 export default userAuth_route

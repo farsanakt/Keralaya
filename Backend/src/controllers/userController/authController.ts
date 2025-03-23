@@ -125,6 +125,7 @@ class AuthController {
     if(response.success){
 
       res.status(HttpStatus.CREATED).cookie('refreshToken',response.refreshToken,{httpOnly:true,secure:true,sameSite:'none',maxAge:7*24*60*1000}).json({ message: response,accessToken:response.accessToken });
+      console.log('res[',response)
 
     }else{
 
@@ -211,6 +212,35 @@ class AuthController {
     }
 
   }
+
+  async setNewToken(req:Request,res:Response){
+      
+        console.log('hiiiiiop')
+    const token=req.cookies?.refreshToken;
+    console.log(req.cookies,'goooo')
+   
+    if(!token){
+        res.status(HttpStatus.FORBIDDEN).json({message:'Internal Server Error'})
+    }
+    try {
+      
+      const response=await authService.checkToken({token})
+      
+
+      if(response?.success){
+        res.json({accessToken:response.accessToken})
+        return
+      }else{
+        res.clearCookie('refrToken')
+        res.status(HttpStatus.FORBIDDEN).json({message:response?.message})
+      }
+      
+
+    } catch (error) {
+        console.log('error in the setnew token',error);
+        
+    }
+}
 
 }
 

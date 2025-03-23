@@ -1,3 +1,4 @@
+import ChatModal from '@/components/user/chat/chatModal';
 import UserSidebar from '@/components/user/UserSidebar';
 import { RootState } from '@/redux/store';
 import { postReview, userBookingDetails } from '@/service/user/userApi';
@@ -53,6 +54,18 @@ const BookingDetailsTable: React.FC = () => {
   const [showInvoiceModal, setShowInvoiceModal] = useState<boolean>(false);
   const [review, setReview] = useState<ReviewData>({ rating: 0, comment: "" });
   const [loading, setLoading] = useState<boolean>(true);
+
+  const [showChatModal, setShowChatModal] = useState(false);
+
+// Add this function to handle opening the chat
+const handleOpenChat = () => {
+  setShowChatModal(true);
+};
+
+// Add this function to handle closing the chat
+const handleCloseChat = () => {
+  setShowChatModal(false);
+};
 
   const userDetails = async () => {
     if (currentUser?.message?.data?.email) {
@@ -231,99 +244,117 @@ const BookingDetailsTable: React.FC = () => {
 
         
         {selectedBooking && (
-          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
-              <h3 className="text-lg font-bold mb-4">Booking Details</h3>
-              
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div>
-                  <p className="text-sm font-semibold">Guide:</p>
-                  <p className="text-sm">{selectedBooking.guide?.name || "Unknown Guide"}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold">Place:</p>
-                  <p className="text-sm">{selectedBooking.guide?.district || "Unknown Place"}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold">Phone:</p>
-                  <p className="text-sm">{selectedBooking.guide?.phone || "Not available"}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold">Email:</p>
-                  <p className="text-sm">{selectedBooking.guide?.email || "Not available"}</p>
-                </div>
-                {selectedBooking.details?.date && (
-                  <div>
-                    <p className="text-sm font-semibold">Date:</p>
-                    <p className="text-sm">{selectedBooking.details.date}</p>
-                  </div>
-                )}
-                {selectedBooking.details?.time && (
-                  <div>
-                    <p className="text-sm font-semibold">Time:</p>
-                    <p className="text-sm">{selectedBooking.details.time}</p>
-                  </div>
-                )}
-                {selectedBooking.details?.duration && (
-                  <div>
-                    <p className="text-sm font-semibold">Duration:</p>
-                    <p className="text-sm">{selectedBooking.details.duration}</p>
-                  </div>
-                )}
-                {selectedBooking.details?.meetingPoint && (
-                  <div>
-                    <p className="text-sm font-semibold">Meeting Point:</p>
-                    <p className="text-sm">{selectedBooking.details.meetingPoint}</p>
-                  </div>
-                )}
-                {selectedBooking.details?.description && (
-                  <div className="col-span-2">
-                    <p className="text-sm font-semibold">Description:</p>
-                    <p className="text-sm">{selectedBooking.details.description}</p>
-                  </div>
-                )}
-                <div>
-                  <p className="text-sm font-semibold">Amount:</p>
-                  <p className="text-sm">${parseFloat(selectedBooking.amount).toFixed(2)}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold">Payment Status:</p>
-                  <p className="text-sm">{selectedBooking.paymentStatus.charAt(0).toUpperCase() + selectedBooking.paymentStatus.slice(1)}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold">Booking Status:</p>
-                  <p className="text-sm">{selectedBooking.status.charAt(0).toUpperCase() + selectedBooking.status.slice(1)}</p>
-                </div>
-              </div>
-
-              <div className="flex justify-between mt-6">
-                <button
-                  className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-                  onClick={handleCloseDetails}
-                >
-                  Close
-                </button>
-                
-                {selectedBooking.status === "completed" && (
-                  <div>
-                    <button
-                      className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2"
-                      onClick={handleOpenReviewModal}
-                    >
-                      Post Review
-                    </button>
-                    <button
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                      onClick={handleOpenInvoiceModal}
-                    >
-                      Invoice
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
+  <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+      <h3 className="text-lg font-bold mb-4">Booking Details</h3>
+      
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        <div>
+          <p className="text-sm font-semibold">Guide:</p>
+          <p className="text-sm">{selectedBooking.guide?.name || "Unknown Guide"}</p>
+        </div>
+        <div>
+          <p className="text-sm font-semibold">Place:</p>
+          <p className="text-sm">{selectedBooking.guide?.district || "Unknown Place"}</p>
+        </div>
+        <div>
+          <p className="text-sm font-semibold">Phone:</p>
+          <p className="text-sm">{selectedBooking.guide?.phone || "Not available"}</p>
+        </div>
+        <div>
+          <p className="text-sm font-semibold">Email:</p>
+          <p className="text-sm">{selectedBooking.guide?.email || "Not available"}</p>
+        </div>
+        {selectedBooking.details?.date && (
+          <div>
+            <p className="text-sm font-semibold">Date:</p>
+            <p className="text-sm">{selectedBooking.details.date}</p>
           </div>
         )}
+        {selectedBooking.details?.time && (
+          <div>
+            <p className="text-sm font-semibold">Time:</p>
+            <p className="text-sm">{selectedBooking.details.time}</p>
+          </div>
+        )}
+        {selectedBooking.details?.duration && (
+          <div>
+            <p className="text-sm font-semibold">Duration:</p>
+            <p className="text-sm">{selectedBooking.details.duration}</p>
+          </div>
+        )}
+        {selectedBooking.details?.meetingPoint && (
+          <div>
+            <p className="text-sm font-semibold">Meeting Point:</p>
+            <p className="text-sm">{selectedBooking.details.meetingPoint}</p>
+          </div>
+        )}
+        {selectedBooking.details?.description && (
+          <div className="col-span-2">
+            <p className="text-sm font-semibold">Description:</p>
+            <p className="text-sm">{selectedBooking.details.description}</p>
+          </div>
+        )}
+        <div>
+          <p className="text-sm font-semibold">Amount:</p>
+          <p className="text-sm">${parseFloat(selectedBooking.amount).toFixed(2)}</p>
+        </div>
+        <div>
+          <p className="text-sm font-semibold">Payment Status:</p>
+          <p className="text-sm">{selectedBooking.paymentStatus.charAt(0).toUpperCase() + selectedBooking.paymentStatus.slice(1)}</p>
+        </div>
+        <div>
+          <p className="text-sm font-semibold">Booking Status:</p>
+          <p className="text-sm">{selectedBooking.status.charAt(0).toUpperCase() + selectedBooking.status.slice(1)}</p>
+        </div>
+      </div>
+
+      <div className="flex justify-between mt-6">
+        <button
+          className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+          onClick={handleCloseDetails}
+        >
+          Close
+        </button>
+        
+        <div>
+          {selectedBooking.status === "pending" && (
+            <button
+              className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded mr-2"
+              onClick={handleOpenChat}
+            >
+              Chat
+            </button>
+          )}
+
+          {showChatModal && (
+            <ChatModal
+              bookingId={selectedBooking._id}
+              onClose={handleCloseChat}
+            />
+          )}
+          
+          {selectedBooking.status === "completed" && (
+            <>
+              <button
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2"
+                onClick={handleOpenReviewModal}
+              >
+                Post Review
+              </button>
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onClick={handleOpenInvoiceModal}
+              >
+                Invoice
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+)}
 
         {/* Review Modal */}
         {showReviewModal && selectedBooking && (

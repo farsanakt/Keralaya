@@ -17,6 +17,8 @@ const authenticateToken = (req: CustomeRequest, res: Response, next: NextFunctio
 
         if (!token) {
 
+            console.log('gggggops')
+
             res.status(HttpStatus.UNAUTHORIZED).json({ message: "Access denied. No token provided" });
 
             return
@@ -25,7 +27,7 @@ const authenticateToken = (req: CustomeRequest, res: Response, next: NextFunctio
       
         const newToken = token.split(' ')[1]
 
-        console.log(newToken, 'token in doctor auth middleware');
+        console.log(newToken, 'token  auth middleware');
 
         const secret = process.env.JWT_ACESSTOKEN
 
@@ -45,6 +47,8 @@ const authenticateToken = (req: CustomeRequest, res: Response, next: NextFunctio
             if (err) {
 
                  res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Invalid token' });
+
+                 console.log('herereee')
 
                  return
             }

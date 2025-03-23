@@ -4,7 +4,7 @@ import mongoose, { Schema } from "mongoose";
 export interface IBooking extends Document{
 
     userEmail: string;
-    guideId: string;
+    guideId: string ;
     amount: number;
     status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
     paymentStatus: string;

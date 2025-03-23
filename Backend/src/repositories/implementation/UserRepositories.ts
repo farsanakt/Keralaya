@@ -126,6 +126,12 @@ export class UserRepositories {
 
     }
 
+    async findBookingDetailsById(id:string):Promise<IBooking|null>{
+
+      return await BookingModel.findOne({_id:id})
+
+    }
+
     async saveReview(reviewData: { guideId: string; email: string; username: string; rating: number; comment: string }) {
       try {
         const { guideId, email, username, rating, comment } = reviewData;
@@ -166,6 +172,12 @@ export class UserRepositories {
 
       return await reviewModel.findOne({guideId:id})
       
+    }
+
+    async findById(id:string):Promise<IBooking| null>{
+
+      return await BookingModel.findById({userEmail:id})
+
     }
     
       

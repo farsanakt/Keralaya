@@ -4,3 +4,7 @@ export interface UpdateProfileDto{
     image?:string
     
 }
+
+export interface RefreshDto{
+    token:string
+}
