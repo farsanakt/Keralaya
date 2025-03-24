@@ -6,7 +6,6 @@ import { RootState } from "@/redux/store";
 import { addMessage, setMessages } from "@/redux/slices/chatSlice"; 
 import { chatIdCreation, existingMessages } from "@/service/user/userApi";
 
-
 interface ChatProps {
   bookingId: string;
   role: any;
@@ -62,7 +61,10 @@ export default function Chat({ bookingId, role }: ChatProps) {
     socket.emit("joinRoom", chatRoomId);
 
     socket.on("receiveMessage", (message: Message) => {
-      dispatch(addMessage(message));
+      // Only add the message if it's from someone else to avoid duplicates
+      if (message.senderId !== "Farsana") {
+        dispatch(addMessage(message));
+      }
     });
 
     return () => {
@@ -77,20 +79,39 @@ export default function Chat({ bookingId, role }: ChatProps) {
     }
   
     if (text.trim() !== "") {
+      const timestamp = new Date().toISOString();
       const message = {
         senderId: "Farsana",
         receiverId: "SomeReceiverId",
         message: text,
         chatRoomId,
         rol,
+        timestamp: timestamp,
+        read: false,
       };
       console.log('message');
   
       console.log("Sending message:", message);
       socket.emit("sendMessage", message);
-      dispatch(addMessage({ senderId: "Farsana", message: text }));
+      
+      // Add the message to our local state with the timestamp
+      dispatch(addMessage({ 
+        senderId: "Farsana", 
+        message: text, 
+        timestamp: timestamp,
+        read: false,
+        role: rol
+      }));
+      
       setText("");
     }
+  };
+
+ 
+  const formatTime = (timestamp) => {
+    if (!timestamp) return "";
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
   
   return (
@@ -102,19 +123,36 @@ export default function Chat({ bookingId, role }: ChatProps) {
       {/* Chat Messages */}
       <div className="flex-grow overflow-y-auto p-4">
         <div className="space-y-3">
-          {messages.map((msg, index) => (
-            <div
-              key={index}
-              className={`p-2 rounded-lg max-w-xs ${
-                msg.role === rol
-                  ? "ml-auto bg-black text-white"
-                  : "bg-gray-200 text-black"
-              }`}
-            >
-              <p className="font-medium text-xs mb-1">{msg.senderId}</p>
-              <p className="text-sm">{msg.message}</p>
-            </div>
-          ))}
+          {messages.map((msg, index) => {
+            const isCurrentUser = msg.role === rol;
+            const senderName = isCurrentUser ? "You" : msg.senderId;
+            
+            return (
+              <div
+                key={index}
+                className={`p-2 rounded-lg max-w-xs ${
+                  isCurrentUser
+                    ? "ml-auto bg-black text-white"
+                    : "bg-gray-200 text-black"
+                }`}
+              >
+                <p className="font-medium text-xs mb-1">{senderName}</p>
+                <p className="text-sm">{msg.message}</p>
+                <div className="flex justify-end items-center mt-1 text-xs opacity-70">
+                  <span>{formatTime(msg.timestamp)}</span>
+                  {isCurrentUser && (
+                    <span className="ml-1">
+                      {msg.read ? (
+                        <span className="text-blue-400">✓✓</span>
+                      ) : (
+                        <span>✓</span>
+                      )}
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -127,6 +165,7 @@ export default function Chat({ bookingId, role }: ChatProps) {
             onChange={(e) => setText(e.target.value)}
             placeholder="Type a message..."
             className="flex-grow p-2 text-sm border border-gray-300 rounded"
+            onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
           />
           <button
             onClick={sendMessage}
