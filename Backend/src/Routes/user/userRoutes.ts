@@ -40,6 +40,8 @@ user_route.post('/reviewPosting',userController.postReview)
 
 user_route.get('/fetchingReview/:id',userController.guideReviews)
 
+user_route.post('/cancelbooking/:id',userController.cancelBooking)
+
 //  chat route 
 
 user_route.post("/send", chatController.sendMessage);

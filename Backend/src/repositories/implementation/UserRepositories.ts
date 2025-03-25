@@ -179,6 +179,12 @@ export class UserRepositories {
       return await BookingModel.findById({userEmail:id})
 
     }
+
+    async updateBookingStatusById(id:string):Promise<IBooking|null>{
+
+      return BookingModel.findByIdAndUpdate({_id:id},{status:'cancelled'})
+
+    }
     
       
 

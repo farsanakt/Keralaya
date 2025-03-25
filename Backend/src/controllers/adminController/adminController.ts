@@ -100,6 +100,33 @@ class AdminController{
 
     }
 
+    async dashboardDetails(req:Request,res:Response){
+
+        try {
+           
+            const response =await adminService.dashboardDetails()
+
+         res.status(HttpStatus.CREATED).json({
+                success: true,
+                data: response, 
+            });
+
+            return
+            
+        } catch (error) {
+
+             res.status(HttpStatus.BAD_REQUEST).json({
+                success: false,
+                message: "Error fetching dashboard details",
+                
+            });
+
+            return
+            
+        }
+
+    }
+
 
 
  

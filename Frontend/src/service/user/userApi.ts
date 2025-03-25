@@ -223,3 +223,11 @@ export const existingMessages=async(id:string)=>{
     return response
 
 }
+
+export const cancelBooking=async(id:string)=>{
+
+    const response=await api.post(`/cancelbooking/${id}`)
+
+    return response
+
+}

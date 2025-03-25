@@ -72,3 +72,13 @@ export const approvPlaces = async (id: string, status: string) => {
     const response = await api.patch(`/approvelocation/${id}`, { status });
     return response;
 };
+
+
+export const DashboardDetails=async()=>{
+    const response=await api.get('/dashboardDetails')
+
+    return response
+}
+
+
+

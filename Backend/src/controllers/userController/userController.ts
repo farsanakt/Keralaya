@@ -233,6 +233,28 @@ class UserController{
 
  }
 
+ async cancelBooking(req:Request,res:Response){
+
+   try {
+
+      const {id}=req.params
+
+      const response=await userService.cancelBooking(id)
+
+      if(response){
+
+         res.status(HttpStatus.CREATED).json({message:'cancelled successfully..!'})
+
+      }
+      
+   } catch (error) {
+
+      res.status(HttpStatus.BAD_REQUEST).json({message:'please try again'})
+      
+   }
+
+ }
+
 }
 
 export default UserController

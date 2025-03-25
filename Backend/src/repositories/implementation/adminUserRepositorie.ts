@@ -1,4 +1,5 @@
 
+import BookingModel, { IBooking } from "@/models/userModel/BookingModel";
 import userModel, { IUser } from "@/models/userModel/userModel";
 
 import { IAdminUserRepository } from "@/repositories/interface/IAdminUserRepositories";
@@ -42,6 +43,14 @@ export class AdminUserRepository implements IAdminUserRepository{
             {new:true}
 
         )
+
+    }
+
+    async getAllBookings():Promise<IBooking[]|null>{
+
+        const booking=await BookingModel.find()
+
+        return booking
 
     }
 

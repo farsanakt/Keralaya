@@ -125,6 +125,19 @@ export class AdminService{
             console.error('Error updating place status:', error);
         }
     };
+
+    dashboardDetails = async () => {
+        try {
+            const guideDetails = await this.adminGuideRepository.getAllGuides();
+            const userDetails = await this.adminUserRepository.getAllUsers();
+            const bookingDetails = await this.adminUserRepository.getAllBookings(); // Fixed the function name
+    
+            return { guideDetails, userDetails, bookingDetails };
+        } catch (error) {
+           console.log('errror occur in adminservice controller')
+        }
+    };
+    
     
 
 

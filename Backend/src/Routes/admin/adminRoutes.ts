@@ -15,6 +15,10 @@ admin_Routes.patch('/updateguide/:id',adminController.updateGuideStatus)
 
 admin_Routes.patch('/approvelocation/:id',adminController.approveLocation)
 
+admin_Routes.get('/dashboardDetails',adminController.dashboardDetails)
+
+
+
 
 
 export default admin_Routes

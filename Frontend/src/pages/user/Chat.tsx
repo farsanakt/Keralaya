@@ -108,7 +108,7 @@ export default function Chat({ bookingId, role }: ChatProps) {
   };
 
  
-  const formatTime = (timestamp) => {
+  const formatTime = (timestamp:any) => {
     if (!timestamp) return "";
     const date = new Date(timestamp);
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });

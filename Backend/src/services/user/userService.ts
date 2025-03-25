@@ -4,6 +4,7 @@ import { IUser } from "../../models/userModel/userModel"
 import { UserRepositories } from "../../repositories/implementation/UserRepositories"
 import { SlotRepositories } from "@/repositories/implementation/SlotRepositories"
 import Stripe from "stripe"
+import logger from "@/utils/logger.utils"
 const STRIPEKEY = process.env.STRIPE_KEY
 
 const stripe = new Stripe(STRIPEKEY as string, {
@@ -176,6 +177,26 @@ export class UserService{
 
     }
     
+
+    cancelBooking=async(id:string)=>{
+
+      try {
+
+        const updateStatus=await this.userRepositories.updateBookingStatusById(id)
+
+        if(updateStatus){
+
+          return updateStatus
+
+        }
+        
+      } catch (error) {
+
+        logger.info('somethig went wrong')
+        
+      }
+
+    }
     
     
 
