@@ -4,6 +4,7 @@ import UserFooter from "@/components/user/UserFooter";
 import UserHeader from "@/components/user/UserHeader";
 import { MapPin, Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { getGuideDetails, getLocationDetails } from "@/service/user/userApi";
+import axios from "axios";
 
 interface Guide {
   _id: string;
@@ -26,6 +27,28 @@ interface LocationDetails {
   images: string[];
   discription?: string;
   guides?: Guide[];
+}
+
+interface WeatherMain {
+  temp: number;
+  feels_like: number;
+  humidity: number;
+  pressure: number;
+}
+
+interface WeatherCondition {
+  description: string;
+  main: string;
+}
+
+interface WindData {
+  speed: number;
+}
+
+interface WeatherData {
+  main: WeatherMain;
+  weather: WeatherCondition[];
+  wind: WindData;
 }
 
 const GuideCard: React.FC<{ guide: Guide }> = ({ guide }) => {
@@ -113,12 +136,42 @@ const CardComponent = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const [mainImageIndex, setMainImageIndex] = useState(0);
 
+const [loading, setLoading] = useState(false);
+const [weather, setWeather] = useState<WeatherData | null>(null);
+
+
   useEffect(() => {
     if (locationId) {
       fetchLocationDetails(locationId);
     }
     
   }, [locationId]);
+
+  useEffect(() => {
+    if (activeTab === "weather" && locationDetails?.district) {
+      const fetchWeather = async () => {
+        setLoading(true);
+        setError(null);
+        
+        try {
+          const API_KEY = import.meta.env.VITE_WEATHER_API_KEY
+          const response = await axios.get(
+            `https://api.openweathermap.org/data/2.5/weather?q=${locationDetails?.district},IN&appid=${API_KEY}&units=metric`
+          );
+  
+          setWeather(response.data);
+        } catch (err) {
+          setError("Failed to fetch weather data. Please try again.");
+        }
+  
+        setLoading(false);
+      };
+  
+      fetchWeather();
+    }
+  }, [activeTab, locationDetails?.district]);
+  
+  
 
   useEffect(() => {
     if (locationDetails?.district) {
@@ -243,7 +296,7 @@ const CardComponent = () => {
 
         <div className="mb-8">
           <div className="flex space-x-8 border-b">
-            {["overview", "ratings", "weather", "availability"].map((tab) => (
+            {["overview", "weather", "availability"].map((tab) => (
               <button
                 key={tab}
                 className={`pb-2 px-1 font-medium capitalize transition-all duration-300 ${
@@ -274,18 +327,74 @@ const CardComponent = () => {
                   <p className="text-gray-700 leading-relaxed">{locationDetails.discription}</p>
                 </div>
               )}
-              {activeTab === "ratings" && (
+              {/* {activeTab === "ratings" && (
                 <div>
                   <h2 className="text-2xl font-semibold text-gray-900 mb-2">Ratings & Reviews</h2>
                   <p className="text-gray-700">Rating information would go here...</p>
                 </div>
-              )}
-              {activeTab === "weather" && (
-                <div>
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-2">Weather Information</h2>
-                  <p className="text-gray-700">Weather details would go here...</p>
-                </div>
-              )}
+              )} */}
+         {activeTab === "weather" && (
+  <div className="bg-gray-100 p-6 rounded-lg shadow-md">
+    {loading && (
+      <div className="flex justify-center items-center h-32">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-800"></div>
+      </div>
+    )}
+    
+    {error && (
+      <div className="bg-gray-200 border border-gray-400 text-gray-800 px-4 py-3 rounded relative" role="alert">
+        <span className="block sm:inline">{error}</span>
+      </div>
+    )}
+
+    {weather && (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+        <div>
+          <h3 className="text-2xl font-bold text-gray-900 mb-2">
+            {locationDetails?.street || 'Current Location'}
+          </h3>
+          <div className="flex items-center space-x-4">
+            <div className="text-6xl font-bold text-gray-900">
+              {Math.round(weather.main.temp)}°
+            </div>
+            <div>
+              <p className="text-lg capitalize text-gray-800">
+                {weather.weather[0].description}
+              </p>
+              <p className="text-sm text-gray-700">
+                Feels like {Math.round(weather.main.feels_like)}°
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-3 gap-4">
+          <div className="bg-white border border-gray-300 rounded-lg p-4 text-center shadow-sm">
+            <div className="text-gray-900 text-2xl font-bold">
+              {weather.main.humidity}%
+            </div>
+            <p className="text-xs text-gray-600">Humidity</p>
+          </div>
+          
+          <div className="bg-white border border-gray-300 rounded-lg p-4 text-center shadow-sm">
+            <div className="text-gray-900 text-2xl font-bold">
+              {weather.wind.speed.toFixed(1)}
+            </div>
+            <p className="text-xs text-gray-600">Wind (m/s)</p>
+          </div>
+          
+          <div className="bg-white border border-gray-300 rounded-lg p-4 text-center shadow-sm">
+            <div className="text-gray-900 text-2xl font-bold">
+              {weather.main.pressure}
+            </div>
+            <p className="text-xs text-gray-600">Pressure</p>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+)}
+
             </section>
 
             <section className="bg-white p-6 rounded-lg shadow-md border hover:shadow-lg transition-shadow duration-300">

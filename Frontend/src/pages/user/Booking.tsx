@@ -83,7 +83,7 @@ const BookingDetailsTable: React.FC = () => {
         if (response.status === 201 && response.data) {
           const { bkDetails, guideDetails } = response.data;
           
-          // Sort bookings by date (most recent first)
+          
           const sortedBookings = bkDetails.sort((a: Booking, b: Booking) => {
             return new Date(b.bookeddate).getTime() - new Date(a.bookeddate).getTime();
           });
@@ -150,9 +150,7 @@ const BookingDetailsTable: React.FC = () => {
   };
 
   
-  const handleOpenInvoiceModal = (): void => {
-    setShowInvoiceModal(true);
-  };
+  
 
 
   const handleCloseInvoiceModal = (): void => {
@@ -247,7 +245,7 @@ const BookingDetailsTable: React.FC = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {currentBookings.map((booking) => (
                   <tr key={booking._id}>
-                    {/* Table row content remains the same */}
+                   
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {booking.guide?.name || "Unknown Guide"}
                     </td>
