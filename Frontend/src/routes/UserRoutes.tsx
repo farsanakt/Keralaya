@@ -10,7 +10,7 @@ import GuideList from '../pages/user/GuideList';
 import GuideDetails from "@/pages/user/GuideDetails";
 import BookingDetailsTable from "@/pages/user/Booking";
 import Chat from "@/pages/user/Chat";
-import SocketTest from "@/pages/user/sample";
+
 
 
 

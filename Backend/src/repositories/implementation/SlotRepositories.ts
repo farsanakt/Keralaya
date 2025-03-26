@@ -10,6 +10,8 @@ export class SlotRepositories{
 
     async saveAvailability(email: string, dates: string[]): Promise<{ message: string } | null> {
 
+      console.log(dates,'this is dates')
+
         const existingGuide = await Guide.findOne({ email });
       
         if (!existingGuide) {

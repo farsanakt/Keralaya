@@ -34,6 +34,10 @@ const Bookings: React.FC = () => {
   const [showChatModal, setShowChatModal] = useState(false);
   const [chatDetails, setChatDetails] = useState<ChatDetails | null>(null);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const bookingsPerPage = 4;
+
   const handleOpenChat = () => {
     if (selectedBooking) {
       setChatDetails({
@@ -60,19 +64,21 @@ const Bookings: React.FC = () => {
         const response = await userBookingDetails(email);
         
         if (response && response.data && Array.isArray(response.data)) {
-          
-          const formattedBookings = response.data.map((booking: any) => ({
-            id: booking.id || booking._id,
-            _id: booking._id || booking.id, // Ensure _id is always available
-            name: getUsernameFromEmail(booking.userEmail),
-            userEmail: booking.userEmail,
-            place: "Calicut", 
-            date: new Date().toISOString().split('T')[0], 
-            paymentStatus: booking.paymentStatus.toLowerCase(),
-            travelStatus: booking.status.toLowerCase(),
-            amount: booking.amount,
-            guideId: booking.guideId
-          }));
+          // Sort bookings by date (most recent first)
+          const formattedBookings = response.data
+            .map((booking: any) => ({
+              id: booking.id || booking._id,
+              _id: booking._id || booking.id,
+              name: getUsernameFromEmail(booking.userEmail),
+              userEmail: booking.userEmail,
+              place: "Calicut", 
+              date: booking.bookeddate || new Date().toISOString().split('T')[0], 
+              paymentStatus: booking.paymentStatus.toLowerCase(),
+              travelStatus: booking.status.toLowerCase(),
+              amount: booking.amount,
+              guideId: booking.guideId
+            }))
+            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
           
           setBookings(formattedBookings);
         }
@@ -88,9 +94,7 @@ const Bookings: React.FC = () => {
     try {
       const response = await completedTravel(id);
       if (response && response.data) {
-        
         bookingDetails();
-        
         setSelectedBooking(null);
       }
     } catch (error) {
@@ -105,6 +109,13 @@ const Bookings: React.FC = () => {
   useEffect(() => {
     bookingDetails();
   }, [currentGuide]);
+
+  // Pagination logic
+  const indexOfLastBooking = currentPage * bookingsPerPage;
+  const indexOfFirstBooking = indexOfLastBooking - bookingsPerPage;
+  const currentBookings = bookings.slice(indexOfFirstBooking, indexOfLastBooking);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -142,45 +153,45 @@ const Bookings: React.FC = () => {
                   <p className="text-gray-500">Date</p>
                   <p className="font-medium">{selectedBooking.date || "Not specified"}</p>
                 </div>
-    <div>
-      <p className="text-gray-500">Amount</p>
-      <p className="font-medium">${selectedBooking.amount}</p>
-    </div>
-    <div>
-      <p className="text-gray-500">Payment Status</p>
-      <p className={`font-medium ${selectedBooking.paymentStatus === 'completed' ? 'text-green-500' : 'text-orange-500'}`}>
-        {selectedBooking.paymentStatus === 'completed' ? 'Paid' : 'Pending'}
-      </p>
-    </div>
-    <div>
-      <p className="text-gray-500">Travel Status</p>
-      <div className="flex items-center">
-        <p className={`font-medium ${selectedBooking.travelStatus === 'completed' ? 'text-green-500' : 'text-orange-500'}`}>
-          {selectedBooking.travelStatus.charAt(0).toUpperCase() + selectedBooking.travelStatus.slice(1)}
-        </p>
-        {selectedBooking.travelStatus === 'pending' && (
-          <button onClick={() => handleComplete(selectedBooking.id)} className="ml-2 px-3 py-1 bg-black text-white rounded text-sm hover:bg-gray-800">
-            Mark Completed
-          </button>
-        )}
-      </div>
-    </div>
-    <div className="flex justify-end items-center">
-      {selectedBooking.travelStatus === 'pending' && (
-        <button onClick={handleOpenChat} className="px-4 py-1.5 bg-black text-white rounded text-sm hover:bg-gray-800 transition-colors">
-          Chat
-        </button>
-      )}
-        {showChatModal && chatDetails && (
-  <ChatModal
-    bookingId={chatDetails.bookingId}
-    role={chatDetails.role}
-    onClose={handleCloseChat}
-  />
-)}
-    </div>
-  </div>
-</div>
+                <div>
+                  <p className="text-gray-500">Amount</p>
+                  <p className="font-medium">${selectedBooking.amount}</p>
+                </div>
+                <div>
+                  <p className="text-gray-500">Payment Status</p>
+                  <p className={`font-medium ${selectedBooking.paymentStatus === 'completed' ? 'text-green-500' : 'text-orange-500'}`}>
+                    {selectedBooking.paymentStatus === 'completed' ? 'Paid' : 'Pending'}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-gray-500">Travel Status</p>
+                  <div className="flex items-center">
+                    <p className={`font-medium ${selectedBooking.travelStatus === 'completed' ? 'text-green-500' : 'text-orange-500'}`}>
+                      {selectedBooking.travelStatus.charAt(0).toUpperCase() + selectedBooking.travelStatus.slice(1)}
+                    </p>
+                    {selectedBooking.travelStatus === 'pending' && (
+                      <button onClick={() => handleComplete(selectedBooking.id)} className="ml-2 px-3 py-1 bg-black text-white rounded text-sm hover:bg-gray-800">
+                        Mark Completed
+                      </button>
+                    )}
+                  </div>
+                </div>
+                <div className="flex justify-end items-center">
+                  {selectedBooking.travelStatus === 'pending' && (
+                    <button onClick={handleOpenChat} className="px-4 py-1.5 bg-black text-white rounded text-sm hover:bg-gray-800 transition-colors">
+                      Chat
+                    </button>
+                  )}
+                  {showChatModal && chatDetails && (
+                    <ChatModal
+                      bookingId={chatDetails.bookingId}
+                      role={chatDetails.role}
+                      onClose={handleCloseChat}
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
@@ -189,37 +200,61 @@ const Bookings: React.FC = () => {
                 <p>No bookings found.</p>
               </div>
             ) : (
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-100">
-                  <tr>
-                    {['Name', 'Email', 'Amount', 'Payment', 'Travel Status', 'Actions'].map((header) => (
-                      <th key={header} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{header}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {bookings.map((booking) => (
-                    <tr key={booking.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{booking.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{booking.userEmail}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${booking.amount}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <span className={booking.paymentStatus === 'completed' ? 'text-green-500' : 'text-orange-500'}>
-                          {booking.paymentStatus === 'completed' ? 'Paid' : 'Pending'}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {booking.travelStatus.charAt(0).toUpperCase() + booking.travelStatus.slice(1)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button onClick={() => setSelectedBooking(booking)} className="text-red-500 hover:text-red-700 mr-3">
-                          <Info size={16} className="mr-1 inline" /> Details
-                        </button>
-                      </td>
+              <>
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      {['Name', 'Email', 'Amount', 'Payment', 'Travel Status', 'Actions'].map((header) => (
+                        <th key={header} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{header}</th>
+                      ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {currentBookings.map((booking) => (
+                      <tr key={booking.id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{booking.name}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{booking.userEmail}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${booking.amount}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <span className={booking.paymentStatus === 'completed' ? 'text-green-500' : 'text-orange-500'}>
+                            {booking.paymentStatus === 'completed' ? 'Paid' : 'Pending'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {booking.travelStatus.charAt(0).toUpperCase() + booking.travelStatus.slice(1)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <button onClick={() => setSelectedBooking(booking)} className="text-red-500 hover:text-red-700 mr-3">
+                            <Info size={16} className="mr-1 inline" /> Details
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                
+                {/* Pagination */}
+                <div className="flex justify-center items-center mt-4 pb-4">
+                  <nav>
+                    <ul className="flex space-x-2">
+                      {Array.from({ length: Math.ceil(bookings.length / bookingsPerPage) }).map((_, index) => (
+                        <li key={index}>
+                          <button
+                            onClick={() => paginate(index + 1)}
+                            className={`px-3 py-1 rounded ${
+                              currentPage === index + 1 
+                                ? 'bg-black text-white' 
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                            }`}
+                          >
+                            {index + 1}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </nav>
+                </div>
+              </>
             )}
           </div>
         )}

@@ -63,6 +63,7 @@ interface IUserReview {
   username: string;
   comment: string;
   rating: number;
+  createdAt:string
 }
 
 interface IReview {
@@ -159,7 +160,9 @@ const GuideDetails: React.FC = () => {
     try {
       const response = await fetchingReviewData(id);
       if (response && response.data) {
+        
         setReview(response.data);
+        console.log(review,'rev')
       }
     } catch (error) {
       console.error("Error fetching reviews:", error);
@@ -311,7 +314,7 @@ const GuideDetails: React.FC = () => {
           <div className="md:col-span-2">
             <h1 className="text-3xl font-bold mb-2">{guide.name}</h1>
             <div className="mb-4">
-              <StarRating rating={guide.rating} />
+              <StarRating rating={review.averageRating || '5'} />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg shadow-sm">
               <div>
@@ -343,32 +346,41 @@ const GuideDetails: React.FC = () => {
           </div>
         </div>
 
-        <div className="mb-12">
+              <div className="mb-12">
         <h2 className="text-2xl font-bold mb-6 border-b border-gray-200 pb-2">
-            Reviews ({review?.reviews?.length ?? 0})
-          </h2>
-          <div className="space-y-6">
-            {review?.reviews?.length ? (
-              review.reviews.map((reviewItem, index) => (
+          Reviews ({review?.reviews?.length ?? 0})
+        </h2>
+        <div className="space-y-6">
+          {review?.reviews?.length ? (
+            review.reviews.map((reviewItem, index) => {
+              // Convert the createdAt date to a more readable format
+              const reviewDate = new Date(review.createdAt).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              });
+
+              return (
                 <div key={index} className="border-b border-gray-100 pb-6 hover:bg-gray-50 p-4 rounded transition duration-150">
                   <div className="flex justify-between items-center mb-2">
                     <h3 className="font-semibold">{reviewItem.username || "Anonymous"}</h3>
-                    <span className="text-sm text-gray-500">Date Not Available</span>
+                    <span className="text-sm text-gray-500">{reviewDate}</span>
                   </div>
                   <div className="mb-2">
                     <StarRating rating={reviewItem.rating || 0} />
                   </div>
                   <p className="text-gray-700">{reviewItem.comment || "No comment provided."}</p>
                 </div>
-              ))
-            ) : (
-              <div className="text-center py-12 bg-gray-50 rounded-lg">
-                <p className="text-gray-500">No reviews yet</p>
-                <p className="text-sm text-gray-400 mt-2">Be the first to review after your trip!</p>
-              </div>
-            )}
-          </div>
+              );
+            })
+          ) : (
+            <div className="text-center py-12 bg-gray-50 rounded-lg">
+              <p className="text-gray-500">No reviews yet</p>
+              <p className="text-sm text-gray-400 mt-2">Be the first to review after your trip!</p>
+            </div>
+          )}
         </div>
+      </div>
 
 
       </main>

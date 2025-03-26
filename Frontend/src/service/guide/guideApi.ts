@@ -112,6 +112,7 @@ export const addLocations = async (formData: FormData) => {
   }
 
   export const guideSlot = async (dates: string[], email: string): Promise<any> => {
+    console.log(dates,'jop')
     try {
       const response = await api.post("/guideslot", { dates, email });
       return response.data;

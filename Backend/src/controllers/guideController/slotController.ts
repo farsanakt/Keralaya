@@ -14,6 +14,7 @@ class SlotController{
 
      const dates=req.body.dates
      const email=req.body.email
+     
 
      console.log(dates,email)
 

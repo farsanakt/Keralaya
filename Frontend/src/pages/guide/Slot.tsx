@@ -99,7 +99,9 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
   };
   
   const formatDateToString = (date: Date): string => {
-    return date.toISOString().split("T")[0];
+    // Use toISOString with local timezone to avoid date shift
+    const localDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+    return localDate.toISOString().split("T")[0];
   };
   
   const handleDateClick = (day: number | null): void => {
@@ -146,24 +148,36 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
     setIsEditMode(!isEditMode);
   };
   
+  const submitDates = async () => {
+    if (selectedDates.length === 0) {
+      toast.error("Please select at least one date.");
+      return;
+    }
 
-const submitDates = async () => {
-  if (selectedDates.length === 0) {
-    toast.error("Please select at least one date.");
-    return;
-  }
+    // Debug logging to verify dates
+    console.log('Selected Dates (Before Submission):', selectedDates);
 
-  try {
-    const response = await guideSlot(selectedDates, email)
-    console.log("Response from server:", response);
-    toast.success('Slots updated successfully!');
-    setIsEditMode(false);
-    fetchGuideDetails(email);
-  } catch (error) {
-    console.error("Error saving slots:", error);
-    toast.error("Failed to save slots. Please try again.");
-  }
-};
+    try {
+      // Ensure dates are in correct local format
+      const formattedDates = selectedDates.map(dateStr => {
+        const date = new Date(dateStr);
+        // Add one day to compensate for potential timezone issues
+        date.setDate(date.getDate());
+        return formatDateToString(date);
+      });
+
+      console.log('Formatted Dates (For Submission):', formattedDates);
+
+      const response = await guideSlot(formattedDates, email);
+      
+      toast.success('Slots updated successfully!');
+      setIsEditMode(false);
+      fetchGuideDetails(email);
+    } catch (error) {
+      console.error("Error saving slots:", error);
+      toast.error("Failed to save slots. Please try again.");
+    }
+  };
   
   const renderCalendar = (): JSX.Element[] => {
     const daysInMonth = getDaysInMonth(currentDate);

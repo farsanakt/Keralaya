@@ -63,11 +63,13 @@ const BookingDetailsTable: React.FC = () => {
   const [showChatModal, setShowChatModal] = useState(false);
 
   
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const bookingsPerPage = 4;
+
   const handleOpenChat = () => {
     setShowChatModal(true);
   };
 
-  
   const handleCloseChat = () => {
     setShowChatModal(false);
   };
@@ -81,8 +83,12 @@ const BookingDetailsTable: React.FC = () => {
         if (response.status === 201 && response.data) {
           const { bkDetails, guideDetails } = response.data;
           
+          // Sort bookings by date (most recent first)
+          const sortedBookings = bkDetails.sort((a: Booking, b: Booking) => {
+            return new Date(b.bookeddate).getTime() - new Date(a.bookeddate).getTime();
+          });
           
-          const processedBookings = bkDetails.map((booking: any, index: string | number) => {
+          const processedBookings = sortedBookings.map((booking: any, index: string | number) => {
             const guide = guideDetails[index]?.[0];
             return {
               ...booking,
@@ -203,6 +209,12 @@ const BookingDetailsTable: React.FC = () => {
     return `INV-${year}${month}-${bookingId.substring(0, 4)}`;
   };
 
+  const indexOfLastBooking = currentPage * bookingsPerPage;
+  const indexOfFirstBooking = indexOfLastBooking - bookingsPerPage;
+  const currentBookings = bookings.slice(indexOfFirstBooking, indexOfLastBooking);
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
   useEffect(() => {
     userDetails();
     
@@ -210,17 +222,17 @@ const BookingDetailsTable: React.FC = () => {
 
   return (
     <div className="flex">
-      <UserSidebar />
-      <div className="flex-1 p-4">
-        <h2 className="text-xl font-bold mb-4">Your Bookings</h2>
-        
-       
-        <div className="overflow-x-auto bg-white rounded-lg shadow">
-          {loading ? (
-            <div className="p-4 text-center">Loading your bookings...</div>
-          ) : bookings.length === 0 ? (
-            <div className="p-4 text-center">No bookings found.</div>
-          ) : (
+    <UserSidebar />
+    <div className="flex-1 p-4">
+      <h2 className="text-xl font-bold mb-4">Your Bookings</h2>
+      
+      <div className="overflow-x-auto bg-white rounded-lg shadow">
+        {loading ? (
+          <div className="p-4 text-center">Loading your bookings...</div>
+        ) : bookings.length === 0 ? (
+          <div className="p-4 text-center">No bookings found.</div>
+        ) : (
+          <>
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
@@ -233,8 +245,9 @@ const BookingDetailsTable: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {bookings.map((booking) => (
+                {currentBookings.map((booking) => (
                   <tr key={booking._id}>
+                    {/* Table row content remains the same */}
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {booking.guide?.name || "Unknown Guide"}
                     </td>
@@ -245,7 +258,7 @@ const BookingDetailsTable: React.FC = () => {
                       ${parseFloat(booking.amount).toFixed(2)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {booking.bookeddate }
+                      {booking.bookeddate}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
@@ -267,8 +280,31 @@ const BookingDetailsTable: React.FC = () => {
                 ))}
               </tbody>
             </table>
-          )}
-        </div>
+            
+            {/* Pagination */}
+            <div className="flex justify-center items-center mt-4 pb-4">
+              <nav>
+                <ul className="flex space-x-2">
+                  {Array.from({ length: Math.ceil(bookings.length / bookingsPerPage) }).map((_, index) => (
+                    <li key={index}>
+                      <button
+                        onClick={() => paginate(index + 1)}
+                        className={`px-3 py-1 rounded ${
+                          currentPage === index + 1 
+                            ? 'bg-blue-500 text-white' 
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}
+                      >
+                        {index + 1}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
+          </>
+        )}
+      </div>
 
                       
                       {selectedBooking && (
@@ -383,12 +419,12 @@ const BookingDetailsTable: React.FC = () => {
                             >
                               Post Review
                             </button>
-                            <button
+                            {/* <button
                               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
                               onClick={handleOpenInvoiceModal}
                             >
-                              Invoice
-                            </button>
+                              
+                            </button> */}
                           </>
                         )}
                       </div>
