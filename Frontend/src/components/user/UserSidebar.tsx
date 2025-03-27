@@ -14,9 +14,9 @@ const UserSidebar = () => {
           <a href="/booking" className="block py-2 px-4 rounded-md hover:bg-[#00482f] transition">
             Bookings
           </a>
-          <a href="/reports" className="block py-2 px-4 rounded-md hover:bg-[#00482f] transition">
+          {/* <a href="/reports" className="block py-2 px-4 rounded-md hover:bg-[#00482f] transition">
             Reports
-          </a>
+          </a> */}
         </nav>
         <footer className="p-4 text-center text-sm border-t border-[#00482f]">
           © 2024 YourApp

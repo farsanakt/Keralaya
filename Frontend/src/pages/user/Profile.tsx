@@ -126,7 +126,7 @@ const Profile: React.FC = () => {
           <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
             <div className="flex flex-col items-center mb-6">
               <img
-                src="https://via.placeholder.com/100"
+                src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
                 alt="User Avatar"
                 className="w-24 h-24 rounded-full shadow-lg mb-4"
               />
