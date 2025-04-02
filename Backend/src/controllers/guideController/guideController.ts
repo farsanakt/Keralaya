@@ -330,6 +330,30 @@ class GuideController {
 
   }
 
+  async guideReviews(req:Request,res:Response){
+
+    try {
+
+      const {email}=req.params
+
+      const response =await guideService.getGuideReviews(email)
+
+      console.log(response,'i')
+
+      if(response){
+
+        res.status(HttpStatus.CREATED).json(response)
+
+      }
+      
+    } catch (error) {
+      
+      res.status(HttpStatus.BAD_REQUEST).json({message:'something went wrong,please try again'})
+      
+    }
+
+  }
+
         
 }
 

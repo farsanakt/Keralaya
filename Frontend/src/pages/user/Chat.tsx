@@ -94,7 +94,7 @@ export default function Chat({ bookingId, role }: ChatProps) {
       console.log("Sending message:", message);
       socket.emit("sendMessage", message);
       
-      // Add the message to our local state with the timestamp
+
       dispatch(addMessage({ 
         senderId: "Farsana", 
         message: text, 
@@ -117,7 +117,7 @@ export default function Chat({ bookingId, role }: ChatProps) {
   return (
     <div className="flex flex-col h-full w-full bg-white">
       <header className="bg-black text-white py-3 px-4">
-        <h1 className="text-lg font-medium">Socket Chat</h1>
+        <h1 className="text-lg font-medium"></h1>
       </header>
 
       {/* Chat Messages */}

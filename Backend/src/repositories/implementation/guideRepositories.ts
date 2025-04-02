@@ -6,6 +6,7 @@ import GuideAvalilability from '@/models/guideModel/slotModel'
 import { IGuideAvailability } from "@/models/guideModel/slotModel"; 
 import BookingModel, { IBooking } from "@/models/userModel/BookingModel";
 import userModel from "@/models/userModel/userModel";
+import reviewModel, { IReview } from "@/models/userModel/reviewModel";
 
 
 export class GuideRepositories implements IGuideRepository {
@@ -134,6 +135,12 @@ export class GuideRepositories implements IGuideRepository {
           return existing
 
 
+        }
+
+
+        async getReviewsById(id:string):Promise<IReview|null>{
+
+           return reviewModel.findOne({guideId:id})
         }
 
         

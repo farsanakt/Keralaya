@@ -215,9 +215,9 @@ class AuthController {
 
   async setNewToken(req:Request,res:Response){
       
-        console.log('hiiiiiop')
+        
     const token=req.cookies?.refreshToken;
-    console.log(req.cookies,'goooo')
+   
    
     if(!token){
         res.status(HttpStatus.FORBIDDEN).json({message:'Internal Server Error'})

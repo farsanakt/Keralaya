@@ -176,4 +176,12 @@ export const addLocations = async (formData: FormData) => {
       return response
   
   }
+
+  export const guideReviews=async(email:string)=>{
+
+    const response=await api.get(`/guidereviews/${email}`)
+
+    return response
+
+  }
   

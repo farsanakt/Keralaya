@@ -177,6 +177,26 @@ export class GuideService{
         }
 
       }
+
+      getGuideReviews=async(email:string)=>{
+
+        try {
+
+          const guide=await this.guideRepository.findUserByEmail(email)
+
+          const guideId= String(guide?._id) 
+        
+          const reviews=await this.guideRepository.getReviewsById(guideId)
+
+          return reviews
+          
+        } catch (error) {
+
+          logger.info('error occur in getting guide reviews')
+          
+        }
+
+      }
     
 
       

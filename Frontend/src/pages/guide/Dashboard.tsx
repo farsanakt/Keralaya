@@ -36,7 +36,7 @@ const Dashboard: React.FC = () => {
       <FiHome className="text-xl" />
       <span className="text-lg">Dashboard</span>
     </li>
-    <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer">
+    <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer" onClick={() => navigate('/guide/reviews')}>
       <FiStar className="text-xl" />
       <span className="text-lg">Reviews</span>
     </li>
@@ -44,18 +44,18 @@ const Dashboard: React.FC = () => {
       <FiBook className="text-xl" />
       <span className="text-lg">Booking</span>
     </li>
-    <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer">
+    {/* <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer">
       <FiBarChart2 className="text-xl" />
       <span className="text-lg">Revenue</span>
-    </li>
+    </li> */}
     <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer" onClick={() => navigate("/guide/profile")}>
       <FiUser className="text-xl" />
       <span className="text-lg">Profile</span>
     </li>
-    <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer">
+    {/* <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer">
       <FiDollarSign className="text-xl" />
       <span className="text-lg">Transaction</span>
-    </li>
+    </li> */}
     <li className="flex items-center space-x-4 hover:text-green-500 cursor-pointer" onClick={() => navigate('/guide/slot')}>
       <FiClock className="text-xl" />
       <span className="text-lg">Slot</span>

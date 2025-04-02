@@ -39,8 +39,6 @@ interface Guide {
   district: string;
   charge: number;
   imageUrl: string;
-  // reviews:sr[]
-  
 }
 
 interface AvailableDateItem {
@@ -63,17 +61,21 @@ interface IUserReview {
   username: string;
   comment: string;
   rating: number;
-  createdAt:string
+  createdAt: string;
 }
 
 interface IReview {
   guideId: string;
   reviews: IUserReview[];
   averageRating: number;
+  createdAt?: string;
 }
 
 
 const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
+  // Ensure rating is a number and default to 0 if undefined/null
+  const safeRating = typeof rating === 'number' ? rating : 0;
+  
   return (
     <div className="flex">
       {[1, 2, 3, 4, 5].map((star) => (
@@ -81,7 +83,7 @@ const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
           key={star}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
-          fill={star <= rating ? "#FFCC00" : "none"}
+          fill={star <= safeRating ? "#FFCC00" : "none"}
           stroke="#FFCC00"
           className="w-4 h-4"
         >
@@ -93,7 +95,7 @@ const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
           />
         </svg>
       ))}
-      <span className="ml-1 text-sm font-medium">{rating.toFixed(1)}</span>
+      <span className="ml-1 text-sm font-medium">{safeRating.toFixed(1)}</span>
     </div>
   );
 };
@@ -101,7 +103,7 @@ const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
 const months = ["This Month", "Next Month", "Two Months Ahead"];
 
 const GuideDetails: React.FC = () => {
-  const { id ,locationId} = useParams();
+  const { id, locationId } = useParams<{ id: string; locationId: string }>();
   const [guide, setGuide] = useState<Guide | null>(null);
   const [availability, setAvailability] = useState<GuideAvailability | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -109,9 +111,13 @@ const GuideDetails: React.FC = () => {
   const [activeMonth, setActiveMonth] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [userSecert, setUserSecert] = useState(null);
-  const [paymentIntentid, setPaymentIntentid] = useState(null);
-  const [review, setReview] = useState<IReview | null>(null);
+  const [userSecert, setUserSecert] = useState<string | null>(null);
+  const [paymentIntentid, setPaymentIntentid] = useState<string | null>(null);
+  const [review, setReview] = useState<IReview>({
+    guideId: '',
+    reviews: [],
+    averageRating: 0
+  });
 
   const dispatch: AppDispatch = useDispatch();
 
@@ -160,9 +166,8 @@ const GuideDetails: React.FC = () => {
     try {
       const response = await fetchingReviewData(id);
       if (response && response.data) {
-        
         setReview(response.data);
-        console.log(review,'rev')
+        console.log(review, 'rev');
       }
     } catch (error) {
       console.error("Error fetching reviews:", error);
@@ -170,7 +175,7 @@ const GuideDetails: React.FC = () => {
   };
   
   useEffect(() => {
-    fetchingReview()
+    fetchingReview();
     const fetchGuideDetails = async () => {
       try {
         setLoading(true);
@@ -191,7 +196,6 @@ const GuideDetails: React.FC = () => {
               district: guideData.district || 'Not specified',
               charge: guideData.charge || 0,
               imageUrl: guideData.profileImage || "/api/placeholder/200/200",
-              // reviews: guideData.reviews || []
             };
 
             setGuide(transformedGuide);
@@ -227,7 +231,6 @@ const GuideDetails: React.FC = () => {
 
   const travelGuide = async (guideId: string) => {
     try {
-      
       await fetchGuideAvailability(guideId);
       setIsModalOpen(true);
     } catch (error) {
@@ -240,7 +243,8 @@ const GuideDetails: React.FC = () => {
   
   const amount = '2000';
   const userEmail = currentUser?.message?.data?.email;
-  const bookingSubmit = async (slotId: string) => {
+  const bookingSubmit = async (slotId: string | undefined) => {
+    if (!slotId) return;
     
     const result = await Swal.fire({
       title: 'Confirm Booking',
@@ -253,14 +257,12 @@ const GuideDetails: React.FC = () => {
       cancelButtonText: 'Cancel'
     });
   
-    
-    if (result.isConfirmed) {
+    if (result.isConfirmed && guideId) {
       const response = await usercheckOut({ slotId, guideId, userEmail, amount });
       console.log("Payment Response:", response);
       if(response) {
-        setUserSecert(response.data.client_secret)
-        setPaymentIntentid(response.data.paymentIntentid)
-        
+        setUserSecert(response.data.client_secret);
+        setPaymentIntentid(response.data.paymentIntentid);
       }
     }
   };
@@ -293,6 +295,9 @@ const GuideDetails: React.FC = () => {
     );
   }
 
+  // Calculate rating safely
+  const displayRating = review?.averageRating || 0;
+
   return (
     <div className="min-h-screen bg-white text-black flex flex-col">
     
@@ -314,7 +319,7 @@ const GuideDetails: React.FC = () => {
           <div className="md:col-span-2">
             <h1 className="text-3xl font-bold mb-2">{guide.name}</h1>
             <div className="mb-4">
-              <StarRating rating={review.averageRating || '5'} />
+              <StarRating rating={displayRating} />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg shadow-sm">
               <div>
@@ -346,41 +351,41 @@ const GuideDetails: React.FC = () => {
           </div>
         </div>
 
-              <div className="mb-12">
-        <h2 className="text-2xl font-bold mb-6 border-b border-gray-200 pb-2">
-          Reviews ({review?.reviews?.length ?? 0})
-        </h2>
-        <div className="space-y-6">
-          {review?.reviews?.length ? (
-            review.reviews.map((reviewItem, index) => {
-              // Convert the createdAt date to a more readable format
-              const reviewDate = new Date(review.createdAt).toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-              });
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold mb-6 border-b border-gray-200 pb-2">
+            Reviews ({review?.reviews?.length ?? 0})
+          </h2>
+          <div className="space-y-6">
+            {review?.reviews?.length ? (
+              review.reviews.map((reviewItem, index) => {
+                // Convert the createdAt date to a more readable format
+                const reviewDate = new Date(reviewItem.createdAt || '').toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                });
 
-              return (
-                <div key={index} className="border-b border-gray-100 pb-6 hover:bg-gray-50 p-4 rounded transition duration-150">
-                  <div className="flex justify-between items-center mb-2">
-                    <h3 className="font-semibold">{reviewItem.username || "Anonymous"}</h3>
-                    <span className="text-sm text-gray-500">{reviewDate}</span>
+                return (
+                  <div key={index} className="border-b border-gray-100 pb-6 hover:bg-gray-50 p-4 rounded transition duration-150">
+                    <div className="flex justify-between items-center mb-2">
+                      <h3 className="font-semibold">{reviewItem.username || "Anonymous"}</h3>
+                      <span className="text-sm text-gray-500">{reviewDate}</span>
+                    </div>
+                    <div className="mb-2">
+                      <StarRating rating={reviewItem.rating || 0} />
+                    </div>
+                    <p className="text-gray-700">{reviewItem.comment || "No comment provided."}</p>
                   </div>
-                  <div className="mb-2">
-                    <StarRating rating={reviewItem.rating || 0} />
-                  </div>
-                  <p className="text-gray-700">{reviewItem.comment || "No comment provided."}</p>
-                </div>
-              );
-            })
-          ) : (
-            <div className="text-center py-12 bg-gray-50 rounded-lg">
-              <p className="text-gray-500">No reviews yet</p>
-              <p className="text-sm text-gray-400 mt-2">Be the first to review after your trip!</p>
-            </div>
-          )}
+                );
+              })
+            ) : (
+              <div className="text-center py-12 bg-gray-50 rounded-lg">
+                <p className="text-gray-500">No reviews yet</p>
+                <p className="text-sm text-gray-400 mt-2">Be the first to review after your trip!</p>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
 
 
       </main>
@@ -455,7 +460,7 @@ const GuideDetails: React.FC = () => {
             <div className="mt-8">
               <button
                 onClick={() => {
-                  bookingSubmit(selectedSlot?.id)
+                  bookingSubmit(selectedSlot?.id);
                   setIsModalOpen(false);
                 }}
                 disabled={!selectedSlot}
@@ -473,15 +478,15 @@ const GuideDetails: React.FC = () => {
       )}
 
       
-      {userSecert && (
+      {userSecert && guideId && (
         <Payment 
           userSecret={userSecert} 
           guideId={guideId} 
           amount={amount} 
-          userEmail={userEmail} 
+          userEmail={userEmail || ''} 
           slotId={selectedSlot?.id}
-          paymentIntentid={paymentIntentid}
-          locationId={locationId}
+          paymentIntentid={paymentIntentid || ''}
+          locationId={locationId || ''}
         />
       )}
       
@@ -490,7 +495,5 @@ const GuideDetails: React.FC = () => {
     </div>
   );
 };
-
-
 
 export default GuideDetails;

@@ -19,9 +19,9 @@ const Sidebar = ({ activeSection, setActiveSection, navigate }:any) => {
     { id: "Dashboard", icon: Home, action: () => setActiveSection("Dashboard") },
     { id: "Reviews", icon: Star, action: () => setActiveSection("Reviews") },
     { id: "Booking", icon: BookOpen, action: () => setActiveSection("Booking") },
-    { id: "Revenue", icon: BarChart2, action: () => setActiveSection("Revenue") },
+    // { id: "Revenue", icon: BarChart2, action: () => setActiveSection("Revenue") },
     { id: "Profile", icon: User, action: () => navigate("/guide/profile") },
-    { id: "Transaction", icon: DollarSign, action: () => setActiveSection("Transaction") },
+    // { id: "Transaction", icon: DollarSign, action: () => setActiveSection("Transaction") },
     { id: "Slot", icon: Clock, action: () => setActiveSection("Slot") },
     { id: "Locations", icon: MapPin, action: () => navigate("/guide/places") }
   ];

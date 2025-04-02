@@ -44,7 +44,7 @@ const Signup: React.FC = () => {
 
       isValid = false
 
-      errorMessage = "Passwords do not match."
+      // errorMessage = "Passwords do not match."
 
     } else if (!noOnlySpaces.test(value)) {
 
@@ -145,7 +145,7 @@ const Signup: React.FC = () => {
 
     if (formData.password !== formData.confirmPassword) {
 
-      setFormError("Passwords do not match");
+      // setFormError("Passwords do not match");
 
       return;
     }

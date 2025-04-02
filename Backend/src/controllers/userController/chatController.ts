@@ -3,8 +3,9 @@ import ChatService from "@/services/user/chatService";
 import { HttpStatus } from "@/enums/HttpStatus";
 
 class ChatController {
+
   async sendMessage(req: Request, res: Response) {
-    console.log('chatiing')
+    
     try {
       const { senderId, receiverId, message } = req.body;
       const chatRoomId = [senderId, receiverId].sort().join("_");

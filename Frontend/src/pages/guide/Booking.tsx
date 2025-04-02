@@ -6,6 +6,7 @@ import { RootState } from '@/redux/store';
 import { completedTravel, userBookingDetails } from '@/service/guide/guideApi';
 import ChatModal from '@/components/user/chat/chatModal';
 
+
 interface Booking {
   id: string;
   _id?: string; 
@@ -64,7 +65,7 @@ const Bookings: React.FC = () => {
         const response = await userBookingDetails(email);
         
         if (response && response.data && Array.isArray(response.data)) {
-          // Sort bookings by date (most recent first)
+          
           const formattedBookings = response.data
             .map((booking: any) => ({
               id: booking.id || booking._id,
@@ -110,7 +111,7 @@ const Bookings: React.FC = () => {
     bookingDetails();
   }, [currentGuide]);
 
-  // Pagination logic
+ 
   const indexOfLastBooking = currentPage * bookingsPerPage;
   const indexOfFirstBooking = indexOfLastBooking - bookingsPerPage;
   const currentBookings = bookings.slice(indexOfFirstBooking, indexOfLastBooking);

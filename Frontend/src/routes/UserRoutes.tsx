@@ -10,6 +10,8 @@ import GuideList from '../pages/user/GuideList';
 import GuideDetails from "@/pages/user/GuideDetails";
 import BookingDetailsTable from "@/pages/user/Booking";
 import Chat from "@/pages/user/Chat";
+import AboutUs from "@/pages/user/AboutUs";
+import ContactUs from "@/pages/user/contactUs";
 
 
 
@@ -19,6 +21,8 @@ const UserRoutes = () => {
     <div>
       <Routes>
         <Route path="/"  element={<Home/>}/>
+        <Route path='/aboutUs' element={<AboutUs/>}/>
+        <Route path='/contactUs' element={<ContactUs/>}/>
         <Route path="/login" element={<PublicRoute><Login/></PublicRoute>} />
         <Route path="/signup"  element={<PublicRoute><Signup/></PublicRoute>} />
         

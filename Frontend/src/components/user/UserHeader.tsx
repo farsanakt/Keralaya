@@ -35,13 +35,13 @@ const UserHeader: React.FC = () => {
           <a href="/" className="text-gray-700 hover:text-black">
             Home
           </a>
-          <a href="#" className="text-gray-700 hover:text-black">
+          {/* <a href="#" className="text-gray-700 hover:text-black">
             Category
-          </a>
-          <a href="#" className="text-gray-700 hover:text-black">
+          </a> */}
+          <a href="/aboutUs" className="text-gray-700 hover:text-black">
             About
           </a>
-          <a href="#" className="text-gray-700 hover:text-black">
+          <a href="/contactus" className="text-gray-700 hover:text-black">
             Contact
           </a>
           {currentUser ? (
