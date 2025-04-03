@@ -21,7 +21,7 @@ class ChatController {
     console.log('hei')
     try {
       const {id}=req.params
-      console.log(id,'po')
+      
       const messages = await ChatService.getChatHistory(req.params.id);
       res.json(messages);
     } catch (error) {
@@ -36,13 +36,15 @@ class ChatController {
       
       const response=await ChatService.createChatId(id)
 
+      
+
       const shortenId = (id?: string) => (id ? id.slice(0, 5) : ""); 
 
       const chatRoomId = `${shortenId(response?.userEmail)}_${shortenId(response?.guideId)}`;
       
       if(chatRoomId){
 
-        res.status(HttpStatus.CREATED).json(chatRoomId)
+        res.status(HttpStatus.CREATED).json({chatRoomId,response})
 
       }
 

@@ -20,27 +20,27 @@ user_route.get('/userProfile/:email',authenticateToken,userStatus,userController
 
 user_route.post('/updateprofile',authenticateToken,userController.updateProfile)
 
-user_route.get('/getlocation',userController.getLocations)
+user_route.get('/getlocation',authenticateToken,userController.getLocations)
 
-user_route.get('/locationdetails',userController.locationDetails)
+user_route.get('/locationdetails',authenticateToken,userController.locationDetails)
 
-user_route.get('/guidedetails',userController.guideDetails)
+user_route.get('/guidedetails',authenticateToken,userController.guideDetails)
 
-user_route.get('/allguideList',userController.allGuideList)
+user_route.get('/allguideList',authenticateToken,userController.allGuideList)
 
-user_route.get('/singleguidee/:id',userController.singleGuide)
+user_route.get('/singleguidee/:id',authenticateToken,userController.singleGuide)
 
 user_route.post('/createPaymentIntent',paymentController.createPaymentIntent)
 
 user_route.post('/paymentconfirmation',paymentController.paymentConfirmation)
 
-user_route.get('/bookingDetails/:email',userController.bookingDetails)
+user_route.get('/bookingDetails/:email',authenticateToken,userController.bookingDetails)
 
-user_route.post('/reviewPosting',userController.postReview)
+user_route.post('/reviewPosting',authenticateToken,userController.postReview)
 
-user_route.get('/fetchingReview/:id',userController.guideReviews)
+user_route.get('/fetchingReview/:id',authenticateToken,userController.guideReviews)
 
-user_route.post('/cancelbooking/:id',userController.cancelBooking)
+user_route.post('/cancelbooking/:id',authenticateToken,userController.cancelBooking)
 
 //  chat route 
 

@@ -201,6 +201,35 @@ export const usercheckOut = async (data: { slotId: string; guideId: string; user
     return response
 
   }
+  export const changePassword = async ({
+    userId,
+    currentPassword,
+    newPassword,
+  }: {
+    userId: string;
+    currentPassword: string;
+    newPassword: string;
+  }) => {
+    console.log("Changing password for user:", userId);
+    console.log("Current Password:", currentPassword);
+    console.log("New Password:", newPassword);
+  
+    try {
+      const response = await api.post('/changePassword', {
+        userId, 
+        currentPassword, 
+        newPassword
+      });
+  
+      return response.data; 
+    } catch (error) {
+      console.error("Error changing password:", error);
+      throw error;
+    }
+  };
+  
+  
+  
   
 
 

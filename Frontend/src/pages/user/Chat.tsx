@@ -1,16 +1,29 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { io } from "socket.io-client";
-import { Message } from "@/types/message";
+import { io} from "socket.io-client";
+// import { Message } from "@/types/message";
 import { RootState } from "@/redux/store";
 import { addMessage, setMessages } from "@/redux/slices/chatSlice"; 
 import { chatIdCreation, existingMessages } from "@/service/user/userApi";
 
 interface ChatProps {
   bookingId: string;
-  role: any;
+  role: string;
 }
 
+interface BookingData {
+  _id: string;
+  userEmail: string;
+  guideId: string;
+  amount: string;
+  status: string;
+  bookeddate: string;
+  locname: string;
+  paymentStatus: string;
+  __v: number;
+}
+
+// Create a stable socket connection outside the component
 const socket = io("http://localhost:4000", {
   transports: ["websocket"],
   withCredentials: true,
@@ -18,23 +31,46 @@ const socket = io("http://localhost:4000", {
 
 export default function Chat({ bookingId, role }: ChatProps) {
   const BK_ID = bookingId;
-  const rol = role;
   const dispatch = useDispatch();
   const messages = useSelector((state: RootState) => state.chat.messages);
   const [text, setText] = useState<string>("");
   const [chatRoomId, setChatRoomId] = useState<string | null>(null);
+  const [booking, setBooking] = useState<BookingData | null>(null);
+  const [chatName, setChatName] = useState<string>("");
+
+  const messageProcessingRef = useRef(false);
+  
+  const processedMessageIds = useRef<Set<string>>(new Set());
 
   const chatRoomIdCreation = async () => {
     try {
       const response = await chatIdCreation(BK_ID);
-      setChatRoomId(response.data);
+      setChatRoomId(response.data.chatRoomId);
+      setBooking(response.data.response);
+      
+      
+      if (response.data.response) {
+        const bookingData = response.data.response as BookingData;
+        if (role === "user") {
+          setChatName(bookingData.guideId); 
+        } else {
+         
+          const userName = bookingData.userEmail.split('@')[0];
+          setChatName(userName);
+        }
+      }
     } catch (error) {
       console.error("Error creating chatRoomId:", error);
     }
   };
   
   useEffect(() => {
-    chatRoomIdCreation(); 
+    chatRoomIdCreation();
+    
+    
+    return () => {
+      dispatch(setMessages([]));
+    };
   }, []);
   
   useEffect(() => {
@@ -43,8 +79,17 @@ export default function Chat({ bookingId, role }: ChatProps) {
     const fetchMessages = async () => {
       try {
         const response = await existingMessages(chatRoomId);
-        console.log(response, "hoopppe");
-        const data = response.data;
+        
+       
+        const data = Array.isArray(response.data) ? response.data : [];
+        
+       
+        data.forEach((msg: any) => {
+          if (msg._id) {
+            processedMessageIds.current.add(msg._id);
+          }
+        });
+        
         dispatch(setMessages(data));
       } catch (error) {
         console.error("Error fetching messages:", error);
@@ -54,78 +99,121 @@ export default function Chat({ bookingId, role }: ChatProps) {
     fetchMessages();
   }, [dispatch, chatRoomId]);
   
-  
   useEffect(() => {
     if (!chatRoomId) return;
     
     socket.emit("joinRoom", chatRoomId);
 
-    socket.on("receiveMessage", (message: Message) => {
-      // Only add the message if it's from someone else to avoid duplicates
-      if (message.senderId !== "Farsana") {
-        dispatch(addMessage(message));
+    
+    const handleReceiveMessage = (message: any) => {
+      
+      if (messageProcessingRef.current) {
+        messageProcessingRef.current = false;
+        return;
       }
-    });
+      
+      if (message._id && processedMessageIds.current.has(message._id)) {
+        return;
+      }
+      
+      
+      if (message._id) {
+        processedMessageIds.current.add(message._id);
+      }
+      
+      
+      dispatch(addMessage(message));
+    };
+
+    socket.on("receiveMessage", handleReceiveMessage);
 
     return () => {
-      socket.off("receiveMessage");
+      
+      socket.off("receiveMessage", handleReceiveMessage);
+      socket.emit("leaveRoom", chatRoomId);
     };
   }, [dispatch, chatRoomId]);
 
   const sendMessage = () => {
-    if (!chatRoomId) {
-      console.error("ChatRoomId is null. Cannot send message.");
+    if (!chatRoomId || !booking) {
+      console.error("ChatRoomId or booking data is missing. Cannot send message.");
       return;
     }
   
-    if (text.trim() !== "") {
+    if (text.trim() === "") return;
+
+    try {
+      
+      messageProcessingRef.current = true;
+      
       const timestamp = new Date().toISOString();
-      const message = {
-        senderId: "Farsana",
-        receiverId: "SomeReceiverId",
+      
+      
+      const senderId = role === "user" ? booking.userEmail : booking.guideId;
+      const receiverId = role === "user" ? booking.guideId : booking.userEmail;
+      
+      
+      const messageToSend = {
+        senderId: senderId,
+        receiverId: receiverId,
         message: text,
         chatRoomId,
-        rol,
-        timestamp: timestamp,
+        rol: role, 
+        role: role,  
+        timestamp,
         read: false,
       };
-      console.log('message');
-  
-      console.log("Sending message:", message);
-      socket.emit("sendMessage", message);
       
+      
+      socket.emit("sendMessage", messageToSend);
 
+      
       dispatch(addMessage({ 
-        senderId: "Farsana", 
+        senderId, 
+        receiverId,
         message: text, 
-        timestamp: timestamp,
+        chatRoomId,
+        timestamp,
         read: false,
-        role: rol
+        role
       }));
       
       setText("");
+    } catch (error) {
+      console.error("Error sending message:", error);
+      
+      messageProcessingRef.current = false;
     }
   };
 
- 
-  const formatTime = (timestamp:any) => {
+  const formatTime = (timestamp: string | undefined) => {
     if (!timestamp) return "";
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    try {
+      const date = new Date(timestamp);
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } catch (error) {
+      console.error("Error formatting time:", error);
+      return "";
+    }
   };
   
   return (
     <div className="flex flex-col h-full w-full bg-white">
       <header className="bg-black text-white py-3 px-4">
-        <h1 className="text-lg font-medium"></h1>
+        <h1 className="text-lg font-medium">{chatName}</h1>
       </header>
 
-      {/* Chat Messages */}
+      
       <div className="flex-grow overflow-y-auto p-4">
         <div className="space-y-3">
           {messages.map((msg, index) => {
-            const isCurrentUser = msg.role === rol;
-            const senderName = isCurrentUser ? "You" : msg.senderId;
+            
+            const isCurrentUser = role === msg.role;
+            
+            
+            const senderName = isCurrentUser ? "You" : (
+              role === "user" ? booking?.guideId : booking?.userEmail.split('@')[0]
+            );
             
             return (
               <div
@@ -165,11 +253,17 @@ export default function Chat({ bookingId, role }: ChatProps) {
             onChange={(e) => setText(e.target.value)}
             placeholder="Type a message..."
             className="flex-grow p-2 text-sm border border-gray-300 rounded"
-            onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
+              }
+            }}
           />
           <button
             onClick={sendMessage}
             className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition-colors text-sm"
+            disabled={!chatRoomId || text.trim() === ''}
           >
             Send
           </button>

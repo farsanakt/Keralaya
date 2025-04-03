@@ -22,6 +22,8 @@ userAuth_route.get('/logout',authController.logout)
 
 userAuth_route.get('/refresh-token',authController.setNewToken)
 
+userAuth_route.post('/changePassword',authController.changePassword)
+
 
 
 

@@ -185,6 +185,10 @@ export class UserRepositories {
       return BookingModel.findByIdAndUpdate({_id:id},{status:'cancelled'})
 
     }
+
+    async updatePassword(userId: string, hashedPassword: string): Promise<void> {
+      await User.findByIdAndUpdate(userId, { password: hashedPassword });
+    }
     
       
 

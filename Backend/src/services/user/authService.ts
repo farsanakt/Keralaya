@@ -331,6 +331,29 @@ export class AuthService {
 
   }
 
+  async changePassword(userId: string, currentPassword: string, newPassword: string): Promise<string> {
+
+    const user = await this.userRepositories.findUserById(userId);
+    console.log(user?.password,'kkkkko')
+    if (!user) {
+     return "User not found"
+    }
+
+    const isMatch = await bcrypt.compare(currentPassword, user.password)
+
+    console.log(isMatch,'jj')
+
+    if (!isMatch) {
+      
+       return "Current password is incorrect"
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await this.userRepositories.updatePassword(userId, hashedPassword);
+
+    return "Password changed successfully";
+  }
+
   async checkToken(refreshDto: RefreshDto) {
     try {
       const token = refreshDto.token;
