@@ -1,4 +1,5 @@
 import ChatModal from '@/components/user/chat/chatModal';
+import UserHeader from '@/components/user/UserHeader';
 import UserSidebar from '@/components/user/UserSidebar';
 import { RootState } from '@/redux/store';
 // import { cancelBooking } from '@/service/admin/adminApi';
@@ -219,6 +220,10 @@ const BookingDetailsTable: React.FC = () => {
   }, [currentUser?.message?.data?.email]);
 
   return (
+    <div className="min-h-screen flex flex-col bg-[#f8fafc]">
+    <header className="w-full bg-[#f8fafc] shadow-md">
+      <UserHeader />
+    </header>
     <div className="flex">
     <UserSidebar />
     <div className="flex-1 p-4">
@@ -596,6 +601,7 @@ const BookingDetailsTable: React.FC = () => {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 };

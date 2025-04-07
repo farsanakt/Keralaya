@@ -255,6 +255,22 @@ class UserController{
 
  }
 
+ async allLocations(req:Request,res:Response){
+
+   try {
+
+      const response=await userService.getAlllocations()
+
+      console.log(response,'jjj')
+
+      res.status(HttpStatus.CREATED).json(response)
+      
+   } catch (error) {
+      res.status(HttpStatus.BAD_REQUEST).json({message:'something went wrong'})
+   }
+
+ }
+
 }
 
 export default UserController

@@ -115,50 +115,59 @@ const Profile: React.FC = () => {
 
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     if (!userData?._id) {
       console.error("User ID is missing.");
       return;
     }
-
+  
     const { currentPassword, newPassword, confirmPassword } = passwordData;
-
+  
     // Validation
     if (!currentPassword || !newPassword || !confirmPassword) {
       toast.error("All password fields are required");
       return;
     }
-
+  
     if (newPassword !== confirmPassword) {
       toast.error("New password and confirm password do not match");
       return;
     }
-
+  
     if (newPassword.length < 6) {
       toast.error("Password must be at least 6 characters long");
       return;
     }
-
+  
     try {
       const response = await changePassword({
         userId: userData._id,
         currentPassword,
         newPassword,
       });
-
-      console.log(response,'u')
-
-      if (response) {
-        toast.success("Password changed successfully");
-        handlePasswordModalClose();
+  
+      const result = response?.message;
+  
+      console.log(result, 'res');
+  
+     
+      if (result) {
+        if (result.success) {
+          toast.success(result.message || "Password changed successfully");
+          handlePasswordModalClose();
+        } else {
+          toast.error(result.message || "Failed to change password");
+        }
       } else {
-        toast.error(response.data.message || "Failed to change password");
+        toast.error("Unexpected response from server");
       }
+  
     } catch (error: any) {
-      console.log(error,'po')
-      toast.error(error.response?.data?.message || 'current password is incorrect');
+      console.log(error, 'po');
+      toast.error(error?.response?.data?.message || 'Something went wrong');
     }
   };
+  
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f8fafc]">

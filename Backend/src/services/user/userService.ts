@@ -197,6 +197,20 @@ export class UserService{
       }
 
     }
+
+    getAlllocations=async()=>{
+
+      try {
+
+        return await this.userRepositories.getallLocationss()
+        
+      } catch (error) {
+
+        console.log('error occur in userservice ')
+        
+      }
+
+    }
     
     
 

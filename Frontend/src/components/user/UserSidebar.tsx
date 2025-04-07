@@ -8,9 +8,9 @@ const UserSidebar = () => {
           <a href="/profile" className="block py-2 px-4 rounded-md hover:bg-[#00482f] transition">
             My Profile
           </a>
-          <a href="/guides" className="block py-2 px-4 rounded-md hover:bg-[#00482f] transition">
+          {/* <a href="/guides" className="block py-2 px-4 rounded-md hover:bg-[#00482f] transition">
             Guides
-          </a>
+          </a> */}
           <a href="/booking" className="block py-2 px-4 rounded-md hover:bg-[#00482f] transition">
             Bookings
           </a>

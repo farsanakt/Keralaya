@@ -227,6 +227,14 @@ export const usercheckOut = async (data: { slotId: string; guideId: string; user
       throw error;
     }
   };
+
+  export const allLocations=async()=>{
+
+    const response=await api.get('/alllocations')
+
+    return response
+
+  }
   
   
   

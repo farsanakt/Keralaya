@@ -12,6 +12,7 @@ import BookingDetailsTable from "@/pages/user/Booking";
 import Chat from "@/pages/user/Chat";
 import AboutUs from "@/pages/user/AboutUs";
 import ContactUs from "@/pages/user/contactUs";
+import UserNotifications from "@/pages/user/userNotifications";
 
 
 
@@ -34,6 +35,9 @@ const UserRoutes = () => {
         <Route path="/guidelist/:locationId"   element={<ProtectedRoute element={<GuideList/>}/>}/>
         <Route path="/guidedetails/:id/:locationId"   element={<ProtectedRoute element={<GuideDetails/>}/>}/>
         <Route path='/booking'element={<ProtectedRoute element={<BookingDetailsTable/>}/>}/>
+        <Route path='/notifications'element={<ProtectedRoute element={<UserNotifications/>}/>}/>
+        
+
         <Route path="/chat" element={<Chat />} />
 
         {/* <Route path='/checkout' element={</>} */}

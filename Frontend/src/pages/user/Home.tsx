@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import UserHeader from '../../components/user/UserHeader';
 import UserFooter from '../../components/user/UserFooter';
 import hill from '../../assets/m.jpg';
 import waterfalls from '../../assets/m1.jpg';
 import mountain from '../../assets/m2.jpg';
-import { getLocation } from '@/service/user/userApi';
+import { allLocations, getLocation } from '@/service/user/userApi';
 import { MapPin } from 'lucide-react'
 import { useNavigate } from 'react-router-dom';
 
@@ -12,6 +12,7 @@ const Home: React.FC = () => {
   const [searchInput, setSearchInput] = useState('');
   const [searchResults, setSearchResults] = useState<{_id:string,street : string }[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [places,setPlaces]=useState(null)
 
   const navigate=useNavigate()
 
@@ -57,6 +58,18 @@ const Home: React.FC = () => {
     setShowDropdown(false);
     navigate(`/singlelocation/${id}`)
   };
+
+  const fetchingAllocations=async()=>{
+
+    const response=await allLocations()
+
+    
+
+  }
+
+  useEffect(()=>{
+    fetchingAllocations()
+  })
   
   return (
     <main className="bg-gray-100">

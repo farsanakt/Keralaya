@@ -189,6 +189,12 @@ export class UserRepositories {
     async updatePassword(userId: string, hashedPassword: string): Promise<void> {
       await User.findByIdAndUpdate(userId, { password: hashedPassword });
     }
+
+    async getallLocationss():Promise<ILocation[]| null>{
+
+      return await Location.find()
+
+    }
     
       
 

@@ -15,6 +15,7 @@ interface BookingData {
   _id: string;
   userEmail: string;
   guideId: string;
+  guideName:string
   amount: string;
   status: string;
   bookeddate: string;
@@ -23,7 +24,7 @@ interface BookingData {
   __v: number;
 }
 
-// Create a stable socket connection outside the component
+
 const socket = io("http://localhost:4000", {
   transports: ["websocket"],
   withCredentials: true,
@@ -51,8 +52,9 @@ export default function Chat({ bookingId, role }: ChatProps) {
       
       if (response.data.response) {
         const bookingData = response.data.response as BookingData;
+        console.log(bookingData,'jjjjop')
         if (role === "user") {
-          setChatName(bookingData.guideId); 
+          setChatName(bookingData.guideName); 
         } else {
          
           const userName = bookingData.userEmail.split('@')[0];
@@ -212,7 +214,7 @@ export default function Chat({ bookingId, role }: ChatProps) {
             
             
             const senderName = isCurrentUser ? "You" : (
-              role === "user" ? booking?.guideId : booking?.userEmail.split('@')[0]
+              role === "user" ? booking?.guideName : booking?.userEmail.split('@')[0]
             );
             
             return (

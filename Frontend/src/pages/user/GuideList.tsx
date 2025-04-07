@@ -54,6 +54,7 @@ const GuideList: React.FC = () => {
         district: guide.district || 'N/A'
       }));
       setGuides(guidesData);
+      console.log(guidesData,'joop')
 
       // Extract unique districts
       const uniqueDistricts = Array.from(new Set(guidesData.map((g: Guide) => g.district)));

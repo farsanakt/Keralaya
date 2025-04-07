@@ -29,33 +29,24 @@ class ChatController {
     }
   }
 
-  async idCreation(req:Request,res:Response){
-
+  async idCreation(req: Request, res: Response) {
     try {
-      const {id}=req.params
-      
-      const response=await ChatService.createChatId(id)
-
-      
-
+      const { id } = req.params;
+      const response = await ChatService.createChatId(id);
+  
       const shortenId = (id?: string) => (id ? id.slice(0, 5) : ""); 
-
+  
+      // Now these properties exist in the response object
       const chatRoomId = `${shortenId(response?.userEmail)}_${shortenId(response?.guideId)}`;
       
-      if(chatRoomId){
-
-        res.status(HttpStatus.CREATED).json({chatRoomId,response})
-
+      if (chatRoomId) {
+        res.status(HttpStatus.CREATED).json({ chatRoomId, response });
       }
-
-      
     } catch (error) {
-
-      res.status(HttpStatus.BAD_REQUEST).json({message:'something went wrong.please try again'})
-      
+      res.status(HttpStatus.BAD_REQUEST).json({ message: 'Something went wrong. Please try again' });
     }
-
   }
+  
 }
 
 export default  ChatController;
