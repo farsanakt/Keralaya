@@ -22,7 +22,7 @@ class ChatController {
     try {
       const {id}=req.params
       
-      const messages = await ChatService.getChatHistory(req.params.id);
+      const messages = await ChatService.getChatHistory(id);
       res.json(messages);
     } catch (error) {
       res.status(500).json({ error: "Error fetching messages" });
@@ -36,7 +36,7 @@ class ChatController {
   
       const shortenId = (id?: string) => (id ? id.slice(0, 5) : ""); 
   
-      // Now these properties exist in the response object
+   
       const chatRoomId = `${shortenId(response?.userEmail)}_${shortenId(response?.guideId)}`;
       
       if (chatRoomId) {

@@ -78,27 +78,27 @@ io.on("connection", (socket) => {
   });
 
  
-  socket.on("sendMessage", async ({ senderId, receiverId, message,chatRoomId,rol}) => {
-    console.log("Incoming message data:", { senderId, receiverId, message ,rol});
-
+  socket.on("sendMessage", async ({ senderId, receiverId, message, chatRoomId, rol }) => {
     try {
-    
-
       const newMessage = await ChatService.sendMessage({
         senderId,
         receiverId,
         message,
         chatRoomId,
-        role:rol,
+        role: rol,
       } as any);
-
-      console.log("Message saved to DB:", newMessage)
-
+  
       io.to(chatRoomId).emit("receiveMessage", newMessage);
+  
+      
+      console.log("Emitting notification to:", receiverId);
+
+      io.emit("notification", { receiverId, message ,chatRoomId});
     } catch (error) {
       console.error("Error saving message:", error);
     }
   });
+  
 
  
   socket.on("disconnect", () => {
