@@ -47,10 +47,10 @@ interface ReviewData {
   comment: string;
 }
 
-interface ApiResponse {
-  bkDetails: Booking[];
-  guideDetails: GuideDetails[][];
-}
+// interface ApiResponse {
+//   bkDetails: Booking[];
+//   guideDetails: GuideDetails[][];
+// }
 
 const BookingDetailsTable: React.FC = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);

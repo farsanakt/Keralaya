@@ -160,6 +160,7 @@ export default function Chat({ bookingId, role }: ChatProps) {
         receiverId: receiverId,
         message: text,
         chatRoomId,
+        BK_ID,
         rol: role, 
         role: role,  
         timestamp,
@@ -176,6 +177,7 @@ export default function Chat({ bookingId, role }: ChatProps) {
         message: text, 
         chatRoomId,
         timestamp,
+        BK_ID,
         read: false,
         role
       }));

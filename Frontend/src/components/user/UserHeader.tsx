@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { RootState } from "../../redux/store";
 import { FaUserCircle } from "react-icons/fa";
 import { IoMdNotificationsOutline } from "react-icons/io";
-import { userlogout } from "../../service/user/userApi";
+import { ChatDetails, userlogout } from "../../service/user/userApi";
 import { logout } from "../../redux/slices/userSlice";
 import { io } from "socket.io-client";
+import ChatModal from "./chat/chatModal";
 
 const socket = io("http://localhost:4000", {
   transports: ["websocket"],
@@ -16,12 +17,14 @@ const socket = io("http://localhost:4000", {
 const UserHeader: React.FC = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [hasNotification, setHasNotification] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [notifDropdown, setNotifDropdown] = useState(false);
+  const [showChatModal, setShowChatModal] = useState(false);
+  const [bookingId, setBookingId] = useState<string>("");
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
@@ -57,14 +60,37 @@ const UserHeader: React.FC = () => {
     setNotifDropdown(!notifDropdown);
   };
 
-  const handleNotificationClick = (chatRoomId: string) => {
-    navigate(`/chat?chatRoomId=${chatRoomId}`);
+  const handleCloseChat = () => {
+    setShowChatModal(false);
+  };
+
+
+  const handleNotificationClick = async (chatRoomId: string) => {
+    console.log(chatRoomId, "ayee");
+    const response = await ChatDetails(chatRoomId);
+
+    if (response) {
+      setBookingId(response.data);
+      setShowChatModal(true);
+
+      
+      setNotifications((prev) =>
+        prev.filter((note) => note.chatRoomId !== chatRoomId)
+      );
+
+      
+      if (notifications.length <= 1) {
+        setHasNotification(false);
+      }
+    }
+
     setNotifDropdown(false);
   };
 
   const handleClearAll = () => {
     setNotifications([]);
     setHasNotification(false);
+    setNotifDropdown(false);
   };
 
   return (
@@ -129,6 +155,14 @@ const UserHeader: React.FC = () => {
                 </div>
               )}
             </div>
+          )}
+
+          {showChatModal && (
+            <ChatModal
+              bookingId={bookingId}
+              onClose={handleCloseChat}
+              role="user"
+            />
           )}
 
           {currentUser ? (

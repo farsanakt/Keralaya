@@ -33,6 +33,22 @@ class ChatService {
   
     return { bookings, guideName: guide?.name, guideId: guideid, userEmail };
   }
+
+  async chatDetails(id:string){
+
+    try {
+
+      const chatDetails=await ChatRepository.chatDetails(id)
+
+      return chatDetails?.bookingId
+      
+    } catch (error) {
+
+      console.log('error occur in chat service')
+      
+    }
+
+  }
   
   
 

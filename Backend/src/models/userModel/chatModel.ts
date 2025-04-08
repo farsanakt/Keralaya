@@ -7,6 +7,7 @@ export interface IChat extends Document {
   role:string
   chatRoomId: string;
   timestamp: Date;
+  bookingId:string
 }
 
 const ChatSchema = new Schema<IChat>(
@@ -17,6 +18,7 @@ const ChatSchema = new Schema<IChat>(
     role: { type: String, required: true },
     chatRoomId: { type: String, required: true },
     timestamp: { type: Date, default: Date.now },
+    bookingId:{type:String,required:true}
   },
   { timestamps: true }
 );

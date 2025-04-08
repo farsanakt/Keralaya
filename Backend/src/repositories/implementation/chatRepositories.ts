@@ -16,6 +16,12 @@ class ChatRepository {
     return await BookingModel.findById({_id:id})
 
   }
+
+  async chatDetails(id:string):Promise<IChat|null>{
+
+    return await Chat.findOne({chatRoomId:id})
+
+  }
 }
 
 export default new ChatRepository();

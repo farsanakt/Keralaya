@@ -49,6 +49,7 @@ user_route.get('/alllocations',userController.allLocations)
 user_route.post("/send", chatController.sendMessage);
 user_route.get("/existingmessages/:id", chatController.getChatHistory);
 user_route.get('/idCreation/:id',chatController.idCreation)
+user_route.get('/chatdetails/:id',chatController.chatDetails)
 
     
 

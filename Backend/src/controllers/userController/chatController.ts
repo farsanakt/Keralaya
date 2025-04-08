@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import ChatService from "@/services/user/chatService";
 import { HttpStatus } from "@/enums/HttpStatus";
+import chatService from "@/services/user/chatService";
 
 class ChatController {
 
@@ -45,6 +46,28 @@ class ChatController {
     } catch (error) {
       res.status(HttpStatus.BAD_REQUEST).json({ message: 'Something went wrong. Please try again' });
     }
+  }
+
+  async chatDetails(req:Request,res:Response){
+
+    try {
+
+      const response=await ChatService.chatDetails(req.params.id)
+
+      console.log(response,'8')
+
+      if(response){
+
+        res.status(HttpStatus.CREATED).json(response)
+
+      }
+      
+    } catch (error) {
+
+      res.status(HttpStatus.BAD_REQUEST).json({message:'something went wrong'})
+      
+    }
+
   }
   
 }

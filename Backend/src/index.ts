@@ -78,7 +78,8 @@ io.on("connection", (socket) => {
   });
 
  
-  socket.on("sendMessage", async ({ senderId, receiverId, message, chatRoomId, rol }) => {
+  socket.on("sendMessage", async ({ senderId, receiverId, message, chatRoomId, rol,BK_ID }) => {
+    console.log(BK_ID,'koooop')
     try {
       const newMessage = await ChatService.sendMessage({
         senderId,
@@ -86,6 +87,7 @@ io.on("connection", (socket) => {
         message,
         chatRoomId,
         role: rol,
+        bookingId:BK_ID
       } as any);
   
       io.to(chatRoomId).emit("receiveMessage", newMessage);

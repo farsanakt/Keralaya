@@ -268,3 +268,11 @@ export const cancelBooking=async(id:string)=>{
     return response
 
 }
+
+export const ChatDetails=async(id:string)=>{
+
+  const response=await api.get(`/chatdetails/${id}`)
+
+  return response
+
+}
