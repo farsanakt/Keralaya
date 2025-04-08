@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from '../../redux/store';
 const GuideLogin: React.FC = () => {
   
-  const { loading, error } = useSelector((state: RootState) => state.user)
+  const { loading} = useSelector((state: RootState) => state.user)
  
      const dispatch: AppDispatch = useDispatch();
 

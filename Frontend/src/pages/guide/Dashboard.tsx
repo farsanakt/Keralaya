@@ -1,7 +1,7 @@
-import { logout, resetGuide } from "@/redux/slices/guideSlice";
+import { logout} from "@/redux/slices/guideSlice";
 import { guidelogout } from "@/service/guide/guideApi";
 import React from "react";
-import { FiHome, FiStar, FiBook, FiBarChart2, FiUser, FiDollarSign, FiClock, FiLogOut } from "react-icons/fi";
+import { FiHome, FiStar, FiBook, FiUser,FiClock, FiLogOut } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 const Dashboard: React.FC = () => {
@@ -150,8 +150,10 @@ export default Dashboard;
 
 function dispatch(arg0: { payload: undefined; type: "guide/logout"; }) {
   throw new Error("Function not implemented.");
+  console.log(arg0)
 }
 function setDropdownOpen(arg0: boolean) {
   throw new Error("Function not implemented.");
+  console.log(arg0)
 }
 

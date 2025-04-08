@@ -4,7 +4,7 @@ import * as React from 'react'
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "@/components/ui/command"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Place } from '@/types/types'
-import hill from '../../assets/m.jpg'
+
 
 interface SearchDestinationProps {
   onSearch: (place: Place | null) => void

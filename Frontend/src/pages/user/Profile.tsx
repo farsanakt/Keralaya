@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import UserHeader from "../../components/user/UserHeader";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../redux/store";
+import {  useSelector } from "react-redux";
+import {  RootState } from "../../redux/store";
 import { changePassword, profileRequest, updateProfie } from "../../service/user/userApi";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -20,7 +20,7 @@ type PasswordData = {
 };
 
 const Profile: React.FC = () => {
-  const dispatch: AppDispatch = useDispatch();
+  
 
   const [userData, setUserData] = useState<User | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -1,5 +1,5 @@
 
-import { Home, Star, BookOpen, BarChart2, User, DollarSign, Clock, MapPin } from 'lucide-react';
+import { Home, Star, BookOpen, User, Clock, MapPin } from 'lucide-react';
 
 
 // /**

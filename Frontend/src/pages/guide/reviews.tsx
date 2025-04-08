@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Star, MessageCircle } from "lucide-react";
 import Sidebar from '@/components/guide/Sidebar';

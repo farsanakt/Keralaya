@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Info, Check } from 'lucide-react';
+import { Info} from 'lucide-react';
 import Sidebar from '@/components/guide/Sidebar';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';

@@ -1,7 +1,7 @@
 export interface Place {
-    description: ReactNode
-    category: ReactNode
-    location: ReactNode
+    description: string
+    category: string
+    location: string
     id: string
     name: string
     district: string

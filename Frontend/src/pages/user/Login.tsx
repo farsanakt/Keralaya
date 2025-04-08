@@ -20,7 +20,7 @@ const Login: React.FC = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [otpData, setOtpData] = useState<string>("");
 
-    const { loading, error } = useSelector((state: RootState) => state.user)
+    const { loading} = useSelector((state: RootState) => state.user)
 
     const dispatch: AppDispatch = useDispatch();
 

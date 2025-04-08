@@ -1,5 +1,5 @@
 import { RootState } from '@/redux/store';
-import { guiddeDetails, guideSlot, slotmanagement } from '@/service/guide/guideApi';
+import {  guideSlot, slotmanagement } from '@/service/guide/guideApi';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from "react-toastify";
@@ -24,8 +24,7 @@ interface GuideData {
     createdAt: string;
     guideId: string;
     updatedAt: string;
-    __v: number;
-    _id: string;
+    
   };
   guide?: {
     charge: string;
@@ -39,8 +38,7 @@ interface GuideData {
     password: string;
     phone: string;
     profileImage: string;
-    __v: number;
-    _id: string;
+    
   };
 }
 
@@ -58,9 +56,9 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
   today.setHours(0, 0, 0, 0);
   
   const { currentGuide } = useSelector((state: RootState) => state.guide);
-  const email = currentGuide?.data;
+  const email = (currentGuide?.data as unknown) as string
   
-  const fetchGuideDetails = async (email: string) => {
+  const fetchGuideDetails = async (email: any) => {
     try {
       setIsLoading(true);
       const response = await slotmanagement(email);
@@ -169,6 +167,8 @@ const GuideSlotCalendar: React.FC<GuideSlotCalendarProps> = ({
       console.log('Formatted Dates (For Submission):', formattedDates);
 
       const response = await guideSlot(formattedDates, email);
+
+      console.log(response)
       
       toast.success('Slots updated successfully!');
       setIsEditMode(false);

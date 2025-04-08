@@ -120,7 +120,8 @@ const BookingDetailsTable: React.FC = () => {
   
     if (result.isConfirmed) {
       try {
-        const response = await cancelBooking(id);
+        await cancelBooking(id);
+        
         Swal.fire("Cancelled!", "The booking has been cancelled.", "success");
         await userDetails()
       } catch (error) {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
-import axios from "axios";
+
 import { paymentConfirmation } from "@/service/user/userApi";
 console.log("Stripe Key:", import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -12,7 +12,7 @@ interface PaymentFormProps {
     guideId: string;
     amount: string;
     userEmail: string;
-    slotId?: string;
+    slotId: string;
     paymentIntentid: string
     locationId:string
 }
@@ -40,15 +40,16 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ userSecret, guideId, amount, 
     setError(null);
 
     try {
-      const { paymentIntent, error } = await stripe.confirmCardPayment(userSecret, {
+      const { error } = await stripe.confirmCardPayment(userSecret, {
+        
         payment_method: { card: cardElement },
       });
 
       if (error) {
-        setError(error.message);
+        setError(error?.message as string);
       } else {
         setSuccess(true);
-        const response = await paymentConfirmation({userSecret, guideId, amount, userEmail, slotId, paymentIntentid,locationId})
+        const response = await paymentConfirmation({userSecret, guideId, amount, userEmail, slotId , paymentIntentid,locationId})
         console.log(response, 'cn')
       }
     } catch (err) {

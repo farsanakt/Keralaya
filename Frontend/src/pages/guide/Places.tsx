@@ -74,6 +74,8 @@ export const Places = () => {
         console.log('Deleting place with id:', id);
        
         const response = await deletePlace(id);
+
+        console.log(response)
         
         await fetchPlaces();
   
@@ -89,7 +91,7 @@ export const Places = () => {
     }
   };
 
-  const handleEditSave = async (updatedPlace: Place) => {
+  const handleEditSave = async () => {
     
     await fetchPlaces()
     setEditingPlace(null)

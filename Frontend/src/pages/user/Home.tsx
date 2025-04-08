@@ -12,7 +12,7 @@ const Home: React.FC = () => {
   const [searchInput, setSearchInput] = useState('');
   const [searchResults, setSearchResults] = useState<{_id:string,street : string }[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [places,setPlaces]=useState(null)
+ 
 
   const navigate=useNavigate()
 
@@ -29,7 +29,7 @@ const Home: React.FC = () => {
     }
   };
 
-  const searchLocation = async (value: string) => {
+  const searchLocation = async (_value: string) => {
     if (searchInput.trim() === '') return
 
     try {
@@ -61,7 +61,7 @@ const Home: React.FC = () => {
 
   const fetchingAllocations=async()=>{
 
-    const response=await allLocations()
+    await allLocations()
 
     
 

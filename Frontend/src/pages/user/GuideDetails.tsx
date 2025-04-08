@@ -4,20 +4,14 @@ import UserHeader from '@/components/user/UserHeader';
 import { useParams } from "react-router-dom";
 import { fetchingReviewData, singleGuidee, usercheckOut } from '@/service/user/userApi';
 import { availableGuide } from '@/service/guide/guideApi';
-import { AppDispatch, RootState } from '@/redux/store';
-import { useDispatch, useSelector } from 'react-redux';
+import {  RootState } from '@/redux/store';
+import {useSelector } from 'react-redux';
 import { loadStripe } from "@stripe/stripe-js";
 import Payment from './Checkout';
 import Swal from 'sweetalert2';
 
 
-interface Review {
-  id: string;
-  userName: string;
-  rating: number;
-  comment: string;
-  date: string;
-}
+
 
 interface TimeSlot {
   id: string;
@@ -119,12 +113,12 @@ const GuideDetails: React.FC = () => {
     averageRating: 0
   });
 
-  const dispatch: AppDispatch = useDispatch();
+
 
   const { currentUser } = useSelector((state: RootState) => state.user);
 
   const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
-
+console.log(stripePromise)
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth();
   const currentYear = currentDate.getFullYear();
@@ -484,7 +478,7 @@ const GuideDetails: React.FC = () => {
           guideId={guideId} 
           amount={amount} 
           userEmail={userEmail || ''} 
-          slotId={selectedSlot?.id}
+          slotId={selectedSlot?.id as string}
           paymentIntentid={paymentIntentid || ''}
           locationId={locationId || ''}
         />

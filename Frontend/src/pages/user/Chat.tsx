@@ -45,7 +45,7 @@ export default function Chat({ bookingId, role }: ChatProps) {
 
   const chatRoomIdCreation = async () => {
     try {
-      const response = await chatIdCreation(BK_ID);
+      const response = await chatIdCreation(BK_ID as string);
       setChatRoomId(response.data.chatRoomId);
       setBooking(response.data.response);
       
@@ -177,9 +177,9 @@ export default function Chat({ bookingId, role }: ChatProps) {
         message: text, 
         chatRoomId,
         timestamp,
-        BK_ID,
+        BK_ID ,
         read: false,
-        role
+        role 
       }));
       
       setText("");

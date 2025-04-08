@@ -35,7 +35,7 @@ export function AddLocationModal({ isOpen, onClose }: AddLocationModalProps) {
 
   const [images, setImages] = useState<ImageType[]>([]);
 
-  const { register, handleSubmit, setValue, reset } = useForm<FormData>({
+  const { register, handleSubmit,  reset } = useForm<FormData>({
     defaultValues: {
       name: "",
       district: "",

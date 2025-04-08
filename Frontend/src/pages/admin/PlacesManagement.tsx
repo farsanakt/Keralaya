@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
@@ -50,11 +50,14 @@ const PlacesManagement = () => {
   const handleApprove = async(id: string) => {
 
     const res=await approvPlaces(id,"approved")
+    console.log(res)
   };
 
   const handleReject = async(id: string) => {
 
     const res=await approvPlaces(id,"rejected")
+
+    console.log(res)
    
   };
 

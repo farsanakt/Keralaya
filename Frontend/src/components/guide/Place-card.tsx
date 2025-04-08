@@ -1,7 +1,7 @@
-import { Badge, Star } from "lucide-react"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
-import { Button } from "@/components/ui/button"
+import { Card} from "@/components/ui/card"
+
+
 import { ImageCarousel } from "@/components/ui/image-carousel"
 import { Place } from "@/types/types"
 // import type { Place } from "../types/types"
@@ -11,7 +11,7 @@ interface PlaceCardProps {
   onSelect?: (place: Place) => void
 }
 
-export function PlaceCard({ place, onSelect }: PlaceCardProps) {
+export function PlaceCard({ place}: PlaceCardProps) {
   return (
     <Card className="overflow-hidden group hover:shadow-lg transition-shadow">
       <ImageCarousel images={place.images} />

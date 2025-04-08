@@ -27,7 +27,7 @@ const ChatModal: React.FC<ChatModalProps> = ({ bookingId, onClose, role}) => {
         </div>
         
         <div className="flex-grow overflow-hidden">
-          <ChatContainer bookingId={bookingId} role={role} />
+          <ChatContainer bookingId={bookingId} role={role as string}   />
         </div>
       </div>
     </div>

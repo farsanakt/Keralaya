@@ -163,7 +163,7 @@ export const usercheckOut = async (data: { slotId: string; guideId: string; user
     guideId: string;
     userEmail: string;
     amount: string;
-    usersecert: string;
+    userSecret: string;
     paymentIntentid: string;
     locationId:string
 

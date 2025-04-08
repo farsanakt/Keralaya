@@ -50,7 +50,7 @@ export default function GuideProfileComponent() {
   const [isLoading, setIsLoading] = useState(true)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [guideData, setGuideData] = useState<Guide>(initialGuideState)
-  const [errors, setErrors] = useState<Partial<Record<keyof Guide, string>>>({})
+  const [errors,_setErrors] = useState<Partial<Record<keyof Guide, string>>>({})
   const { currentGuide } = useSelector((state: RootState) => state.guide)
   const { toast } = useToast()
 

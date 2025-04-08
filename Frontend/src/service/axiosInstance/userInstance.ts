@@ -1,7 +1,6 @@
 import axios from "axios";
 import { toast } from "react-toastify";
-import store from '../../redux/store';
-// import { resetUser } from "../../redux/slices/authSlice";
+
 const API_URL = import.meta.env.VITE_USER_API_URL
 
 

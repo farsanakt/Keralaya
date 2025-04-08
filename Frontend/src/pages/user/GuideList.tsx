@@ -17,6 +17,9 @@ interface Guide {
   reviewCount: number;
   rating: number;
   pricePerDay: number;
+  image:string;
+  charge:string;
+  id:string
   languages: string[];
   availability: {
     nextAvailable: string;
@@ -37,7 +40,7 @@ const GuideList: React.FC = () => {
   const fetchGuides = async () => {
     try {
       const response = await allGuide();
-      const guidesData = response.data.map((guide: any) => ({
+      const guidesData = response?.data.map((guide: any) => ({
         id: guide._id,
         name: guide.name,
         charge:guide.charge,
@@ -57,7 +60,7 @@ const GuideList: React.FC = () => {
       console.log(guidesData,'joop')
 
       // Extract unique districts
-      const uniqueDistricts = Array.from(new Set(guidesData.map((g: Guide) => g.district)));
+      const uniqueDistricts = Array.from(new Set(guidesData.map((g: Guide) => g.district))) as string[]
       setDistricts(uniqueDistricts);
     } catch (error) {
       console.error('Error fetching guides:', error);
